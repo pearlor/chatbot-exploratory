@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(tsc*)",
+      "Bash(git status*)",
+      "Bash(git diff*)",
+      "Bash(git worktree*)"
+    ]
+  }
+}
