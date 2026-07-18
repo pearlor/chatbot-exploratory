@@ -3,7 +3,10 @@ export default function Sidebar() {
         
     */
   return (
-    <div className="sidebar">
+    <div
+      className="sidebar"
+      style={{ width: "260px", flexShrink: 0, height: "100vh" }}
+    >
       <h2>Recipe helper</h2>
       <section>
         <button>Your fridge</button>
