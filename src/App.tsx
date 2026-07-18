@@ -1,7 +1,7 @@
 import "./App.css";
 
 import { useEffect, useState } from "react";
-import { GoogleGenAI } from "@google/genai";
+import { generateResponse } from "./chat/ChatUtils";
 
 function App() {
   const prompt = "Explain how to make a peanut butter and jelly sandwich.";
@@ -10,26 +10,7 @@ function App() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const ai = new GoogleGenAI({});
-
-    async function generateResponse() {
-      setIsLoading(true);
-      setError("");
-      try {
-        const interaction = await ai.interactions.create({
-          model: "gemini-3.5-flash",
-          input: prompt,
-        });
-        console.log(interaction);
-        setOutput(interaction.output_text ?? "");
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Something went wrong.");
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    generateResponse();
+    generateResponse(setOutput, setIsLoading, setError, prompt);
   }, []);
 
   return (
