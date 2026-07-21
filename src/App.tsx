@@ -18,9 +18,9 @@ function App() {
   */
 
   return (
-    <div style={{ display: "flex", height: "100vh" }}>
+    <div className="flex h-screen bg-cream text-ink">
       <Sidebar />
-      <div style={{ flex: 1 }}>
+      <div className="flex-1 min-w-0">
         <ChatHome />
       </div>
     </div>
