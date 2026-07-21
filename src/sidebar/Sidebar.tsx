@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Button from "../components/Button";
 
 const recentCreations = [
@@ -8,6 +9,47 @@ const recentCreations = [
 ];
 
 export default function Sidebar() {
+  const [isCollapsed, setIsCollapsed] = useState(false);
+
+  if (isCollapsed) {
+    return (
+      <div className="w-[72px] shrink-0 h-screen bg-sidebar border-r border-border flex flex-col items-center px-3 py-5 gap-4">
+        {/* Brand icon */}
+        <div className="w-10 h-10 rounded-xl bg-terracotta text-white flex items-center justify-center text-lg">
+          🍳
+        </div>
+
+        <div className="w-8 border-t border-border" />
+
+        {/* Primary actions */}
+        <button
+          onClick={() => {}}
+          title="Your Fridge"
+          className="w-10 h-10 rounded-xl bg-terracotta-soft text-terracotta flex items-center justify-center text-lg hover:brightness-95 transition"
+        >
+          🧊
+        </button>
+
+        <button
+          onClick={() => {}}
+          title="New Conversation"
+          className="w-10 h-10 rounded-xl bg-terracotta text-white flex items-center justify-center text-lg hover:brightness-95 transition"
+        >
+          ＋
+        </button>
+
+        {/* Expand */}
+        <button
+          onClick={() => setIsCollapsed(false)}
+          title="Expand sidebar"
+          className="mt-auto w-9 h-9 rounded-lg text-muted flex items-center justify-center hover:bg-black/5 transition-colors"
+        >
+          ⇥
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="w-[260px] shrink-0 h-screen bg-sidebar border-r border-border flex flex-col px-4 py-5 gap-5">
       {/* Brand header */}
@@ -54,6 +96,17 @@ export default function Sidebar() {
           ))}
         </ul>
       </section>
+
+      {/* Collapse footer */}
+      <div className="mt-auto pt-4 border-t border-border">
+        <button
+          onClick={() => setIsCollapsed(true)}
+          className="flex items-center gap-2 text-sm text-muted px-2 py-1.5 rounded-lg hover:bg-black/5 transition-colors w-full"
+        >
+          <span>⇤</span>
+          Collapse
+        </button>
+      </div>
     </div>
   );
 }
