@@ -1,6 +1,26 @@
+import { useState, useCallback } from "react";
 import Composer from "../components/Composer";
+import { generateResponse } from "../chat/ChatUtils";
 
 export default function ChatHome() {
+  const [userPrompt, setUserPrompt] = useState("");
+  const [output, setOutput] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  const handleSubmit = useCallback(async () => {
+    if (!userPrompt.trim()) return;
+
+    await generateResponse(setOutput, setIsLoading, setError, userPrompt);
+
+    if (!error) {
+      setIsLoading(false);
+    } else {
+      setUserPrompt("");
+      setIsLoading(false);
+    }
+  }, [userPrompt, setOutput, setIsLoading, setError]);
+  console.log(output);
   return (
     <div className="h-full flex flex-col">
       {/* Greeting */}
@@ -14,7 +34,12 @@ export default function ChatHome() {
       </div>
 
       {/* Composer */}
-      <Composer />
+      <Composer
+        userPrompt={userPrompt}
+        setUserPrompt={setUserPrompt}
+        handleSubmit={handleSubmit}
+        isLoading={isLoading}
+      />
     </div>
   );
 }
