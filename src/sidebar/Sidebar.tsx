@@ -1,7 +1,6 @@
+import Button from "../components/Button";
+
 export default function Sidebar() {
-  /*
-        
-    */
   return (
     <div
       className="sidebar"
@@ -9,9 +8,9 @@ export default function Sidebar() {
     >
       <h2>Recipe helper</h2>
       <section>
-        <button>Your fridge</button>
+        <Button onClick={() => {}} label="Your fridge" />
         <br />
-        <button>New conversation</button>
+        <Button onClick={() => {}} label="New conversation" />
       </section>
       <section>
         <h3>Recent creations</h3>
