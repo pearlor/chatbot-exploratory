@@ -173,6 +173,105 @@ Serves: 6 (makes 12 delicious sesame balls)
     expect(intro.kind === "markdown" && intro.text).not.toContain("**Time:**");
   });
 
+  it("extracts a --- divider directly after the metadata bullets", () => {
+    const withRule = `## Sesame Balls
+
+Time: 45 minutes
+Difficulty: Medium
+Serves: 12 sesame balls
+
+---
+
+### [Ingredients] The Lineup
+
+* glutinous rice flour
+
+### [Steps] The Method
+
+1. Mix the dough.`;
+    const segments = parseRecipeSegments(withRule);
+    expect(segments.map((s) => s.kind)).toEqual([
+      "markdown",
+      "pills",
+      "columns",
+    ]);
+    expect(JSON.stringify(segments)).not.toContain("---");
+  });
+
+  it("keeps dividers that are not attached to the metadata block", () => {
+    const markdown = `## Dish
+
+- **Time:** 10 minutes
+
+### [Ingredients] A
+
+* x
+
+### [Steps] B
+
+1. y
+
+---
+
+### Pros
+
+* + great`;
+    const segments = parseRecipeSegments(markdown);
+    // The divider lives in the steps section's body, not the metadata block,
+    // so it must survive extraction.
+    expect(JSON.stringify(segments)).toContain("---");
+  });
+
+  it("strips a trailing --- from the last section before the ending comment", () => {
+    const markdown = `## Dish
+
+- **Time:** 10 minutes
+
+### [Ingredients] A
+
+* x
+
+### [Steps] B
+
+1. y
+
+### Tips
+
+Great with tea.
+
+---
+
+### [Ending comment] One Last Thing
+
+Enjoy!`;
+    const segments = parseRecipeSegments(markdown);
+    const tail = segments.find(
+      (s) => s.kind === "markdown" && s.text.includes("Tips"),
+    );
+    expect(tail?.kind === "markdown" && tail.text).not.toContain("---");
+    expect(segments[segments.length - 1]).toMatchObject({
+      kind: "callout",
+      title: "One Last Thing",
+    });
+  });
+
+  it("strips a trailing --- from the steps column when it ends the recipe", () => {
+    const markdown = `- **Time:** 10 minutes
+
+### [Ingredients] A
+
+* x
+
+### [Steps] B
+
+1. y
+
+---`;
+    const segments = parseRecipeSegments(markdown);
+    const columns = segments.find((s) => s.kind === "columns");
+    expect(columns?.kind === "columns" && columns.steps).not.toContain("---");
+  });
+
   it("renders a solo tagged section flat with the tag stripped", () => {
     const solo = `- **Time:** 5 minutes
 

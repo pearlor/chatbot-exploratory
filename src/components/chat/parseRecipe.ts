@@ -45,34 +45,46 @@ export function isRecipeContent(markdown: string): boolean {
 
 type MetaSplit = { meta: RecipeMeta | null; before: string; after: string };
 
+// A `---` divider line.
+const HR_LINE = /^\s*-{3,}\s*$/;
+
 // Pull the metadata bullets out of the document. `before` keeps everything
-// above the first metadata line (greeting + ## title) so the pill row lands
-// exactly where the bullets were.
+// above the first metadata line (greeting + ## title). A `---` divider
+// directly after the bullets belongs to the metadata block, so it is
+// extracted along with them.
 function extractMeta(markdown: string): MetaSplit {
   const lines = markdown.split("\n");
   const meta: RecipeMeta = {};
-  let firstMetaIndex = -1;
-  const kept: string[] = [];
+  const metaIndexes: number[] = [];
 
-  for (const line of lines) {
+  for (const [index, line] of lines.entries()) {
     const match = line.match(META_LINE);
-    if (!match) {
-      kept.push(line);
-      continue;
-    }
-    if (firstMetaIndex === -1) firstMetaIndex = kept.length;
+    if (!match) continue;
+    metaIndexes.push(index);
     const key = match[1].toLowerCase() as keyof RecipeMeta;
     meta[key] ??= match[2];
   }
 
-  if (firstMetaIndex === -1) {
+  if (metaIndexes.length === 0) {
     return { meta: null, before: markdown, after: "" };
   }
-  return {
-    meta,
-    before: kept.slice(0, firstMetaIndex).join("\n"),
-    after: kept.slice(firstMetaIndex).join("\n"),
-  };
+
+  const removed = new Set(metaIndexes);
+  // Drop the divider directly below the last metadata line (blank lines ok).
+  let next = metaIndexes[metaIndexes.length - 1] + 1;
+  while (next < lines.length && lines[next].trim() === "") next += 1;
+  if (next < lines.length && HR_LINE.test(lines[next])) {
+    removed.add(next);
+  }
+
+  const firstMetaIndex = metaIndexes[0];
+  const before: string[] = [];
+  const after: string[] = [];
+  for (const [index, line] of lines.entries()) {
+    if (removed.has(index)) continue;
+    (index < firstMetaIndex ? before : after).push(line);
+  }
+  return { meta, before: before.join("\n"), after: after.join("\n") };
 }
 
 type Section = { tag: string | null; title: string; body: string };
@@ -172,5 +184,32 @@ export function parseRecipeSegments(markdown: string): Segment[] {
       pushMarkdown(segments, sectionToMarkdown(section));
     }
   }
+  stripTrailingRule(segments);
   return segments;
+}
+
+// A `---` at the end of the last section (ignoring the ending comment) would
+// render as a stray line at the bottom of the card, so drop it.
+function stripTrailingRule(segments: Segment[]) {
+  const last = [...segments]
+    .reverse()
+    .find((segment) => segment.kind !== "callout" && segment.kind !== "pills");
+  if (!last) return;
+
+  const strip = (text: string): string => {
+    const lines = text.split("\n");
+    while (lines.length > 0 && lines[lines.length - 1].trim() === "") {
+      lines.pop();
+    }
+    if (lines.length > 0 && HR_LINE.test(lines[lines.length - 1])) {
+      lines.pop();
+    }
+    return lines.join("\n");
+  };
+
+  if (last.kind === "markdown") {
+    last.text = strip(last.text);
+  } else if (last.kind === "columns") {
+    last.steps = strip(last.steps);
+  }
 }

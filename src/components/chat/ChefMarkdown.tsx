@@ -86,7 +86,7 @@ const components: Components = {
 // terracotta h3, matching the recipe-card design.
 const columnHeadingOverride: Components = {
   h3: ({ children }) => (
-    <h3 className="mt-0 mb-3 text-xs font-semibold uppercase tracking-widest text-muted">
+    <h3 className="mt-0 mb-3 text-sm font-bold uppercase tracking-widest text-muted">
       {children}
     </h3>
   ),
