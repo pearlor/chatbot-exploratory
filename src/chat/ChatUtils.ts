@@ -1,11 +1,17 @@
 import { GoogleGenAI } from "@google/genai";
-// Alternate persona; swap in for foodTVHostPrompt below to use it.
-// import culinaryTeacherPrompt from "./prompts/culinary_teacher_prompt.txt?raw";
-// import foodTVHostPrompt from "./prompts/food_tv_host_prompt.txt?raw";
+import culinaryTeacherPrompt from "./prompts/culinary_teacher_prompt.txt?raw";
+import foodTVHostPrompt from "./prompts/food_tv_host_prompt.txt?raw";
 import pirateChefPrompt from "./prompts/pirate_chef_prompt.txt?raw";
 import systemPrompt from "./prompts/format_prompt.txt?raw";
+import type { Persona } from "./types";
 
 import mockResponse from "./mock/example_response.md?raw";
+
+const personaPrompts: Record<Persona, string> = {
+  teacher: culinaryTeacherPrompt,
+  "tv-host": foodTVHostPrompt,
+  pirate: pirateChefPrompt,
+};
 
 const ai = new GoogleGenAI({
   apiKey: "",
@@ -27,6 +33,7 @@ type ChatOutput = {
 export async function generateResponse(
   prompt: string,
   previousInteractionId: string | undefined,
+  persona: Persona,
   useMock: boolean = false,
 ): Promise<ChatOutput> {
   if (useMock) {
@@ -37,7 +44,7 @@ export async function generateResponse(
 
   const interaction = await ai.interactions.create({
     model: "gemini-3.5-flash",
-    system_instruction: systemPrompt + "\n\n" + pirateChefPrompt,
+    system_instruction: systemPrompt + "\n\n" + personaPrompts[persona],
     input: prompt,
     previous_interaction_id: previousInteractionId,
   });

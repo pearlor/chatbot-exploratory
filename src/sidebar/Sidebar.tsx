@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Button from "../components/Button";
+import SettingsModal from "../components/SettingsModal";
 
 const recentCreations = [
   "Risotto alla Milanese",
@@ -10,6 +11,11 @@ const recentCreations = [
 
 export default function Sidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
+  const settingsModal = isSettingsOpen && (
+    <SettingsModal onClose={() => setIsSettingsOpen(false)} />
+  );
 
   if (isCollapsed) {
     return (
@@ -38,14 +44,25 @@ export default function Sidebar() {
           ＋
         </button>
 
+        {/* Settings */}
+        <button
+          onClick={() => setIsSettingsOpen(true)}
+          title="Your settings"
+          className="mt-auto w-9 h-9 rounded-lg text-muted flex items-center justify-center hover:bg-black/5 transition-colors"
+        >
+          ⚙️
+        </button>
+
         {/* Expand */}
         <button
           onClick={() => setIsCollapsed(false)}
           title="Expand sidebar"
-          className="mt-auto w-9 h-9 rounded-lg text-muted flex items-center justify-center hover:bg-black/5 transition-colors"
+          className="w-9 h-9 rounded-lg text-muted flex items-center justify-center hover:bg-black/5 transition-colors"
         >
           ⇥
         </button>
+
+        {settingsModal}
       </div>
     );
   }
@@ -97,8 +114,16 @@ export default function Sidebar() {
         </ul>
       </section>
 
-      {/* Collapse footer */}
-      <div className="mt-auto pt-4 border-t border-border">
+      {/* Settings + collapse footer */}
+      <div className="mt-auto pt-4 border-t border-border flex flex-col gap-1">
+        <button
+          onClick={() => setIsSettingsOpen(true)}
+          className="flex items-center gap-2 text-sm text-muted px-2 py-1.5 rounded-lg hover:bg-black/5 transition-colors w-full"
+        >
+          <span>⚙️</span>
+          Your settings
+        </button>
+
         <button
           onClick={() => setIsCollapsed(true)}
           className="flex items-center gap-2 text-sm text-muted px-2 py-1.5 rounded-lg hover:bg-black/5 transition-colors w-full"
@@ -107,6 +132,8 @@ export default function Sidebar() {
           Collapse
         </button>
       </div>
+
+      {settingsModal}
     </div>
   );
 }
