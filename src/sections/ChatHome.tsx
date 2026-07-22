@@ -3,8 +3,10 @@ import Composer from "../components/Composer";
 import ChatHistory from "../components/chat/ChatHistory";
 import { generateResponse } from "../chat/ChatUtils";
 import type { ChatMessage } from "../chat/types";
+import { useUserPreferences } from "../context/UserPreferencesContext";
 
 export default function ChatHome() {
+  const { preferences } = useUserPreferences();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [userPrompt, setUserPrompt] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -26,7 +28,11 @@ export default function ChatHome() {
     setIsLoading(true);
 
     try {
-      const chatOutput = await generateResponse(prompt, previousInteractionId);
+      const chatOutput = await generateResponse(
+        prompt,
+        previousInteractionId,
+        preferences.persona,
+      );
       setMessages((prev) => [
         ...prev,
         { id: crypto.randomUUID(), role: "chef", content: chatOutput.text },
@@ -46,7 +52,7 @@ export default function ChatHome() {
     } finally {
       setIsLoading(false);
     }
-  }, [userPrompt]);
+  }, [userPrompt, previousInteractionId, preferences.persona]);
 
   return (
     <div className="h-full flex flex-col">

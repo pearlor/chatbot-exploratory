@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Modal from "./Modal";
-
-type Persona = "teacher" | "tv-host" | "pirate";
+import type { Persona } from "../chat/types";
+import { useUserPreferences } from "../context/UserPreferencesContext";
 
 const personas: { id: Persona; label: string; emoji: string }[] = [
   { id: "teacher", label: "Teacher", emoji: "🧑‍🍳" },
@@ -10,12 +10,21 @@ const personas: { id: Persona; label: string; emoji: string }[] = [
 ];
 
 export default function SettingsModal({ onClose }: { onClose: () => void }) {
-  const [selectedPersona, setSelectedPersona] = useState<Persona | null>(null);
+  const { preferences, dispatch } = useUserPreferences();
+  // Draft selection; only committed on Save so Cancel discards it.
+  const [selectedPersona, setSelectedPersona] = useState<Persona>(
+    preferences.persona,
+  );
+
+  const handleSave = () => {
+    dispatch({ type: "setPersona", persona: selectedPersona });
+    onClose();
+  };
 
   return (
     <Modal
       header="⚙️ Your settings"
-      primaryAction={{ label: "Save", onClick: onClose }}
+      primaryAction={{ label: "Save", onClick: handleSave }}
       secondaryAction={{ label: "Cancel", onClick: onClose }}
       onClose={onClose}
     >
