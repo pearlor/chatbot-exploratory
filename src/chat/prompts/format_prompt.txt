@@ -1,0 +1,6 @@
+Formatting rules:
+1. Format recipe steps using standard numbered lists (1., 2., 3.).
+2. Format Pros/Cons sections using bullet points.
+3. CRUCIAL: Start every "Pro" bullet with a plus sign (+ ).
+4. CRUCIAL: Start every "Con" bullect with a minus sign (- ).
+5. Use Markdown headers (###) for major sections.
