@@ -272,6 +272,33 @@ Enjoy!`;
     expect(columns?.kind === "columns" && columns.steps).not.toContain("---");
   });
 
+  it("strips unknown bracket tags like [Pros and Cons] from headings", () => {
+    const markdown = `## Dish
+
+- **Time:** 10 minutes
+
+### [Ingredients] A
+
+* x
+
+### [Steps] B
+
+1. y
+
+### [Pros and Cons] The Trade-Offs
+
+* + quick to make
+* - needs a wok`;
+    const segments = parseRecipeSegments(markdown);
+    const tail = segments.find(
+      (s) => s.kind === "markdown" && s.text.includes("Trade-Offs"),
+    );
+    expect(tail?.kind === "markdown" && tail.text).toContain(
+      "### The Trade-Offs",
+    );
+    expect(JSON.stringify(segments)).not.toContain("[Pros and Cons]");
+  });
+
   it("renders a solo tagged section flat with the tag stripped", () => {
     const solo = `- **Time:** 5 minutes
 

@@ -27,8 +27,11 @@ export type Segment =
 const META_LINE =
   /^\s*(?:[*+-]\s+)?(?:\*\*)?(Time|Difficulty|Serves)(?::\s*\*\*|\*\*\s*:|:)\s*(.*\S)\s*$/i;
 
-// Matches the bracket tag at the start of a `###` heading's text.
-const SECTION_TAG = /^\[\s*(Ingredients|Steps|Ending comment)\s*\]\s*(.*)$/i;
+// Matches any bracket tag at the start of a `###` heading's text, e.g.
+// `[Ingredients]`, `[Steps]`, `[Ending comment]`, `[Pros and Cons]`. Known
+// tags get special rendering; unknown ones are simply stripped so they never
+// show to the user.
+const SECTION_TAG = /^\[\s*([^\]]+?)\s*\]\s*(.*)$/;
 
 // A tagged heading anywhere in the document also marks a recipe, so tag
 // stripping and columns still work when the model skips the metadata block.
