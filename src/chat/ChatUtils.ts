@@ -1,7 +1,8 @@
 import { GoogleGenAI } from "@google/genai";
 // Alternate persona; swap in for foodTVHostPrompt below to use it.
 // import culinaryTeacherPrompt from "./prompts/culinary_teacher_prompt.txt?raw";
-import foodTVHostPrompt from "./prompts/food_tv_host_prompt.txt?raw";
+// import foodTVHostPrompt from "./prompts/food_tv_host_prompt.txt?raw";
+import pirateChefPrompt from "./prompts/pirate_chef_prompt.txt?raw";
 import systemPrompt from "./prompts/format_prompt.txt?raw";
 
 import mockResponse from "./mock/example_response.md?raw";
@@ -28,7 +29,7 @@ export async function generateResponse(
 
   const interaction = await ai.interactions.create({
     model: "gemini-3.5-flash",
-    system_instruction: systemPrompt + "\n\n" + foodTVHostPrompt,
+    system_instruction: systemPrompt + "\n\n" + pirateChefPrompt,
     input: prompt,
     previous_interaction_id: previousInteractionId,
   });
