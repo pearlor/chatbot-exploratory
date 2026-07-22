@@ -4,20 +4,13 @@ import ChatHistory from "../components/chat/ChatHistory";
 import { generateResponse } from "../chat/ChatUtils";
 import type { ChatMessage } from "../chat/types";
 
-// Mock history so the bubbles render before the API is wired up end to end.
-const initialMessages: ChatMessage[] = [
-  { id: "mock-1", role: "user", content: "What is key to cooking an egg?" },
-  {
-    id: "mock-2",
-    role: "chef",
-    content: "Making sure to be able to crack the egg",
-  },
-];
-
 export default function ChatHome() {
-  const [messages, setMessages] = useState<ChatMessage[]>(initialMessages);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [userPrompt, setUserPrompt] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [previousInteractionId, setPreviousInteractionId] = useState<
+    string | undefined
+  >(undefined);
 
   const handleSubmit = useCallback(async () => {
     const prompt = userPrompt.trim();
@@ -33,11 +26,12 @@ export default function ChatHome() {
     setIsLoading(true);
 
     try {
-      const reply = await generateResponse(prompt);
+      const chatOutput = await generateResponse(prompt, previousInteractionId);
       setMessages((prev) => [
         ...prev,
-        { id: crypto.randomUUID(), role: "chef", content: reply },
+        { id: crypto.randomUUID(), role: "chef", content: chatOutput.text },
       ]);
+      setPreviousInteractionId(chatOutput.previousInteractionId);
     } catch (err) {
       const message =
         err instanceof Error ? err.message : "Something went wrong.";
