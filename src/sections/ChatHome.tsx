@@ -1,39 +1,63 @@
 import { useState, useCallback } from "react";
 import Composer from "../components/Composer";
+import ChatHistory from "../components/chat/ChatHistory";
 import { generateResponse } from "../chat/ChatUtils";
+import type { ChatMessage } from "../chat/types";
+
+// Mock history so the bubbles render before the API is wired up end to end.
+const initialMessages: ChatMessage[] = [
+  { id: "mock-1", role: "user", content: "What is key to cooking an egg?" },
+  {
+    id: "mock-2",
+    role: "chef",
+    content: "Making sure to be able to crack the egg",
+  },
+];
 
 export default function ChatHome() {
+  const [messages, setMessages] = useState<ChatMessage[]>(initialMessages);
   const [userPrompt, setUserPrompt] = useState("");
-  const [output, setOutput] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = useCallback(async () => {
-    if (!userPrompt.trim()) return;
+    const prompt = userPrompt.trim();
+    if (!prompt) return;
 
-    await generateResponse(setOutput, setIsLoading, setError, userPrompt);
+    const userMessage: ChatMessage = {
+      id: crypto.randomUUID(),
+      role: "user",
+      content: prompt,
+    };
+    setMessages((prev) => [...prev, userMessage]);
+    setUserPrompt("");
+    setIsLoading(true);
 
-    if (!error) {
-      setIsLoading(false);
-    } else {
-      setUserPrompt("");
+    try {
+      const reply = await generateResponse(prompt);
+      setMessages((prev) => [
+        ...prev,
+        { id: crypto.randomUUID(), role: "chef", content: reply },
+      ]);
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Something went wrong.";
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: crypto.randomUUID(),
+          role: "chef",
+          content: `Sorry, something went wrong: ${message}`,
+        },
+      ]);
+    } finally {
       setIsLoading(false);
     }
-  }, [userPrompt, setOutput, setIsLoading, setError]);
-  console.log(output);
+  }, [userPrompt]);
+
   return (
     <div className="h-full flex flex-col">
-      {/* Greeting */}
-      <div className="flex-1 flex flex-col items-center pt-24 gap-4">
-        <div className="w-16 h-16 rounded-full bg-terracotta-soft flex items-center justify-center text-3xl text-terracotta">
-          🧑‍🍳
-        </div>
-        <p className="font-serif italic text-lg text-muted">
-          The kitchen is open. What shall we prepare today?
-        </p>
-      </div>
+      <ChatHistory messages={messages} isLoading={isLoading} />
 
-      {/* Composer */}
       <Composer
         userPrompt={userPrompt}
         setUserPrompt={setUserPrompt}
