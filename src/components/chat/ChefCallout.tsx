@@ -1,8 +1,10 @@
 import type { ReactNode } from "react";
 
-// The dark-green ending-comment box (e.g. "Chef's Secret"). Negative margins
-// bleed it to the bubble edges so it rounds into the bubble's bottom corners
-// when it is the last segment.
+/**
+ * The dark-green ending-comment box (e.g. "Chef's Secret"). Negative margins
+ * bleed it to the bubble edges so it rounds into the bubble's bottom corners
+ * when it is the last segment.
+ */
 export default function ChefCallout({
   title,
   children,

@@ -51,10 +51,12 @@ type MetaSplit = { meta: RecipeMeta | null; before: string; after: string };
 // A `---` divider line.
 const HR_LINE = /^\s*-{3,}\s*$/;
 
-// Pull the metadata bullets out of the document. `before` keeps everything
-// above the first metadata line (greeting + ## title). A `---` divider
-// directly after the bullets belongs to the metadata block, so it is
-// extracted along with them.
+/**
+ * Pulls the metadata bullets out of the document. `before` keeps everything
+ * above the first metadata line (greeting + ## title). A `---` divider
+ * directly after the bullets belongs to the metadata block, so it is
+ * extracted along with them.
+ */
 function extractMeta(markdown: string): MetaSplit {
   const lines = markdown.split("\n");
   const meta: RecipeMeta = {};
@@ -92,8 +94,11 @@ function extractMeta(markdown: string): MetaSplit {
 
 type Section = { tag: string | null; title: string; body: string };
 
-// Split on `### ` headings; the chunk before the first heading gets tag null
-// and an empty title.
+/**
+ * Splits on `### ` headings; the chunk before the first heading gets tag null
+ * and an empty title. Bracket tags are stripped from headings and lowercased
+ * into `tag`, leaving only the personalized display title.
+ */
 function splitSections(markdown: string): Section[] {
   const sections: Section[] = [];
   let current: Section = { tag: null, title: "", body: "" };
@@ -117,11 +122,16 @@ function splitSections(markdown: string): Section[] {
   return sections;
 }
 
+/** Re-serializes a section back to markdown, without any bracket tag. */
 function sectionToMarkdown(section: Section): string {
   const heading = section.title ? `### ${section.title}\n` : "";
   return heading + section.body;
 }
 
+/**
+ * Appends markdown text to `segments`, merging into a trailing markdown
+ * segment when there is one and dropping whitespace-only text.
+ */
 function pushMarkdown(segments: Segment[], text: string) {
   if (!text.trim()) return;
   const last = segments[segments.length - 1];
@@ -135,6 +145,12 @@ function pushMarkdown(segments: Segment[], text: string) {
 // The `##` dish title line; `(?!#)` keeps `###` section headings from matching.
 const TITLE_LINE = /^##(?!#).*$/m;
 
+/**
+ * Parses chef AI markdown into ordered render segments: metadata pills under
+ * the dish title, an ingredients/steps column pair, an ending-comment
+ * callout, and plain markdown for everything else. Content with no metadata
+ * block and no tagged sections comes back as a single markdown segment.
+ */
 export function parseRecipeSegments(markdown: string): Segment[] {
   const { meta, before, after } = extractMeta(markdown);
 
@@ -191,8 +207,10 @@ export function parseRecipeSegments(markdown: string): Segment[] {
   return segments;
 }
 
-// A `---` at the end of the last section (ignoring the ending comment) would
-// render as a stray line at the bottom of the card, so drop it.
+/**
+ * A `---` at the end of the last section (ignoring the ending comment) would
+ * render as a stray line at the bottom of the card, so drop it.
+ */
 function stripTrailingRule(segments: Segment[]) {
   const last = [...segments]
     .reverse()

@@ -16,6 +16,14 @@ type ChatOutput = {
   previousInteractionId: string | undefined;
 };
 
+/**
+ * Sends a prompt to the chef AI and returns its markdown reply. The system
+ * instruction combines the format contract (format_prompt.txt) with the
+ * active persona prompt; pass the returned `previousInteractionId` back in
+ * to continue the same conversation. With `useMock` the canned
+ * example_response.md is returned after a short delay instead of calling
+ * the API.
+ */
 export async function generateResponse(
   prompt: string,
   previousInteractionId: string | undefined,

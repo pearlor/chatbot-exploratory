@@ -4,14 +4,17 @@ import ChefCallout from "./ChefCallout";
 import RecipePills from "./RecipePills";
 import { parseRecipeSegments } from "./parseRecipe";
 
-// CommonMark treats `+` and `-` as list markers, so a line like `* + text`
-// parses as a NESTED list and the pro/con prefix never reaches the <li> text.
-// Backslash-escaping the second marker (`* \+ text`) makes it survive as
-// literal text that the custom list item below can detect and strip.
+/**
+ * CommonMark treats `+` and `-` as list markers, so a line like `* + text`
+ * parses as a NESTED list and the pro/con prefix never reaches the <li> text.
+ * Backslash-escaping the second marker (`* \+ text`) makes it survive as
+ * literal text that the custom list item below can detect and strip.
+ */
 function escapeSentimentPrefixes(markdown: string): string {
   return markdown.replace(/^(\s*[*+-] )([+-])(?= )/gm, "$1\\$2");
 }
 
+/** The round green `+` / red `−` badge that replaces a pro/con list bullet. */
 function SentimentBullet({ kind }: { kind: "pro" | "con" }) {
   const colors =
     kind === "pro" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700";
@@ -25,6 +28,11 @@ function SentimentBullet({ kind }: { kind: "pro" | "con" }) {
   );
 }
 
+/**
+ * List item that turns a leading `+ ` / `- ` (escaped by
+ * escapeSentimentPrefixes) into a sentiment badge; everything else renders as
+ * a normal <li>.
+ */
 function ChefListItem({ children }: { children?: ReactNode }) {
   let items = Children.toArray(children);
 
@@ -102,6 +110,10 @@ const stepsOverrides: Components = {
   ),
 };
 
+/**
+ * Renders markdown with the chef component styles, escaping pro/con prefixes
+ * first. `overrides` swaps in per-context styles (e.g. column headings).
+ */
 function Markdown({
   text,
   overrides,
@@ -116,6 +128,11 @@ function Markdown({
   );
 }
 
+/**
+ * Renders a chef response by parsing it into segments and mapping each to its
+ * UI: metadata pills, the ingredients/steps column grid, the ending-comment
+ * callout, or plain markdown.
+ */
 export default function ChefMarkdown({ content }: { content: string }) {
   const segments = parseRecipeSegments(content);
   return (

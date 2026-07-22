@@ -1,5 +1,6 @@
 import type { RecipeMeta } from "./parseRecipe";
 
+/** A single rounded icon+label chip; `accent` gets the terracotta tint. */
 function Pill({
   icon,
   label,
@@ -23,6 +24,10 @@ function Pill({
   );
 }
 
+/**
+ * The row of time / difficulty / serves pills shown under the dish title.
+ * Each pill renders only when its metadata field was present.
+ */
 export default function RecipePills({ meta }: { meta: RecipeMeta }) {
   return (
     <div className="mb-4 flex flex-wrap gap-2">

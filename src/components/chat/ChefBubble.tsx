@@ -1,6 +1,10 @@
 import ChefMarkdown from "./ChefMarkdown";
 import { isRecipeContent } from "./parseRecipe";
 
+/**
+ * A chat bubble for a chef response: avatar + label above the rendered
+ * markdown. Recipe content widens the bubble into a full-width card.
+ */
 export default function ChefBubble({ content }: { content: string }) {
   // Recipe cards go full width so ingredients/steps can sit side by side;
   // @container enables the column switch to track the bubble's own width.
