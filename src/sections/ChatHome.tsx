@@ -57,6 +57,7 @@ export default function ChatHome() {
         setUserPrompt={setUserPrompt}
         handleSubmit={handleSubmit}
         isLoading={isLoading}
+        showSuggestions={messages.length === 0}
       />
     </div>
   );
