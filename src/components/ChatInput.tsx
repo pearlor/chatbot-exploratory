@@ -9,6 +9,8 @@ export default function ChatInput({
   handleSubmit: () => void;
   isLoading: boolean;
 }) {
+  const isSubmitDisabled = isLoading || userPrompt.trim() === "";
+
   return (
     <div className="flex items-center gap-2 rounded-2xl border border-border bg-white px-3 py-2 shadow-sm">
       {/* "Ask" selector (stub — no dropdown yet) */}
@@ -24,15 +26,24 @@ export default function ChatInput({
         className="flex-1 min-w-0 bg-transparent outline-none text-sm text-ink placeholder:text-muted"
         value={userPrompt}
         onChange={(e) => setUserPrompt(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" && !isSubmitDisabled) {
+            handleSubmit();
+          }
+        }}
       />
 
-      {/* Send button (stub — no handler yet) */}
+      {/* Send button */}
       <button
-        className="w-9 h-9 rounded-full bg-terracotta text-white flex items-center justify-center shrink-0 hover:brightness-95 transition"
+        className="w-9 h-9 rounded-full bg-terracotta text-white flex items-center justify-center shrink-0 transition hover:brightness-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:brightness-100"
         onClick={handleSubmit}
-        disabled={isLoading}
+        disabled={isSubmitDisabled}
       >
-        ➤
+        {isLoading ? (
+          <span className="w-4 h-4 rounded-full border-2 border-white/40 border-t-white animate-spin" />
+        ) : (
+          "➤"
+        )}
       </button>
     </div>
   );
