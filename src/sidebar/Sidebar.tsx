@@ -97,21 +97,29 @@ export default function Sidebar() {
         <h3 className="text-xs font-semibold tracking-wider text-muted uppercase px-2 mb-1">
           Recent Creations
         </h3>
-        <ul className="flex flex-col">
-          {Object.entries(chatHistory).map(([conversationId, conversation]) => (
-            <li
-              key={conversationId}
-              onClick={() =>
-                dispatch({ type: "selectConversation", conversationId })
-              }
-              className={`text-sm text-ink/80 py-1.5 px-2 rounded-lg hover:bg-black/5 cursor-pointer transition-colors ${
-                conversationId === activeConversationId ? "bg-black/5" : ""
-              }`}
-            >
-              {conversation.title}
-            </li>
-          ))}
-        </ul>
+        {chatHistory && Object.keys(chatHistory).length === 0 ? (
+          <p className="text-sm text-muted/80 px-2">
+            No recent conversations. Start a new one to see it here!
+          </p>
+        ) : (
+          <ul className="flex flex-col">
+            {Object.entries(chatHistory).map(
+              ([conversationId, conversation]) => (
+                <li
+                  key={conversationId}
+                  onClick={() =>
+                    dispatch({ type: "selectConversation", conversationId })
+                  }
+                  className={`text-sm text-ink/80 py-1.5 px-2 rounded-lg hover:bg-black/5 cursor-pointer transition-colors ${
+                    conversationId === activeConversationId ? "bg-black/5" : ""
+                  }`}
+                >
+                  {conversation.title}
+                </li>
+              ),
+            )}
+          </ul>
+        )}
       </section>
 
       {/* Settings + collapse footer */}

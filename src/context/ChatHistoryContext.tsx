@@ -14,6 +14,8 @@ export type ChatHistoryAction = {
   conversationId: string;
 };
 
+const ENABLE_MOCK_HISTORY = true; // Set to false to start with an empty history
+
 // Mock history so we can verify that a past conversation can be recreated
 // in the chat view. Real appending during a live chat comes later.
 const mockChatHistory: Record<string, Conversation> = {
@@ -28,7 +30,7 @@ const mockChatHistory: Record<string, Conversation> = {
       },
       {
         id: 2,
-        role: RoleEnum.Pirate,
+        role: RoleEnum.Teacher,
         content: mockChefResponse,
       },
     ],
@@ -36,7 +38,7 @@ const mockChatHistory: Record<string, Conversation> = {
 };
 
 const initialState: ChatHistoryState = {
-  chatHistory: mockChatHistory,
+  chatHistory: ENABLE_MOCK_HISTORY ? mockChatHistory : {},
   activeConversationId: null,
 };
 
