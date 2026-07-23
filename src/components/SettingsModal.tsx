@@ -2,12 +2,7 @@ import { useState } from "react";
 import Modal from "./Modal";
 import type { Persona } from "../chat/types";
 import { useUserPreferences } from "../context/UserPreferencesContext";
-
-const personas: { id: Persona; label: string; emoji: string }[] = [
-  { id: "teacher", label: "Teacher", emoji: "🧑‍🍳" },
-  { id: "tv-host", label: "TV host", emoji: "📺" },
-  { id: "pirate", label: "Pirate", emoji: "🦜" },
-];
+import { personas } from "../chat/types";
 
 export default function SettingsModal({ onClose }: { onClose: () => void }) {
   const { preferences, dispatch } = useUserPreferences();

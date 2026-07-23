@@ -1,31 +1,64 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import Composer from "../components/Composer";
 import ChatHistory from "../components/chat/ChatHistory";
 import { generateResponse } from "../chat/ChatUtils";
+import { RoleEnum } from "../chat/types";
 import type { ChatMessage } from "../chat/types";
 import { useUserPreferences } from "../context/UserPreferencesContext";
+import { useChatHistory } from "../context/ChatHistoryContext";
+import { getRoleFromPersona } from "../chat/types";
+import { extractRecipeTitle } from "../components/chat/parseRecipe";
 
 export default function ChatHome() {
   const { preferences } = useUserPreferences();
+  const { chatHistory, activeConversationId, dispatch } = useChatHistory();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [userPrompt, setUserPrompt] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [previousInteractionId, setPreviousInteractionId] = useState<
     string | undefined
   >(undefined);
+  const [loadedConversationId, setLoadedConversationId] = useState<
+    string | null
+  >(null);
+
+  // When a conversation is selected in the sidebar, recreate its messages in
+  // the chat view. Adjusting state during render (guarded by the id check) is
+  // React's recommended alternative to a setState-in-effect.
+  useEffect(() => {
+    if (activeConversationId && activeConversationId !== loadedConversationId) {
+      setLoadedConversationId(activeConversationId);
+      const conversation = chatHistory[activeConversationId];
+      if (conversation) {
+        setMessages(conversation.messages);
+        setPreviousInteractionId(conversation.previousInteractionId);
+      }
+    }
+  }, [activeConversationId, loadedConversationId]);
 
   const handleSubmit = useCallback(async () => {
     const prompt = userPrompt.trim();
     if (!prompt) return;
 
+    const isNewConversation = !activeConversationId;
+    const conversationId = activeConversationId || crypto.randomUUID();
+
     const userMessage: ChatMessage = {
       id: crypto.randomUUID(),
-      role: "user",
+      role: RoleEnum.User,
       content: prompt,
     };
     setMessages((prev) => [...prev, userMessage]);
+    dispatch({
+      type: "addMessage",
+      conversationId: conversationId,
+      title: isNewConversation ? "New Conversation" : undefined,
+      isNewConversation: isNewConversation,
+      message: userMessage,
+    });
     setUserPrompt("");
     setIsLoading(true);
+    const role = getRoleFromPersona(preferences.persona);
 
     try {
       const chatOutput = await generateResponse(
@@ -33,10 +66,21 @@ export default function ChatHome() {
         previousInteractionId,
         preferences.persona,
       );
-      setMessages((prev) => [
-        ...prev,
-        { id: crypto.randomUUID(), role: "chef", content: chatOutput.text },
-      ]);
+      const chefMessage: ChatMessage = {
+        id: crypto.randomUUID(),
+        role,
+        content: chatOutput.text,
+      };
+      setMessages((prev) => [...prev, chefMessage]);
+      dispatch({
+        type: "addMessage",
+        conversationId: conversationId,
+        title: isNewConversation
+          ? (extractRecipeTitle(chatOutput.text) ?? undefined)
+          : undefined,
+        isNewConversation: isNewConversation,
+        message: chefMessage,
+      });
       setPreviousInteractionId(chatOutput.previousInteractionId);
     } catch (err) {
       const message =
@@ -45,7 +89,7 @@ export default function ChatHome() {
         ...prev,
         {
           id: crypto.randomUUID(),
-          role: "chef",
+          role,
           content: `Sorry, something went wrong: ${message}`,
         },
       ]);
