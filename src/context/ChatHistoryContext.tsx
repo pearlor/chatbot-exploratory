@@ -28,7 +28,7 @@ const mockChatHistory: Record<string, Conversation> = {
       },
       {
         id: 2,
-        role: RoleEnum.Teacher,
+        role: RoleEnum.Pirate,
         content: mockChefResponse,
       },
     ],

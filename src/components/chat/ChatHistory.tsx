@@ -33,7 +33,11 @@ export default function ChatHistory({
           message.role === "user" ? (
             <UserBubble key={message.id} content={message.content} />
           ) : (
-            <ChefBubble key={message.id} content={message.content} />
+            <ChefBubble
+              key={message.id}
+              content={message.content}
+              role={message.role}
+            />
           ),
         )}
         {isLoading && <ThinkingBubble />}

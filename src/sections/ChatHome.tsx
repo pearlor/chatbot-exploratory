@@ -6,11 +6,12 @@ import { RoleEnum } from "../chat/types";
 import type { ChatMessage, Message } from "../chat/types";
 import { useUserPreferences } from "../context/UserPreferencesContext";
 import { useChatHistory } from "../context/ChatHistoryContext";
+import { getRoleFromPersona } from "../chat/types";
 
 function toChatMessage(message: Message): ChatMessage {
   return {
     id: String(message.id),
-    role: message.role === RoleEnum.User ? "user" : "chef",
+    role: message.role,
     content: message.content,
   };
 }
@@ -46,12 +47,13 @@ export default function ChatHome() {
 
     const userMessage: ChatMessage = {
       id: crypto.randomUUID(),
-      role: "user",
+      role: RoleEnum.User,
       content: prompt,
     };
     setMessages((prev) => [...prev, userMessage]);
     setUserPrompt("");
     setIsLoading(true);
+    const role = getRoleFromPersona(preferences.persona);
 
     try {
       const chatOutput = await generateResponse(
@@ -61,7 +63,7 @@ export default function ChatHome() {
       );
       setMessages((prev) => [
         ...prev,
-        { id: crypto.randomUUID(), role: "chef", content: chatOutput.text },
+        { id: crypto.randomUUID(), role, content: chatOutput.text },
       ]);
       setPreviousInteractionId(chatOutput.previousInteractionId);
     } catch (err) {
@@ -71,7 +73,7 @@ export default function ChatHome() {
         ...prev,
         {
           id: crypto.randomUUID(),
-          role: "chef",
+          role,
           content: `Sorry, something went wrong: ${message}`,
         },
       ]);
