@@ -40,6 +40,9 @@ export default function ChatHome() {
       if (conversation) {
         setMessages(conversation.messages);
         setPreviousInteractionId(conversation.previousInteractionId);
+        // Drop any in-progress draft so it doesn't follow the user into the
+        // newly opened conversation.
+        setUserPrompt("");
       }
     } else if (activeConversationId === null && loadedConversationId !== null) {
       // "New Conversation" was clicked: return to the empty starting state.
