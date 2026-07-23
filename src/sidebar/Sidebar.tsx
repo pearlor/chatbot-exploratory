@@ -1,17 +1,12 @@
 import { useState } from "react";
 import Button from "../components/Button";
 import SettingsModal from "../components/SettingsModal";
-
-const recentCreations = [
-  "Risotto alla Milanese",
-  "Duck Confit",
-  "Classic Beef Tartare",
-  "Lemon Soufflé",
-];
+import { useChatHistory } from "../context/ChatHistoryContext";
 
 export default function Sidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const { chatHistory, activeConversationId, dispatch } = useChatHistory();
 
   const settingsModal = isSettingsOpen && (
     <SettingsModal onClose={() => setIsSettingsOpen(false)} />
@@ -103,12 +98,17 @@ export default function Sidebar() {
           Recent Creations
         </h3>
         <ul className="flex flex-col">
-          {recentCreations.map((recipe) => (
+          {Object.entries(chatHistory).map(([conversationId, conversation]) => (
             <li
-              key={recipe}
-              className="text-sm text-ink/80 py-1.5 px-2 rounded-lg hover:bg-black/5 cursor-pointer transition-colors"
+              key={conversationId}
+              onClick={() =>
+                dispatch({ type: "selectConversation", conversationId })
+              }
+              className={`text-sm text-ink/80 py-1.5 px-2 rounded-lg hover:bg-black/5 cursor-pointer transition-colors ${
+                conversationId === activeConversationId ? "bg-black/5" : ""
+              }`}
             >
-              {recipe}
+              {conversation.title}
             </li>
           ))}
         </ul>

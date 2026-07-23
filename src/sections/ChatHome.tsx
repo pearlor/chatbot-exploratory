@@ -2,17 +2,43 @@ import { useState, useCallback } from "react";
 import Composer from "../components/Composer";
 import ChatHistory from "../components/chat/ChatHistory";
 import { generateResponse } from "../chat/ChatUtils";
-import type { ChatMessage } from "../chat/types";
+import { RoleEnum } from "../chat/types";
+import type { ChatMessage, Message } from "../chat/types";
 import { useUserPreferences } from "../context/UserPreferencesContext";
+import { useChatHistory } from "../context/ChatHistoryContext";
+
+function toChatMessage(message: Message): ChatMessage {
+  return {
+    id: String(message.id),
+    role: message.role === RoleEnum.User ? "user" : "chef",
+    content: message.content,
+  };
+}
 
 export default function ChatHome() {
   const { preferences } = useUserPreferences();
+  const { chatHistory, activeConversationId } = useChatHistory();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [userPrompt, setUserPrompt] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [previousInteractionId, setPreviousInteractionId] = useState<
     string | undefined
   >(undefined);
+  const [loadedConversationId, setLoadedConversationId] = useState<
+    string | null
+  >(null);
+
+  // When a conversation is selected in the sidebar, recreate its messages in
+  // the chat view. Adjusting state during render (guarded by the id check) is
+  // React's recommended alternative to a setState-in-effect.
+  if (activeConversationId && activeConversationId !== loadedConversationId) {
+    setLoadedConversationId(activeConversationId);
+    const conversation = chatHistory[activeConversationId];
+    if (conversation) {
+      setMessages(conversation.messages.map(toChatMessage));
+      setPreviousInteractionId(conversation.previousInteractionId);
+    }
+  }
 
   const handleSubmit = useCallback(async () => {
     const prompt = userPrompt.trim();
