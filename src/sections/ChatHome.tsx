@@ -33,6 +33,12 @@ export default function ChatHome() {
         setMessages(conversation.messages);
         setPreviousInteractionId(conversation.previousInteractionId);
       }
+    } else if (activeConversationId === null && loadedConversationId !== null) {
+      // "New Conversation" was clicked: return to the empty starting state.
+      setLoadedConversationId(null);
+      setMessages([]);
+      setPreviousInteractionId(undefined);
+      setUserPrompt("");
     }
   }, [activeConversationId, loadedConversationId]);
 
@@ -42,6 +48,11 @@ export default function ChatHome() {
 
     const isNewConversation = !activeConversationId;
     const conversationId = activeConversationId || crypto.randomUUID();
+    if (isNewConversation) {
+      // The reducer will mark this conversation active; record it as already
+      // loaded so the sync effect doesn't reload it over our local state.
+      setLoadedConversationId(conversationId);
+    }
 
     const userMessage: ChatMessage = {
       id: crypto.randomUUID(),
@@ -96,7 +107,7 @@ export default function ChatHome() {
     } finally {
       setIsLoading(false);
     }
-  }, [userPrompt, previousInteractionId, preferences.persona]);
+  }, [userPrompt, previousInteractionId, preferences.persona, activeConversationId]);
 
   return (
     <div className="h-full flex flex-col">

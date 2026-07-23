@@ -32,7 +32,7 @@ export default function Sidebar() {
         </button>
 
         <button
-          onClick={() => {}}
+          onClick={() => dispatch({ type: "newConversation" })}
           title="New Conversation"
           className="w-10 h-10 rounded-xl bg-terracotta text-white flex items-center justify-center text-lg hover:brightness-95 transition"
         >
@@ -86,7 +86,7 @@ export default function Sidebar() {
         </button>
 
         <Button
-          onClick={() => {}}
+          onClick={() => dispatch({ type: "newConversation" })}
           label="＋  New Conversation"
           className="w-full bg-terracotta text-white rounded-xl px-3 py-2.5 text-sm font-medium flex items-center justify-center gap-2 hover:brightness-95 transition"
         />
