@@ -1,19 +1,6 @@
+import { useState } from "react";
 import IngredientCard from "../components/IngredientCard";
-import type { Ingredient } from "../components/IngredientCard";
-
-// Static placeholder contents. Real fridge state comes later.
-const ingredients: Ingredient[] = [
-  { name: "Eggs", quantity: "6" },
-  { name: "Guanciale", quantity: "100g" },
-  { name: "Pecorino Romano", quantity: "50g" },
-  { name: "Spaghetti", quantity: "200g" },
-  { name: "Butter", quantity: "50g" },
-  { name: "Garlic", quantity: "3 cloves" },
-  { name: "Parmesan", quantity: "30g" },
-  { name: "Olive Oil" },
-  { name: "Cherry Tomatoes", quantity: "handful" },
-  { name: "Onion", quantity: "2" },
-];
+import { useIngredients } from "../context/IngredientsContext";
 
 function FridgeIcon() {
   return (
@@ -56,6 +43,20 @@ function ChefHatIcon() {
 }
 
 export default function Fridge() {
+  const { ingredients, dispatch } = useIngredients();
+  const [name, setName] = useState("");
+  const [quantity, setQuantity] = useState("");
+
+  const handleAdd = () => {
+    if (!name.trim()) return;
+    dispatch({
+      type: "addIngredient",
+      ingredient: { name, quantity: quantity.trim() || undefined },
+    });
+    setName("");
+    setQuantity("");
+  };
+
   return (
     <div className="h-full overflow-y-auto px-8 py-8">
       <div className="mx-auto max-w-3xl flex flex-col gap-6">
@@ -78,15 +79,24 @@ export default function Fridge() {
         <div className="flex gap-3">
           <input
             type="text"
+            value={name}
+            onChange={(event) => setName(event.target.value)}
+            onKeyDown={(event) => event.key === "Enter" && handleAdd()}
             placeholder="Ingredient name…"
             className="flex-1 border border-border rounded-xl bg-white/60 px-4 py-3 text-sm text-ink placeholder:text-muted focus:outline-none focus:border-terracotta transition-colors"
           />
           <input
             type="text"
+            value={quantity}
+            onChange={(event) => setQuantity(event.target.value)}
+            onKeyDown={(event) => event.key === "Enter" && handleAdd()}
             placeholder="Qty (optional)"
             className="w-40 border border-border rounded-xl bg-white/60 px-4 py-3 text-sm text-ink placeholder:text-muted focus:outline-none focus:border-terracotta transition-colors"
           />
-          <button className="flex items-center gap-2 bg-terracotta text-white rounded-xl px-5 py-3 text-sm font-medium hover:brightness-95 transition">
+          <button
+            onClick={handleAdd}
+            className="flex items-center gap-2 bg-terracotta text-white rounded-xl px-5 py-3 text-sm font-medium hover:brightness-95 transition"
+          >
             <span>＋</span>
             Add
           </button>
@@ -94,7 +104,7 @@ export default function Fridge() {
 
         {/* Ingredient grid */}
         <div className="grid grid-cols-2 gap-3">
-          {ingredients.map((ingredient) => (
+          {Object.values(ingredients).map((ingredient) => (
             <IngredientCard key={ingredient.name} ingredient={ingredient} />
           ))}
         </div>

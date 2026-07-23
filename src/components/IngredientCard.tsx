@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useIngredients } from "../context/IngredientsContext";
 
 export type Ingredient = {
   name: string;
@@ -26,7 +27,10 @@ export default function IngredientCard({
 }: {
   ingredient: Ingredient;
 }) {
+  const { dispatch } = useIngredients();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [quantityDraft, setQuantityDraft] = useState("");
   const menuRef = useRef<HTMLDivElement>(null);
 
   // Close the menu when clicking anywhere outside of it.
@@ -43,6 +47,26 @@ export default function IngredientCard({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isMenuOpen]);
 
+  const startEditing = () => {
+    setQuantityDraft(ingredient.quantity ?? "");
+    setIsEditing(true);
+    setIsMenuOpen(false);
+  };
+
+  const saveQuantity = () => {
+    dispatch({
+      type: "updateIngredient",
+      name: ingredient.name,
+      quantity: quantityDraft.trim() || undefined,
+    });
+    setIsEditing(false);
+  };
+
+  const remove = () => {
+    dispatch({ type: "removeIngredient", name: ingredient.name });
+    setIsMenuOpen(false);
+  };
+
   return (
     <div className="flex items-center justify-between border border-border rounded-xl bg-white/60 px-4 py-3">
       <span className="flex items-center gap-3 text-sm text-ink">
@@ -51,10 +75,26 @@ export default function IngredientCard({
       </span>
 
       <div className="flex items-center gap-2">
-        {ingredient.quantity && (
-          <span className="text-xs font-medium text-terracotta bg-terracotta-soft rounded-full px-2.5 py-1">
-            {ingredient.quantity}
-          </span>
+        {isEditing ? (
+          <input
+            type="text"
+            autoFocus
+            value={quantityDraft}
+            onChange={(event) => setQuantityDraft(event.target.value)}
+            onBlur={saveQuantity}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") saveQuantity();
+              if (event.key === "Escape") setIsEditing(false);
+            }}
+            placeholder="Qty"
+            className="w-24 border border-terracotta rounded-full bg-white px-2.5 py-1 text-xs text-ink focus:outline-none"
+          />
+        ) : (
+          ingredient.quantity && (
+            <span className="text-xs font-medium text-terracotta bg-terracotta-soft rounded-full px-2.5 py-1">
+              {ingredient.quantity}
+            </span>
+          )
         )}
 
         <div className="relative" ref={menuRef}>
@@ -69,13 +109,13 @@ export default function IngredientCard({
           {isMenuOpen && (
             <div className="absolute right-0 top-full mt-1 z-10 w-32 rounded-lg border border-border bg-white shadow-lg py-1">
               <button
-                onClick={() => setIsMenuOpen(false)}
+                onClick={startEditing}
                 className="w-full text-left px-3 py-1.5 text-sm text-ink hover:bg-black/5 transition-colors"
               >
                 Edit quantity
               </button>
               <button
-                onClick={() => setIsMenuOpen(false)}
+                onClick={remove}
                 className="w-full text-left px-3 py-1.5 text-sm text-terracotta hover:bg-black/5 transition-colors"
               >
                 Remove
