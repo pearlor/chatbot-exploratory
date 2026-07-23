@@ -2,11 +2,13 @@ import { useState } from "react";
 import Button from "../components/Button";
 import SettingsModal from "../components/SettingsModal";
 import { useChatHistory } from "../context/ChatHistoryContext";
+import { useNavigation } from "../context/NavigationContext";
 
 export default function Sidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const { chatHistory, activeConversationId, dispatch } = useChatHistory();
+  const { setView } = useNavigation();
 
   const settingsModal = isSettingsOpen && (
     <SettingsModal onClose={() => setIsSettingsOpen(false)} />
@@ -24,7 +26,7 @@ export default function Sidebar() {
 
         {/* Primary actions */}
         <button
-          onClick={() => {}}
+          onClick={() => setView("fridge")}
           title="Your Fridge"
           className="w-10 h-10 rounded-xl bg-terracotta-soft text-terracotta flex items-center justify-center text-lg hover:brightness-95 transition"
         >
@@ -32,7 +34,10 @@ export default function Sidebar() {
         </button>
 
         <button
-          onClick={() => dispatch({ type: "newConversation" })}
+          onClick={() => {
+            setView("chat");
+            dispatch({ type: "newConversation" });
+          }}
           title="New Conversation"
           className="w-10 h-10 rounded-xl bg-terracotta text-white flex items-center justify-center text-lg hover:brightness-95 transition"
         >
@@ -75,7 +80,7 @@ export default function Sidebar() {
       {/* Primary actions */}
       <section className="flex flex-col gap-3">
         <button
-          onClick={() => {}}
+          onClick={() => setView("fridge")}
           className="flex items-center justify-between border border-border rounded-xl px-3 py-2.5 bg-white/60 text-sm text-ink hover:bg-white transition-colors"
         >
           <span className="flex items-center gap-2">
@@ -86,7 +91,10 @@ export default function Sidebar() {
         </button>
 
         <Button
-          onClick={() => dispatch({ type: "newConversation" })}
+          onClick={() => {
+            setView("chat");
+            dispatch({ type: "newConversation" });
+          }}
           label="＋  New Conversation"
           className="w-full bg-terracotta text-white rounded-xl px-3 py-2.5 text-sm font-medium flex items-center justify-center gap-2 hover:brightness-95 transition"
         />
@@ -107,9 +115,10 @@ export default function Sidebar() {
               ([conversationId, conversation]) => (
                 <li
                   key={conversationId}
-                  onClick={() =>
-                    dispatch({ type: "selectConversation", conversationId })
-                  }
+                  onClick={() => {
+                    setView("chat");
+                    dispatch({ type: "selectConversation", conversationId });
+                  }}
                   className={`text-sm text-ink/80 py-1.5 px-2 rounded-lg hover:bg-black/5 cursor-pointer transition-colors ${
                     conversationId === activeConversationId ? "bg-black/5" : ""
                   }`}
