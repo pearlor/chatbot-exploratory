@@ -15,6 +15,9 @@ export type ChatHistoryAction =
       conversationId: string;
     }
   | {
+      type: "newConversation";
+    }
+  | {
       type: "addMessage";
       conversationId: string;
       title: string | undefined; // Optional title for new conversations
@@ -57,6 +60,8 @@ function chatHistoryReducer(
   switch (action.type) {
     case "selectConversation":
       return { ...state, activeConversationId: action.conversationId };
+    case "newConversation":
+      return { ...state, activeConversationId: null };
     case "addMessage": {
       const { conversationId, message, title, isNewConversation } = action;
       const existingConversation = state.chatHistory[conversationId];
@@ -83,6 +88,11 @@ function chatHistoryReducer(
           ...state.chatHistory,
           [conversationId]: updatedConversation,
         },
+        // A freshly started chat becomes the active conversation so it is
+        // highlighted in the sidebar and can be reset via "newConversation".
+        activeConversationId: isNewConversation
+          ? conversationId
+          : state.activeConversationId,
       };
     }
     default:
