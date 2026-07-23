@@ -36,7 +36,7 @@ export default function ChatInput({
       {/* Send button */}
       <button
         className="w-9 h-9 rounded-full bg-terracotta text-white flex items-center justify-center shrink-0 transition hover:brightness-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:brightness-100"
-        onClick={handleSubmit}
+        onClick={() => handleSubmit()}
         disabled={isSubmitDisabled}
       >
         {isLoading ? (

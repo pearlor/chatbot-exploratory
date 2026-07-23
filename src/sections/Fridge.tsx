@@ -1,6 +1,8 @@
 import { useState } from "react";
 import IngredientCard from "../components/IngredientCard";
 import { useIngredients } from "../context/IngredientsContext";
+import { useNavigation } from "../context/NavigationContext";
+import { FRIDGE_PROMPT } from "../chat/prompts";
 
 function FridgeIcon() {
   return (
@@ -44,6 +46,7 @@ function ChefHatIcon() {
 
 export default function Fridge() {
   const { ingredients, dispatch } = useIngredients();
+  const { requestChat } = useNavigation();
   const [name, setName] = useState("");
   const [quantity, setQuantity] = useState("");
 
@@ -112,7 +115,10 @@ export default function Fridge() {
         <div className="border-t border-border" />
 
         {/* Ask the chef */}
-        <button className="flex items-center justify-center gap-2 w-full bg-terracotta text-white rounded-xl px-4 py-3.5 text-sm font-medium hover:brightness-95 transition">
+        <button
+          onClick={() => requestChat(FRIDGE_PROMPT)}
+          className="flex items-center justify-center gap-2 w-full bg-terracotta text-white rounded-xl px-4 py-3.5 text-sm font-medium hover:brightness-95 transition"
+        >
           <ChefHatIcon />
           Ask the chef what to cook with these
         </button>
