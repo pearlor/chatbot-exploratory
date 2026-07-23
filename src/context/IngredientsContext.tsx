@@ -14,6 +14,18 @@ export type IngredientsAction =
 
 const toKey = (name: string) => name.trim().toLowerCase();
 
+// Flattens the fridge into a single line for grounding the chef AI, e.g.
+// "Eggs (6), Guanciale (100g), Olive Oil, …". Quantity is omitted when unknown.
+export function formatFridgeContents(ingredients: IngredientsState): string {
+  return Object.values(ingredients)
+    .map((ingredient) =>
+      ingredient.quantity
+        ? `${ingredient.name} (${ingredient.quantity})`
+        : ingredient.name,
+    )
+    .join(", ");
+}
+
 // Seed contents. Real persistence comes later.
 const initialIngredients: IngredientsState = {
   eggs: { name: "Eggs", quantity: "6" },

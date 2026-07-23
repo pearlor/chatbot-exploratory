@@ -7,6 +7,11 @@ import type { ChatMessage } from "../chat/types";
 import { useUserPreferences } from "../context/UserPreferencesContext";
 import { useChatHistory } from "../context/ChatHistoryContext";
 import { useNavigation } from "../context/NavigationContext";
+import {
+  useIngredients,
+  formatFridgeContents,
+} from "../context/IngredientsContext";
+import { FRIDGE_PROMPT } from "../chat/prompts";
 import { getRoleFromPersona } from "../chat/types";
 import { extractRecipeTitle } from "../components/chat/parseRecipe";
 
@@ -14,6 +19,7 @@ export default function ChatHome() {
   const { preferences } = useUserPreferences();
   const { chatHistory, activeConversationId, dispatch } = useChatHistory();
   const { pendingPrompt, clearPendingPrompt } = useNavigation();
+  const { ingredients } = useIngredients();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [userPrompt, setUserPrompt] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -75,10 +81,18 @@ export default function ChatHome() {
     const role = getRoleFromPersona(preferences.persona);
 
     try {
+      // Ground the chef in the fridge contents when the prompt is about the
+      // fridge (the "From my fridge" chip / button, or any typed mention).
+      const isFridgePrompt =
+        prompt === FRIDGE_PROMPT || prompt.toLowerCase().includes("fridge");
+      const fridgeContents = isFridgePrompt
+        ? formatFridgeContents(ingredients)
+        : undefined;
       const chatOutput = await generateResponse(
         prompt,
         previousInteractionId,
         preferences.persona,
+        fridgeContents,
       );
       const chefMessage: ChatMessage = {
         id: crypto.randomUUID(),
@@ -111,7 +125,13 @@ export default function ChatHome() {
       setIsLoading(false);
     }
     },
-    [userPrompt, previousInteractionId, preferences.persona, activeConversationId],
+    [
+      userPrompt,
+      previousInteractionId,
+      preferences.persona,
+      activeConversationId,
+      ingredients,
+    ],
   );
 
   // Clicking a suggestion chip auto-fills the input and submits it. The prompt is
