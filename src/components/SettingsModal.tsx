@@ -3,6 +3,12 @@ import Modal from "./Modal";
 import type { Persona } from "../chat/types";
 import { useUserPreferences } from "../context/UserPreferencesContext";
 import { personas } from "../chat/types";
+import {
+  CHOOSE_PERSONA_LABEL,
+  SETTINGS_CANCEL_LABEL,
+  SETTINGS_MODAL_HEADER,
+  SETTINGS_SAVE_LABEL,
+} from "../content";
 
 export default function SettingsModal({ onClose }: { onClose: () => void }) {
   const { preferences, dispatch } = useUserPreferences();
@@ -18,12 +24,12 @@ export default function SettingsModal({ onClose }: { onClose: () => void }) {
 
   return (
     <Modal
-      header="⚙️ Your settings"
-      primaryAction={{ label: "Save", onClick: handleSave }}
-      secondaryAction={{ label: "Cancel", onClick: onClose }}
+      header={SETTINGS_MODAL_HEADER}
+      primaryAction={{ label: SETTINGS_SAVE_LABEL, onClick: handleSave }}
+      secondaryAction={{ label: SETTINGS_CANCEL_LABEL, onClick: onClose }}
       onClose={onClose}
     >
-      <p className="text-ink mb-5">Choose your chef persona:</p>
+      <p className="text-ink mb-5">{CHOOSE_PERSONA_LABEL}</p>
       <div className="flex justify-center gap-6">
         {personas.map((persona) => {
           const isSelected = selectedPersona === persona.id;

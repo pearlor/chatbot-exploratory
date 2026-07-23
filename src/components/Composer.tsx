@@ -1,5 +1,6 @@
 import SuggestionChips from "./SuggestionChips";
 import ChatInput from "./ChatInput";
+import { AI_DISCLAIMER } from "../content";
 
 export default function Composer({
   userPrompt,
@@ -27,10 +28,7 @@ export default function Composer({
           isLoading={isLoading}
         />
         <div className="text-xs text-muted text-center">
-          <p>
-            This is an AI, so it's not perfect and can make mistakes. Always
-            double-check the information provided.
-          </p>
+          <p>{AI_DISCLAIMER}</p>
         </div>
       </div>
     </div>

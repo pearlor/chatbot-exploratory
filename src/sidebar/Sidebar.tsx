@@ -3,6 +3,17 @@ import Button from "../components/Button";
 import SettingsModal from "../components/SettingsModal";
 import { useChatHistory } from "../context/ChatHistoryContext";
 import { useNavigation } from "../context/NavigationContext";
+import {
+  APP_NAME,
+  COLLAPSE_SIDEBAR_LABEL,
+  EXPAND_SIDEBAR_TITLE,
+  FRIDGE_NAV_LABEL,
+  NEW_CONVERSATION_BUTTON_LABEL,
+  NEW_CONVERSATION_TITLE,
+  NO_CONVERSATIONS_MESSAGE,
+  RECENT_CONVERSATIONS_HEADING,
+  SETTINGS_LABEL,
+} from "../content";
 
 export default function Sidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -34,7 +45,7 @@ export default function Sidebar() {
         {/* Primary actions */}
         <button
           onClick={() => setView("fridge")}
-          title="Your Fridge"
+          title={FRIDGE_NAV_LABEL}
           className="w-10 h-10 rounded-xl bg-terracotta-soft text-terracotta flex items-center justify-center text-lg hover:brightness-95 transition"
         >
           🧊
@@ -45,7 +56,7 @@ export default function Sidebar() {
             setView("chat");
             dispatch({ type: "newConversation" });
           }}
-          title="New Conversation"
+          title={NEW_CONVERSATION_TITLE}
           className="w-10 h-10 rounded-xl bg-terracotta text-white flex items-center justify-center text-lg hover:brightness-95 transition"
         >
           ＋
@@ -54,7 +65,7 @@ export default function Sidebar() {
         {/* Settings */}
         <button
           onClick={() => setIsSettingsOpen(true)}
-          title="Your settings"
+          title={SETTINGS_LABEL}
           className="mt-auto w-9 h-9 rounded-lg text-muted flex items-center justify-center hover:bg-black/5 transition-colors"
         >
           ⚙️
@@ -63,7 +74,7 @@ export default function Sidebar() {
         {/* Expand */}
         <button
           onClick={() => setIsCollapsed(false)}
-          title="Expand sidebar"
+          title={EXPAND_SIDEBAR_TITLE}
           className="w-9 h-9 rounded-lg text-muted flex items-center justify-center hover:bg-black/5 transition-colors"
         >
           ⇥
@@ -81,7 +92,7 @@ export default function Sidebar() {
         <div className="w-9 h-9 rounded-xl bg-terracotta text-white flex items-center justify-center text-lg">
           🍳
         </div>
-        <h2 className="font-serif text-xl font-bold text-ink">Recipe Helper</h2>
+        <h2 className="font-serif text-xl font-bold text-ink">{APP_NAME}</h2>
       </div>
 
       {/* Primary actions */}
@@ -92,7 +103,7 @@ export default function Sidebar() {
         >
           <span className="flex items-center gap-2">
             <span>🧊</span>
-            Your Fridge
+            {FRIDGE_NAV_LABEL}
           </span>
           <span className="text-muted">›</span>
         </button>
@@ -102,7 +113,7 @@ export default function Sidebar() {
             setView("chat");
             dispatch({ type: "newConversation" });
           }}
-          label="＋  New Conversation"
+          label={NEW_CONVERSATION_BUTTON_LABEL}
           className="w-full bg-terracotta text-white rounded-xl px-3 py-2.5 text-sm font-medium flex items-center justify-center gap-2 hover:brightness-95 transition"
         />
       </section>
@@ -110,11 +121,11 @@ export default function Sidebar() {
       {/* Recent creations */}
       <section className="flex flex-col gap-1">
         <h3 className="text-xs font-semibold tracking-wider text-muted uppercase px-2 mb-1">
-          Recent Creations
+          {RECENT_CONVERSATIONS_HEADING}
         </h3>
         {chatHistory && Object.keys(chatHistory).length === 0 ? (
           <p className="text-sm text-muted/80 px-2">
-            No recent conversations. Start a new one to see it here!
+            {NO_CONVERSATIONS_MESSAGE}
           </p>
         ) : (
           <ul className="flex flex-col">
@@ -143,7 +154,7 @@ export default function Sidebar() {
           className="flex items-center gap-2 text-sm text-muted px-2 py-1.5 rounded-lg hover:bg-black/5 transition-colors w-full"
         >
           <span>⚙️</span>
-          Your settings
+          {SETTINGS_LABEL}
         </button>
 
         <button
@@ -151,7 +162,7 @@ export default function Sidebar() {
           className="flex items-center gap-2 text-sm text-muted px-2 py-1.5 rounded-lg hover:bg-black/5 transition-colors w-full"
         >
           <span>⇤</span>
-          Collapse
+          {COLLAPSE_SIDEBAR_LABEL}
         </button>
       </div>
 

@@ -2,6 +2,7 @@ import type { RoleEnum } from "../../chat/types";
 import ChefMarkdown from "./ChefMarkdown";
 import { isRecipeContent } from "./parseRecipe";
 import { personas } from "../../chat/types";
+import { CHEF_FALLBACK_NAME } from "../../content";
 /**
  * A chat bubble for a chef response: avatar + label above the rendered
  * markdown. Recipe content widens the bubble into a full-width card.
@@ -27,7 +28,7 @@ export default function ChefBubble({
           {persona?.emoji || "🧑‍🍳"}
         </div>
         <span className="text-sm text-muted">
-          {persona?.name || "Chef Masto"}
+          {persona?.name || CHEF_FALLBACK_NAME}
         </span>
       </div>
 

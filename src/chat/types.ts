@@ -1,3 +1,12 @@
+import {
+  PERSONA_PIRATE_LABEL,
+  PERSONA_PIRATE_NAME,
+  PERSONA_TEACHER_LABEL,
+  PERSONA_TEACHER_NAME,
+  PERSONA_TV_HOST_LABEL,
+  PERSONA_TV_HOST_NAME,
+} from "../content";
+
 export type Persona = "teacher" | "tv-host" | "pirate";
 
 export interface ChatMessage {
@@ -30,9 +39,24 @@ export const personas: {
   emoji: string;
   name: string;
 }[] = [
-  { id: RoleEnum.Teacher, label: "Teacher", emoji: "🧑‍🍳", name: "Chef Kale" },
-  { id: RoleEnum.TvHost, label: "TV host", emoji: "📺", name: "Rosemary" },
-  { id: RoleEnum.Pirate, label: "Pirate", emoji: "🦜", name: "Cane" },
+  {
+    id: RoleEnum.Teacher,
+    label: PERSONA_TEACHER_LABEL,
+    emoji: "🧑‍🍳",
+    name: PERSONA_TEACHER_NAME,
+  },
+  {
+    id: RoleEnum.TvHost,
+    label: PERSONA_TV_HOST_LABEL,
+    emoji: "📺",
+    name: PERSONA_TV_HOST_NAME,
+  },
+  {
+    id: RoleEnum.Pirate,
+    label: PERSONA_PIRATE_LABEL,
+    emoji: "🦜",
+    name: PERSONA_PIRATE_NAME,
+  },
 ];
 
 export interface Conversation {
