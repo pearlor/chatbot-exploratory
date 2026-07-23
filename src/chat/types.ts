@@ -35,14 +35,8 @@ export const personas: {
   { id: RoleEnum.Pirate, label: "Pirate", emoji: "🦜", name: "Cane" },
 ];
 
-export interface Message {
-  id: number;
-  role: RoleEnum;
-  content: string;
-}
-
 export interface Conversation {
-  previousInteractionId: string;
+  previousInteractionId: string | undefined;
   title: string;
-  messages: Message[];
+  messages: ChatMessage[];
 }

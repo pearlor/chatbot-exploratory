@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { isRecipeContent, parseRecipeSegments } from "./parseRecipe";
+import {
+  extractRecipeTitle,
+  isRecipeContent,
+  parseRecipeSegments,
+} from "./parseRecipe";
 
 const fullRecipe = `Hello there, fellow chef!
 
@@ -329,5 +333,20 @@ describe("isRecipeContent", () => {
     expect(isRecipeContent(fullRecipe)).toBe(true);
     expect(isRecipeContent("### [Steps] Go\n\n1. x")).toBe(true);
     expect(isRecipeContent("Just a chat about basil.")).toBe(false);
+  });
+});
+
+describe("extractRecipeTitle", () => {
+  it("pulls the title from the ## line", () => {
+    expect(extractRecipeTitle(fullRecipe)).toBe("Homemade Egg Tarts");
+  });
+
+  it("ignores ### section headings", () => {
+    expect(extractRecipeTitle("### [Steps] Go\n\n1. x")).toBeNull();
+  });
+
+  it("is null for plain chat and empty titles", () => {
+    expect(extractRecipeTitle("Just a chat about basil.")).toBeNull();
+    expect(extractRecipeTitle("##   \nsome text")).toBeNull();
   });
 });

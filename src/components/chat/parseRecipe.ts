@@ -146,6 +146,18 @@ function pushMarkdown(segments: Segment[], text: string) {
 const TITLE_LINE = /^##(?!#).*$/m;
 
 /**
+ * Extracts the dish title from the `## <title>` line of a chef response,
+ * e.g. "## Homemade Egg Tarts" -> "Homemade Egg Tarts". Returns null when
+ * the response has no dish title (plain conversational replies).
+ */
+export function extractRecipeTitle(markdown: string): string | null {
+  const match = markdown.match(TITLE_LINE);
+  if (!match) return null;
+  const title = match[0].replace(/^##\s*/, "").trim();
+  return title || null;
+}
+
+/**
  * Parses chef AI markdown into ordered render segments: metadata pills under
  * the dish title, an ingredients/steps column pair, an ending-comment
  * callout, and plain markdown for everything else. Content with no metadata

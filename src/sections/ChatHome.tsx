@@ -1,24 +1,17 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import Composer from "../components/Composer";
 import ChatHistory from "../components/chat/ChatHistory";
 import { generateResponse } from "../chat/ChatUtils";
 import { RoleEnum } from "../chat/types";
-import type { ChatMessage, Message } from "../chat/types";
+import type { ChatMessage } from "../chat/types";
 import { useUserPreferences } from "../context/UserPreferencesContext";
 import { useChatHistory } from "../context/ChatHistoryContext";
 import { getRoleFromPersona } from "../chat/types";
-
-function toChatMessage(message: Message): ChatMessage {
-  return {
-    id: String(message.id),
-    role: message.role,
-    content: message.content,
-  };
-}
+import { extractRecipeTitle } from "../components/chat/parseRecipe";
 
 export default function ChatHome() {
   const { preferences } = useUserPreferences();
-  const { chatHistory, activeConversationId } = useChatHistory();
+  const { chatHistory, activeConversationId, dispatch } = useChatHistory();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [userPrompt, setUserPrompt] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -32,18 +25,23 @@ export default function ChatHome() {
   // When a conversation is selected in the sidebar, recreate its messages in
   // the chat view. Adjusting state during render (guarded by the id check) is
   // React's recommended alternative to a setState-in-effect.
-  if (activeConversationId && activeConversationId !== loadedConversationId) {
-    setLoadedConversationId(activeConversationId);
-    const conversation = chatHistory[activeConversationId];
-    if (conversation) {
-      setMessages(conversation.messages.map(toChatMessage));
-      setPreviousInteractionId(conversation.previousInteractionId);
+  useEffect(() => {
+    if (activeConversationId && activeConversationId !== loadedConversationId) {
+      setLoadedConversationId(activeConversationId);
+      const conversation = chatHistory[activeConversationId];
+      if (conversation) {
+        setMessages(conversation.messages);
+        setPreviousInteractionId(conversation.previousInteractionId);
+      }
     }
-  }
+  }, [activeConversationId, loadedConversationId]);
 
   const handleSubmit = useCallback(async () => {
     const prompt = userPrompt.trim();
     if (!prompt) return;
+
+    const isNewConversation = !activeConversationId;
+    const conversationId = activeConversationId || crypto.randomUUID();
 
     const userMessage: ChatMessage = {
       id: crypto.randomUUID(),
@@ -51,6 +49,13 @@ export default function ChatHome() {
       content: prompt,
     };
     setMessages((prev) => [...prev, userMessage]);
+    dispatch({
+      type: "addMessage",
+      conversationId: conversationId,
+      title: isNewConversation ? "New Conversation" : undefined,
+      isNewConversation: isNewConversation,
+      message: userMessage,
+    });
     setUserPrompt("");
     setIsLoading(true);
     const role = getRoleFromPersona(preferences.persona);
@@ -61,10 +66,21 @@ export default function ChatHome() {
         previousInteractionId,
         preferences.persona,
       );
-      setMessages((prev) => [
-        ...prev,
-        { id: crypto.randomUUID(), role, content: chatOutput.text },
-      ]);
+      const chefMessage: ChatMessage = {
+        id: crypto.randomUUID(),
+        role,
+        content: chatOutput.text,
+      };
+      setMessages((prev) => [...prev, chefMessage]);
+      dispatch({
+        type: "addMessage",
+        conversationId: conversationId,
+        title: isNewConversation
+          ? (extractRecipeTitle(chatOutput.text) ?? undefined)
+          : undefined,
+        isNewConversation: isNewConversation,
+        message: chefMessage,
+      });
       setPreviousInteractionId(chatOutput.previousInteractionId);
     } catch (err) {
       const message =
