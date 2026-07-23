@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Button from "../components/Button";
 import SettingsModal from "../components/SettingsModal";
 import { useChatHistory } from "../context/ChatHistoryContext";
@@ -13,6 +13,13 @@ export default function Sidebar() {
   const settingsModal = isSettingsOpen && (
     <SettingsModal onClose={() => setIsSettingsOpen(false)} />
   );
+
+  // order by lastResponseTime descending so the most recent conversation is at the top
+  const orderedHistory = useMemo(() => {
+    return Object.entries(chatHistory).sort(
+      ([, a], [, b]) => b.lastResponseTime - a.lastResponseTime,
+    );
+  }, [chatHistory]);
 
   if (isCollapsed) {
     return (
@@ -111,22 +118,20 @@ export default function Sidebar() {
           </p>
         ) : (
           <ul className="flex flex-col">
-            {Object.entries(chatHistory).map(
-              ([conversationId, conversation]) => (
-                <li
-                  key={conversationId}
-                  onClick={() => {
-                    setView("chat");
-                    dispatch({ type: "selectConversation", conversationId });
-                  }}
-                  className={`text-sm text-ink/80 py-1.5 px-2 rounded-lg hover:bg-black/5 cursor-pointer transition-colors ${
-                    conversationId === activeConversationId ? "bg-black/5" : ""
-                  }`}
-                >
-                  {conversation.title}
-                </li>
-              ),
-            )}
+            {orderedHistory.map(([conversationId, conversation]) => (
+              <li
+                key={conversationId}
+                onClick={() => {
+                  setView("chat");
+                  dispatch({ type: "selectConversation", conversationId });
+                }}
+                className={`text-sm text-ink/80 py-1.5 px-2 rounded-lg hover:bg-black/5 cursor-pointer transition-colors ${
+                  conversationId === activeConversationId ? "bg-black/5" : ""
+                }`}
+              >
+                {conversation.title}
+              </li>
+            ))}
           </ul>
         )}
       </section>

@@ -31,6 +31,7 @@ const ENABLE_MOCK_HISTORY = true; // Set to false to start with an empty history
 // in the chat view. Real appending during a live chat comes later.
 const mockChatHistory: Record<string, Conversation> = {
   "conv-egg-tarts": {
+    lastResponseTime: Date.now() - 1000 * 60 * 60, // 1 hour ago
     previousInteractionId: "mock-interaction-egg-tarts",
     title: "Homemade Egg Tarts",
     messages: [
@@ -69,6 +70,7 @@ function chatHistoryReducer(
       const updatedConversation: Conversation = existingConversation
         ? {
             ...existingConversation,
+            lastResponseTime: Date.now(),
             // For a new conversation, a later message may bring the real title
             // (e.g. extracted from the recipe response).
             title: isNewConversation
@@ -77,6 +79,7 @@ function chatHistoryReducer(
             messages: [...existingConversation.messages, message],
           }
         : {
+            lastResponseTime: Date.now(),
             previousInteractionId: undefined, // No previous interaction for a new conversation
             title: title || "New Conversation",
             messages: [message],
