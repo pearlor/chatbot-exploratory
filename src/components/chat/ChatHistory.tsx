@@ -1,7 +1,12 @@
-import type { ChatMessage } from "../../chat/types";
+import {
+  getRoleFromPersona,
+  type ChatMessage,
+  personas,
+} from "../../chat/types";
 import UserBubble from "./UserBubble";
 import ChefBubble from "./ChefBubble";
 import ThinkingBubble from "./ThinkingBubble";
+import { useUserPreferences } from "../../context/UserPreferencesContext";
 
 export default function ChatHistory({
   messages,
@@ -10,13 +15,15 @@ export default function ChatHistory({
   messages: ChatMessage[];
   isLoading: boolean;
 }) {
+  const { preferences } = useUserPreferences();
+
   // Empty state: greeting shown only when there are no messages yet.
   if (messages.length === 0) {
     return (
       <div className="flex-1 overflow-y-auto">
         <div className="flex flex-col items-center pt-24 gap-4">
           <div className="w-16 h-16 rounded-full bg-terracotta-soft flex items-center justify-center text-3xl text-terracotta">
-            🧑‍🍳
+            🥘
           </div>
           <p className="font-serif italic text-lg text-muted">
             The kitchen is open. What shall we prepare today?
@@ -25,6 +32,11 @@ export default function ChatHistory({
       </div>
     );
   }
+
+  const role = getRoleFromPersona(preferences.persona);
+  const iconForLoading = personas.find((p) => p.id === role)?.emoji || "🧑‍🍳";
+  const nameForLoading =
+    personas.find((p) => p.id === role)?.name || "Chef Masto";
 
   return (
     <div className="flex-1 overflow-y-auto">
@@ -40,7 +52,9 @@ export default function ChatHistory({
             />
           ),
         )}
-        {isLoading && <ThinkingBubble />}
+        {isLoading && (
+          <ThinkingBubble icon={iconForLoading} name={nameForLoading} />
+        )}
       </div>
     </div>
   );
