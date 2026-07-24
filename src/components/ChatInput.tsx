@@ -1,8 +1,12 @@
 import { useState, useRef, useEffect } from "react";
+import Tooltip from "./Tooltip";
 import {
   ASK_MODE_LABEL,
+  ASK_MODE_TOOLTIP,
   CHAT_INPUT_PLACEHOLDER,
   FRIDGE_MODE_LABEL,
+  FRIDGE_MODE_TOOLTIP,
+  SEND_MESSAGE_LABEL,
 } from "../content";
 export default function ChatInput({
   userPrompt,
@@ -65,22 +69,26 @@ export default function ChatInput({
 
         {isMenuOpen && (
           <div className="absolute bottom-full left-0 mb-2 w-40 rounded-xl border border-border bg-white p-1 shadow-md">
-            <button
-              type="button"
-              onClick={selectAsk}
-              className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-ink hover:bg-black/[0.03] transition-colors"
-            >
-              <span>🍳</span>
-              {ASK_MODE_LABEL}
-            </button>
-            <button
-              type="button"
-              onClick={selectFridge}
-              className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-ink hover:bg-black/[0.03] transition-colors"
-            >
-              <span>🧊</span>
-              {FRIDGE_MODE_LABEL}
-            </button>
+            <Tooltip content={ASK_MODE_TOOLTIP} side="right">
+              <button
+                type="button"
+                onClick={selectAsk}
+                className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-ink hover:bg-black/[0.03] transition-colors"
+              >
+                <span>🍳</span>
+                {ASK_MODE_LABEL}
+              </button>
+            </Tooltip>
+            <Tooltip content={FRIDGE_MODE_TOOLTIP} side="right">
+              <button
+                type="button"
+                onClick={selectFridge}
+                className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-ink hover:bg-black/[0.03] transition-colors"
+              >
+                <span>🧊</span>
+                {FRIDGE_MODE_LABEL}
+              </button>
+            </Tooltip>
           </div>
         )}
       </div>
@@ -99,17 +107,20 @@ export default function ChatInput({
       />
 
       {/* Send button */}
-      <button
-        className="w-9 h-9 rounded-full bg-terracotta text-white flex items-center justify-center shrink-0 transition hover:brightness-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:brightness-100"
-        onClick={() => handleSubmit(undefined, isFridgeSelected)}
-        disabled={isSubmitDisabled}
-      >
-        {isLoading ? (
-          <span className="w-4 h-4 rounded-full border-2 border-white/40 border-t-white animate-spin" />
-        ) : (
-          "➤"
-        )}
-      </button>
+      <Tooltip content={SEND_MESSAGE_LABEL} side="top" className="shrink-0">
+        <button
+          className="w-9 h-9 rounded-full bg-terracotta text-white flex items-center justify-center shrink-0 transition hover:brightness-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:brightness-100"
+          onClick={() => handleSubmit(undefined, isFridgeSelected)}
+          aria-label={SEND_MESSAGE_LABEL}
+          disabled={isSubmitDisabled}
+        >
+          {isLoading ? (
+            <span className="w-4 h-4 rounded-full border-2 border-white/40 border-t-white animate-spin" />
+          ) : (
+            "➤"
+          )}
+        </button>
+      </Tooltip>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import Button from "../components/Button";
 import SettingsModal from "../components/SettingsModal";
+import Tooltip from "../components/Tooltip";
 import { useChatHistory } from "../context/ChatHistoryContext";
 import { useNavigation } from "../context/NavigationContext";
 import {
@@ -43,42 +44,50 @@ export default function Sidebar() {
         <div className="w-8 border-t border-border" />
 
         {/* Primary actions */}
-        <button
-          onClick={() => setView("fridge")}
-          title={FRIDGE_NAV_LABEL}
-          className="w-10 h-10 rounded-xl bg-terracotta-soft text-terracotta flex items-center justify-center text-lg hover:brightness-95 transition"
-        >
-          🧊
-        </button>
+        <Tooltip content={FRIDGE_NAV_LABEL} side="right">
+          <button
+            onClick={() => setView("fridge")}
+            aria-label={FRIDGE_NAV_LABEL}
+            className="w-10 h-10 rounded-xl bg-terracotta-soft text-terracotta flex items-center justify-center text-lg hover:brightness-95 transition"
+          >
+            🧊
+          </button>
+        </Tooltip>
 
-        <button
-          onClick={() => {
-            setView("chat");
-            dispatch({ type: "newConversation" });
-          }}
-          title={NEW_CONVERSATION_TITLE}
-          className="w-10 h-10 rounded-xl bg-terracotta text-white flex items-center justify-center text-lg hover:brightness-95 transition"
-        >
-          ＋
-        </button>
+        <Tooltip content={NEW_CONVERSATION_TITLE} side="right">
+          <button
+            onClick={() => {
+              setView("chat");
+              dispatch({ type: "newConversation" });
+            }}
+            aria-label={NEW_CONVERSATION_TITLE}
+            className="w-10 h-10 rounded-xl bg-terracotta text-white flex items-center justify-center text-lg hover:brightness-95 transition"
+          >
+            ＋
+          </button>
+        </Tooltip>
 
         {/* Settings */}
-        <button
-          onClick={() => setIsSettingsOpen(true)}
-          title={SETTINGS_LABEL}
-          className="mt-auto w-9 h-9 rounded-lg text-muted flex items-center justify-center hover:bg-black/5 transition-colors"
-        >
-          ⚙️
-        </button>
+        <Tooltip content={SETTINGS_LABEL} side="right" className="mt-auto">
+          <button
+            onClick={() => setIsSettingsOpen(true)}
+            aria-label={SETTINGS_LABEL}
+            className="w-9 h-9 rounded-lg text-muted flex items-center justify-center hover:bg-black/5 transition-colors"
+          >
+            ⚙️
+          </button>
+        </Tooltip>
 
         {/* Expand */}
-        <button
-          onClick={() => setIsCollapsed(false)}
-          title={EXPAND_SIDEBAR_TITLE}
-          className="w-9 h-9 rounded-lg text-muted flex items-center justify-center hover:bg-black/5 transition-colors"
-        >
-          ⇥
-        </button>
+        <Tooltip content={EXPAND_SIDEBAR_TITLE} side="right">
+          <button
+            onClick={() => setIsCollapsed(false)}
+            aria-label={EXPAND_SIDEBAR_TITLE}
+            className="w-9 h-9 rounded-lg text-muted flex items-center justify-center hover:bg-black/5 transition-colors"
+          >
+            ⇥
+          </button>
+        </Tooltip>
 
         {settingsModal}
       </div>
