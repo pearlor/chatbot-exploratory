@@ -58,6 +58,10 @@ export const THINKING_LABEL = "Chef is thinking";
 export const GENERIC_ERROR_MESSAGE = "Something went wrong.";
 export const CHAT_ERROR_PREFIX = "Sorry, something went wrong: ";
 
+/** Chat retry */
+export const CHAT_RETRY_LABEL = "Retry";
+export const CHAT_NO_RETRIES_TOOLTIP = "No more retries left";
+
 /* Settings modal */
 export const SETTINGS_MODAL_HEADER = "⚙️ Your settings";
 export const SETTINGS_SAVE_LABEL = "Save";

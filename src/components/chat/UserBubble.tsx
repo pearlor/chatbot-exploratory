@@ -1,6 +1,40 @@
-import { USER_BUBBLE_LABEL } from "../../content";
+import {
+  CHAT_NO_RETRIES_TOOLTIP,
+  CHAT_RETRY_LABEL,
+  USER_BUBBLE_LABEL,
+} from "../../content";
+import Tooltip from "../Tooltip";
 
-export default function UserBubble({ content }: { content: string }) {
+function RetryIcon() {
+  return (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M21 12a9 9 0 1 1-2.64-6.36" />
+      <path d="M21 3v6h-6" />
+    </svg>
+  );
+}
+
+export default function UserBubble({
+  content,
+  hasError,
+  retry,
+  numRetries,
+}: {
+  content: string;
+  hasError: boolean;
+  retry: (promptOverride?: string) => void;
+  numRetries: number;
+}) {
   return (
     <div className="flex flex-col items-end gap-2">
       {/* Label + avatar */}
@@ -14,6 +48,28 @@ export default function UserBubble({ content }: { content: string }) {
       <div className="max-w-[75%] rounded-2xl bg-terracotta px-5 py-4 text-white">
         {content}
       </div>
+
+      {hasError && (
+        <div className="flex items-center gap-2">
+          {numRetries === 0 ? (
+            <Tooltip content={CHAT_NO_RETRIES_TOOLTIP} side="bottom">
+              <span className="flex items-center gap-1 text-sm text-muted cursor-not-allowed">
+                <RetryIcon />
+                {CHAT_RETRY_LABEL}
+              </span>
+            </Tooltip>
+          ) : (
+            <a
+              href="#"
+              onClick={() => retry(content)}
+              className="flex items-center gap-1 text-sm text-terracotta hover:underline"
+            >
+              <RetryIcon />
+              {CHAT_RETRY_LABEL}
+            </a>
+          )}
+        </div>
+      )}
     </div>
   );
 }

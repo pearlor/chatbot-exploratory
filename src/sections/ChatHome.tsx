@@ -19,6 +19,7 @@ import {
   GENERIC_ERROR_MESSAGE,
   NEW_CONVERSATION_TITLE,
 } from "../content";
+import { MAX_RETRIES } from "./ChatHomeConstants";
 
 export default function ChatHome() {
   const { preferences } = useUserPreferences();
@@ -34,6 +35,16 @@ export default function ChatHome() {
   const [loadedConversationId, setLoadedConversationId] = useState<
     string | null
   >(null);
+  const [messageIdWithError, setMessageIdWithError] = useState<string | null>(
+    null,
+  );
+  const [numRetries, setNumRetries] = useState(MAX_RETRIES);
+
+  const resetChatState = useCallback(() => {
+    setUserPrompt("");
+    setMessageIdWithError(null);
+    setNumRetries(MAX_RETRIES);
+  }, [setUserPrompt, setMessageIdWithError, setNumRetries]);
 
   // When a conversation is selected in the sidebar, recreate its messages in
   // the chat view. Adjusting state during render (guarded by the id check) is
@@ -47,94 +58,98 @@ export default function ChatHome() {
         setPreviousInteractionId(conversation.previousInteractionId);
         // Drop any in-progress draft so it doesn't follow the user into the
         // newly opened conversation.
-        setUserPrompt("");
+        resetChatState();
       }
     } else if (activeConversationId === null && loadedConversationId !== null) {
       // "New Conversation" was clicked: return to the empty starting state.
       setLoadedConversationId(null);
       setMessages([]);
       setPreviousInteractionId(undefined);
-      setUserPrompt("");
+      resetChatState();
     }
   }, [activeConversationId, loadedConversationId]);
 
   const handleSubmit = useCallback(
     async (promptOverride?: string, isFridgeSelected: boolean = false) => {
-    const prompt = (promptOverride ?? userPrompt).trim();
-    if (!prompt) return;
+      const prompt = (promptOverride ?? userPrompt).trim();
+      if (!prompt) return;
 
-    const isNewConversation = !activeConversationId;
-    const conversationId = activeConversationId || crypto.randomUUID();
-    if (isNewConversation) {
-      // The reducer will mark this conversation active; record it as already
-      // loaded so the sync effect doesn't reload it over our local state.
-      setLoadedConversationId(conversationId);
-    }
+      const isNewConversation = !activeConversationId;
+      const conversationId = activeConversationId || crypto.randomUUID();
+      if (isNewConversation) {
+        // The reducer will mark this conversation active; record it as already
+        // loaded so the sync effect doesn't reload it over our local state.
+        setLoadedConversationId(conversationId);
+      }
 
-    const userMessage: ChatMessage = {
-      id: crypto.randomUUID(),
-      role: RoleEnum.User,
-      content: prompt,
-    };
-    setMessages((prev) => [...prev, userMessage]);
-    dispatch({
-      type: "addMessage",
-      conversationId: conversationId,
-      title: isNewConversation ? NEW_CONVERSATION_TITLE : undefined,
-      isNewConversation: isNewConversation,
-      message: userMessage,
-    });
-    setUserPrompt("");
-    setIsLoading(true);
-    const role = getRoleFromPersona(preferences.persona);
-
-    try {
-      // Ground the chef in the fridge contents when "My fridge" mode is selected
-      // in the composer, or the prompt is about the fridge (the "From my fridge"
-      // chip / button, or any typed mention).
-      const isFridgePrompt =
-        isFridgeSelected ||
-        prompt === FRIDGE_PROMPT ||
-        prompt.toLowerCase().includes("fridge");
-      const fridgeContents = isFridgePrompt
-        ? formatFridgeContents(ingredients)
-        : undefined;
-      const chatOutput = await generateResponse(
-        prompt,
-        previousInteractionId,
-        preferences.persona,
-        fridgeContents,
-      );
-      const chefMessage: ChatMessage = {
+      const userMessage: ChatMessage = {
         id: crypto.randomUUID(),
-        role,
-        content: chatOutput.text,
+        role: RoleEnum.User,
+        content: prompt,
       };
-      setMessages((prev) => [...prev, chefMessage]);
+      setMessages((prev) => [...prev, userMessage]);
       dispatch({
         type: "addMessage",
         conversationId: conversationId,
-        title: isNewConversation
-          ? (extractRecipeTitle(chatOutput.text) ?? undefined)
-          : undefined,
+        title: isNewConversation ? NEW_CONVERSATION_TITLE : undefined,
         isNewConversation: isNewConversation,
-        message: chefMessage,
+        message: userMessage,
       });
-      setPreviousInteractionId(chatOutput.previousInteractionId);
-    } catch (err) {
-      const message =
-        err instanceof Error ? err.message : GENERIC_ERROR_MESSAGE;
-      setMessages((prev) => [
-        ...prev,
-        {
+      setUserPrompt("");
+      setIsLoading(true);
+      const role = getRoleFromPersona(preferences.persona);
+
+      try {
+        // Ground the chef in the fridge contents when "My fridge" mode is selected
+        // in the composer, or the prompt is about the fridge (the "From my fridge"
+        // chip / button, or any typed mention).
+        const isFridgePrompt =
+          isFridgeSelected ||
+          prompt === FRIDGE_PROMPT ||
+          prompt.toLowerCase().includes("fridge");
+        const fridgeContents = isFridgePrompt
+          ? formatFridgeContents(ingredients)
+          : undefined;
+        const chatOutput = await generateResponse(
+          prompt,
+          previousInteractionId,
+          preferences.persona,
+          fridgeContents,
+        );
+        const chefMessage: ChatMessage = {
           id: crypto.randomUUID(),
           role,
-          content: `${CHAT_ERROR_PREFIX}${message}`,
-        },
-      ]);
-    } finally {
-      setIsLoading(false);
-    }
+          content: chatOutput.text,
+        };
+        setMessages((prev) => [...prev, chefMessage]);
+        dispatch({
+          type: "addMessage",
+          conversationId: conversationId,
+          title: isNewConversation
+            ? (extractRecipeTitle(chatOutput.text) ?? undefined)
+            : undefined,
+          isNewConversation: isNewConversation,
+          message: chefMessage,
+        });
+        setPreviousInteractionId(chatOutput.previousInteractionId);
+        setMessageIdWithError(null);
+        setNumRetries(MAX_RETRIES);
+      } catch (err) {
+        const message =
+          err instanceof Error ? err.message : GENERIC_ERROR_MESSAGE;
+        setMessages((prev) => [
+          ...prev,
+          {
+            id: crypto.randomUUID(),
+            role,
+            content: `${CHAT_ERROR_PREFIX}${message}`,
+          },
+        ]);
+        setMessageIdWithError(userMessage.id);
+        setNumRetries((prev) => Math.max(prev - 1, 0));
+      } finally {
+        setIsLoading(false);
+      }
     },
     [
       userPrompt,
@@ -170,7 +185,13 @@ export default function ChatHome() {
 
   return (
     <div className="h-full flex flex-col">
-      <ChatHistory messages={messages} isLoading={isLoading} />
+      <ChatHistory
+        messages={messages}
+        isLoading={isLoading}
+        messageIdWithError={messageIdWithError}
+        retry={handleSubmit}
+        numRetries={numRetries}
+      />
 
       <Composer
         userPrompt={userPrompt}

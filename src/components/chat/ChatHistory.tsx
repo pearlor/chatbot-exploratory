@@ -12,9 +12,15 @@ import { CHAT_EMPTY_GREETING, CHEF_FALLBACK_NAME } from "../../content";
 export default function ChatHistory({
   messages,
   isLoading,
+  retry,
+  messageIdWithError,
+  numRetries,
 }: {
   messages: ChatMessage[];
   isLoading: boolean;
+  retry: (promptOverride?: string) => void;
+  messageIdWithError?: string | null;
+  numRetries: number;
 }) {
   const { preferences } = useUserPreferences();
 
@@ -44,7 +50,13 @@ export default function ChatHistory({
       <div className="max-w-3xl mx-auto flex flex-col gap-6 px-6 py-8">
         {messages.map((message) =>
           message.role === "user" ? (
-            <UserBubble key={message.id} content={message.content} />
+            <UserBubble
+              key={message.id}
+              content={message.content}
+              hasError={message.id === messageIdWithError}
+              retry={retry}
+              numRetries={numRetries}
+            />
           ) : (
             <ChefBubble
               key={message.id}
