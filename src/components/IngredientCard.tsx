@@ -1,5 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { useIngredients } from "../context/IngredientsContext";
+import {
+  EDIT_QUANTITY_LABEL,
+  INGREDIENT_OPTIONS_TITLE,
+  INGREDIENT_QUANTITY_SHORT_PLACEHOLDER,
+  REMOVE_INGREDIENT_LABEL,
+} from "../content";
 
 export type Ingredient = {
   name: string;
@@ -86,7 +92,7 @@ export default function IngredientCard({
               if (event.key === "Enter") saveQuantity();
               if (event.key === "Escape") setIsEditing(false);
             }}
-            placeholder="Qty"
+            placeholder={INGREDIENT_QUANTITY_SHORT_PLACEHOLDER}
             className="w-24 border border-terracotta rounded-full bg-white px-2.5 py-1 text-xs text-ink focus:outline-none"
           />
         ) : (
@@ -100,7 +106,7 @@ export default function IngredientCard({
         <div className="relative" ref={menuRef}>
           <button
             onClick={() => setIsMenuOpen((open) => !open)}
-            title="Options"
+            title={INGREDIENT_OPTIONS_TITLE}
             className="w-7 h-7 rounded-lg text-muted flex items-center justify-center hover:bg-black/5 transition-colors"
           >
             <KebabIcon />
@@ -112,13 +118,13 @@ export default function IngredientCard({
                 onClick={startEditing}
                 className="w-full text-left px-3 py-1.5 text-sm text-ink hover:bg-black/5 transition-colors"
               >
-                Edit quantity
+                {EDIT_QUANTITY_LABEL}
               </button>
               <button
                 onClick={remove}
                 className="w-full text-left px-3 py-1.5 text-sm text-terracotta hover:bg-black/5 transition-colors"
               >
-                Remove
+                {REMOVE_INGREDIENT_LABEL}
               </button>
             </div>
           )}

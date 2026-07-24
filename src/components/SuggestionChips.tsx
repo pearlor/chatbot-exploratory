@@ -1,24 +1,33 @@
 import { FRIDGE_PROMPT } from "../chat/prompts";
+import {
+  SUGGESTION_FIVE_INGREDIENT_LABEL,
+  SUGGESTION_FIVE_INGREDIENT_PROMPT,
+  SUGGESTION_FRIDGE_LABEL,
+  SUGGESTION_SURPRISE_LABEL,
+  SUGGESTION_SURPRISE_PROMPT,
+  SUGGESTION_VEGETARIAN_LABEL,
+  SUGGESTION_VEGETARIAN_PROMPT,
+} from "../content";
 
 const suggestions = [
   {
     emoji: "✨",
-    label: "Surprise me",
-    prompt: "Surprise me with a recipe that I'll like",
+    label: SUGGESTION_SURPRISE_LABEL,
+    prompt: SUGGESTION_SURPRISE_PROMPT,
   },
   {
     emoji: "🌿",
-    label: "Vegetarian options",
-    prompt: "Recommend a vegetarian dish I can make",
+    label: SUGGESTION_VEGETARIAN_LABEL,
+    prompt: SUGGESTION_VEGETARIAN_PROMPT,
   },
   {
     emoji: "5️⃣",
-    label: "5-ingredient meals",
-    prompt: "Suggest a recipe using 5 or fewer ingredients",
+    label: SUGGESTION_FIVE_INGREDIENT_LABEL,
+    prompt: SUGGESTION_FIVE_INGREDIENT_PROMPT,
   },
   {
     emoji: "🧊",
-    label: "From my fridge",
+    label: SUGGESTION_FRIDGE_LABEL,
     prompt: FRIDGE_PROMPT,
   },
 ];

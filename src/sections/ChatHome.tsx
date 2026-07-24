@@ -14,6 +14,11 @@ import {
 import { FRIDGE_PROMPT } from "../chat/prompts";
 import { getRoleFromPersona } from "../chat/types";
 import { extractRecipeTitle } from "../components/chat/parseRecipe";
+import {
+  CHAT_ERROR_PREFIX,
+  GENERIC_ERROR_MESSAGE,
+  NEW_CONVERSATION_TITLE,
+} from "../content";
 
 export default function ChatHome() {
   const { preferences } = useUserPreferences();
@@ -75,7 +80,7 @@ export default function ChatHome() {
     dispatch({
       type: "addMessage",
       conversationId: conversationId,
-      title: isNewConversation ? "New Conversation" : undefined,
+      title: isNewConversation ? NEW_CONVERSATION_TITLE : undefined,
       isNewConversation: isNewConversation,
       message: userMessage,
     });
@@ -118,13 +123,13 @@ export default function ChatHome() {
       setPreviousInteractionId(chatOutput.previousInteractionId);
     } catch (err) {
       const message =
-        err instanceof Error ? err.message : "Something went wrong.";
+        err instanceof Error ? err.message : GENERIC_ERROR_MESSAGE;
       setMessages((prev) => [
         ...prev,
         {
           id: crypto.randomUUID(),
           role,
-          content: `Sorry, something went wrong: ${message}`,
+          content: `${CHAT_ERROR_PREFIX}${message}`,
         },
       ]);
     } finally {

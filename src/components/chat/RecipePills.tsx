@@ -1,4 +1,5 @@
 import type { RecipeMeta } from "./parseRecipe";
+import { RECIPE_DIFFICULTY_LABEL, RECIPE_SERVES_LABEL } from "../../content";
 
 /** A single rounded icon+label chip; `accent` gets the terracotta tint. */
 function Pill({
@@ -33,10 +34,18 @@ export default function RecipePills({ meta }: { meta: RecipeMeta }) {
     <div className="mb-4 flex flex-wrap gap-2">
       {meta.time && <Pill icon="⏰" label={meta.time} tone="neutral" />}
       {meta.difficulty && (
-        <Pill icon="🔥" label={`${meta.difficulty} Difficulty`} tone="accent" />
+        <Pill
+          icon="🔥"
+          label={`${meta.difficulty} ${RECIPE_DIFFICULTY_LABEL}`}
+          tone="accent"
+        />
       )}
       {meta.serves && (
-        <Pill icon="🍽️" label={`Serves ${meta.serves}`} tone="neutral" />
+        <Pill
+          icon="🍽️"
+          label={`${RECIPE_SERVES_LABEL} ${meta.serves}`}
+          tone="neutral"
+        />
       )}
     </div>
   );

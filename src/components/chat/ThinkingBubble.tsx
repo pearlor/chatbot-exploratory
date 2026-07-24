@@ -1,3 +1,5 @@
+import { THINKING_LABEL } from "../../content";
+
 export default function ThinkingBubble({
   icon,
   name,
@@ -16,7 +18,7 @@ export default function ThinkingBubble({
       </div>
 
       <div className="max-w-[75%] rounded-2xl border border-border bg-cream px-5 py-4">
-        <span className="font-serif italic text-muted">Chef is thinking</span>
+        <span className="font-serif italic text-muted">{THINKING_LABEL}</span>
         <span className="ml-1 inline-flex gap-1 align-middle">
           <span className="w-1.5 h-1.5 rounded-full bg-muted animate-bounce [animation-delay:-0.3s]" />
           <span className="w-1.5 h-1.5 rounded-full bg-muted animate-bounce [animation-delay:-0.15s]" />

@@ -3,6 +3,7 @@ import type { Dispatch, ReactNode } from "react";
 import { RoleEnum } from "../chat/types";
 import type { ChatMessage, Conversation } from "../chat/types";
 import mockChefResponse from "../chat/mock/example_response.md?raw";
+import { NEW_CONVERSATION_TITLE } from "../content";
 
 export type ChatHistoryState = {
   chatHistory: Record<string, Conversation>;
@@ -74,14 +75,14 @@ function chatHistoryReducer(
             // For a new conversation, a later message may bring the real title
             // (e.g. extracted from the recipe response).
             title: isNewConversation
-              ? title || "New Conversation"
+              ? title || NEW_CONVERSATION_TITLE
               : existingConversation.title,
             messages: [...existingConversation.messages, message],
           }
         : {
             lastResponseTime: Date.now(),
             previousInteractionId: undefined, // No previous interaction for a new conversation
-            title: title || "New Conversation",
+            title: title || NEW_CONVERSATION_TITLE,
             messages: [message],
           };
 

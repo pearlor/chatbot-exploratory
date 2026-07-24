@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import Button from "./Button";
+import { MODAL_CLOSE_TITLE } from "../content";
 
 type ModalAction = {
   label: string;
@@ -33,7 +34,7 @@ export default function Modal({
           <h2 className="font-serif text-xl font-bold text-ink">{header}</h2>
           <button
             onClick={onClose}
-            title="Close"
+            title={MODAL_CLOSE_TITLE}
             className="w-8 h-8 rounded-lg text-muted flex items-center justify-center hover:bg-black/5 hover:text-terracotta transition-colors"
           >
             ✕

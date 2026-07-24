@@ -3,6 +3,14 @@ import IngredientCard from "../components/IngredientCard";
 import { useIngredients } from "../context/IngredientsContext";
 import { useNavigation } from "../context/NavigationContext";
 import { FRIDGE_PROMPT } from "../chat/prompts";
+import {
+  ADD_INGREDIENT_LABEL,
+  ASK_CHEF_WITH_FRIDGE_LABEL,
+  FRIDGE_HEADING,
+  FRIDGE_SUBHEADING,
+  INGREDIENT_NAME_PLACEHOLDER,
+  INGREDIENT_QUANTITY_PLACEHOLDER,
+} from "../content";
 
 function FridgeIcon() {
   return (
@@ -70,11 +78,9 @@ export default function Fridge() {
           </div>
           <div>
             <h1 className="font-serif text-2xl font-bold text-ink">
-              Your Fridge
+              {FRIDGE_HEADING}
             </h1>
-            <p className="text-sm text-muted">
-              The chef will suggest recipes based on what you have.
-            </p>
+            <p className="text-sm text-muted">{FRIDGE_SUBHEADING}</p>
           </div>
         </div>
 
@@ -85,7 +91,7 @@ export default function Fridge() {
             value={name}
             onChange={(event) => setName(event.target.value)}
             onKeyDown={(event) => event.key === "Enter" && handleAdd()}
-            placeholder="Ingredient name…"
+            placeholder={INGREDIENT_NAME_PLACEHOLDER}
             className="flex-1 border border-border rounded-xl bg-white/60 px-4 py-3 text-sm text-ink placeholder:text-muted focus:outline-none focus:border-terracotta transition-colors"
           />
           <input
@@ -93,7 +99,7 @@ export default function Fridge() {
             value={quantity}
             onChange={(event) => setQuantity(event.target.value)}
             onKeyDown={(event) => event.key === "Enter" && handleAdd()}
-            placeholder="Qty (optional)"
+            placeholder={INGREDIENT_QUANTITY_PLACEHOLDER}
             className="w-40 border border-border rounded-xl bg-white/60 px-4 py-3 text-sm text-ink placeholder:text-muted focus:outline-none focus:border-terracotta transition-colors"
           />
           <button
@@ -101,7 +107,7 @@ export default function Fridge() {
             className="flex items-center gap-2 bg-terracotta text-white rounded-xl px-5 py-3 text-sm font-medium hover:brightness-95 transition"
           >
             <span>＋</span>
-            Add
+            {ADD_INGREDIENT_LABEL}
           </button>
         </div>
 
@@ -120,7 +126,7 @@ export default function Fridge() {
           className="flex items-center justify-center gap-2 w-full bg-terracotta text-white rounded-xl px-4 py-3.5 text-sm font-medium hover:brightness-95 transition"
         >
           <ChefHatIcon />
-          Ask the chef what to cook with these
+          {ASK_CHEF_WITH_FRIDGE_LABEL}
         </button>
       </div>
     </div>

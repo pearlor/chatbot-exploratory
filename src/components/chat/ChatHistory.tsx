@@ -7,6 +7,7 @@ import UserBubble from "./UserBubble";
 import ChefBubble from "./ChefBubble";
 import ThinkingBubble from "./ThinkingBubble";
 import { useUserPreferences } from "../../context/UserPreferencesContext";
+import { CHAT_EMPTY_GREETING, CHEF_FALLBACK_NAME } from "../../content";
 
 export default function ChatHistory({
   messages,
@@ -26,7 +27,7 @@ export default function ChatHistory({
             🥘
           </div>
           <p className="font-serif italic text-lg text-muted">
-            The kitchen is open. What shall we prepare today?
+            {CHAT_EMPTY_GREETING}
           </p>
         </div>
       </div>
@@ -36,7 +37,7 @@ export default function ChatHistory({
   const role = getRoleFromPersona(preferences.persona);
   const iconForLoading = personas.find((p) => p.id === role)?.emoji || "🧑‍🍳";
   const nameForLoading =
-    personas.find((p) => p.id === role)?.name || "Chef Masto";
+    personas.find((p) => p.id === role)?.name || CHEF_FALLBACK_NAME;
 
   return (
     <div className="flex-1 overflow-y-auto">

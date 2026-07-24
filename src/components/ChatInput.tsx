@@ -1,4 +1,9 @@
 import { useState, useRef, useEffect } from "react";
+import {
+  ASK_MODE_LABEL,
+  CHAT_INPUT_PLACEHOLDER,
+  FRIDGE_MODE_LABEL,
+} from "../content";
 export default function ChatInput({
   userPrompt,
   setUserPrompt,
@@ -54,7 +59,7 @@ export default function ChatInput({
           className="flex items-center gap-1 rounded-lg px-2 py-1.5 text-sm text-muted hover:bg-black/[0.03] transition-colors"
         >
           <span>{isFridgeSelected ? "🧊" : "🍳"}</span>
-          {isFridgeSelected ? "My fridge" : "Ask"}
+          {isFridgeSelected ? FRIDGE_MODE_LABEL : ASK_MODE_LABEL}
           <span className="text-xs">⌄</span>
         </button>
 
@@ -66,7 +71,7 @@ export default function ChatInput({
               className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-ink hover:bg-black/[0.03] transition-colors"
             >
               <span>🍳</span>
-              Ask
+              {ASK_MODE_LABEL}
             </button>
             <button
               type="button"
@@ -74,7 +79,7 @@ export default function ChatInput({
               className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-ink hover:bg-black/[0.03] transition-colors"
             >
               <span>🧊</span>
-              My fridge
+              {FRIDGE_MODE_LABEL}
             </button>
           </div>
         )}
@@ -82,7 +87,7 @@ export default function ChatInput({
 
       <input
         type="text"
-        placeholder="Ask the Chef for a recipe, technique, or pairing…"
+        placeholder={CHAT_INPUT_PLACEHOLDER}
         className="flex-1 min-w-0 bg-transparent outline-none text-sm text-ink placeholder:text-muted"
         value={userPrompt}
         onChange={(e) => setUserPrompt(e.target.value)}
