@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import Button from "../components/Button";
 import SettingsModal from "../components/SettingsModal";
 import Tooltip from "../components/Tooltip";
@@ -40,6 +40,12 @@ export default function Sidebar() {
     );
   }, [chatHistory]);
 
+  const navigateToFridge = useCallback(() => {
+    setView("fridge");
+    // clear the selected conversation, so nav highlighting is correct
+    dispatch({ type: "selectConversation", conversationId: "" });
+  }, []);
+
   if (isCollapsed) {
     return (
       <div className="w-[72px] shrink-0 h-screen bg-sidebar border-r border-border flex flex-col items-center px-3 py-5 gap-4">
@@ -53,7 +59,7 @@ export default function Sidebar() {
         {/* Primary actions */}
         <Tooltip content={FRIDGE_NAV_LABEL} side="right">
           <button
-            onClick={() => setView("fridge")}
+            onClick={navigateToFridge}
             aria-label={FRIDGE_NAV_LABEL}
             className={`w-10 h-10 rounded-xl bg-terracotta-soft text-terracotta flex items-center justify-center text-lg hover:brightness-95 transition
                ${view == "fridge" && "bg-white"}`}
@@ -115,7 +121,7 @@ export default function Sidebar() {
       {/* Primary actions */}
       <section className="flex flex-col gap-3">
         <button
-          onClick={() => setView("fridge")}
+          onClick={navigateToFridge}
           className={`flex items-center justify-between border border-border rounded-xl px-3 py-2.5 bg-terracotta-soft text-terracotta text-sm text-ink hover:bg-white transition-colors
   ${view == "fridge" && "bg-white"}`}
         >
