@@ -10,3 +10,11 @@
   --color-border: #e2ddd4;
   --color-forest: #33523f;
 }
+
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not(:disabled),
+  a[href] {
+    cursor: pointer;
+  }
+}

@@ -26,6 +26,12 @@ export default function Composer({
           handleSubmit={handleSubmit}
           isLoading={isLoading}
         />
+        <div className="text-xs text-muted text-center">
+          <p>
+            This is an AI, so it's not perfect and can make mistakes. Always
+            double-check the information provided.
+          </p>
+        </div>
       </div>
     </div>
   );
