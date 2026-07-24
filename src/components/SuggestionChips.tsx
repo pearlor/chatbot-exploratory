@@ -59,7 +59,7 @@ export default function SuggestionChips({
           <button
             key={suggestion.label}
             onClick={() => onSelect(suggestion.prompt)}
-            className="flex items-center gap-2 rounded-full border border-border bg-white px-4 py-2 text-sm text-ink hover:bg-black/[0.03] transition-colors"
+            className={`flex items-center ${suggestion.label === SUGGESTION_FRIDGE_LABEL ? "gap-1" : "gap-2"} rounded-full border border-border bg-white px-4 py-2 text-sm text-ink hover:bg-black/[0.03] transition-colors`}
           >
             <span className="text-muted">{suggestion.emoji}</span>
             {suggestion.label}

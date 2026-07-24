@@ -96,3 +96,9 @@ export const SPARKLE_ICON = "✨";
 export const SALAD_ICON = "🥗";
 
 export const FIVE_ICON = "5️⃣";
+
+export const FIRE_ICON = "🔥";
+
+export const CLOCK_ICON = "⏰";
+
+export const PLATE_ICON = "🍽️";

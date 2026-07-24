@@ -84,7 +84,7 @@ export default function ChatInput({
               <button
                 type="button"
                 onClick={selectFridge}
-                className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-ink hover:bg-black/[0.03] transition-colors"
+                className="flex w-full items-center gap-1 rounded-lg px-2 py-2 text-sm text-ink hover:bg-black/[0.03] transition-colors"
               >
                 <span>{<FridgeIcon />}</span>
                 {FRIDGE_MODE_LABEL}

@@ -125,7 +125,7 @@ export default function Sidebar() {
           className={`flex items-center justify-between border border-border rounded-xl px-3 py-2.5 bg-terracotta-soft text-terracotta text-sm text-ink hover:bg-white transition-colors
   ${view == "fridge" && "bg-white"}`}
         >
-          <span className="flex items-center gap-2">
+          <span className="flex items-center gap-1">
             <span>
               <FridgeIcon />
             </span>
