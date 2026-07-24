@@ -90,3 +90,9 @@ export const CHEF_ICON = "🧑‍🍳";
 export const TV_ICON = "📺";
 
 export const PIRATE_ICON = "🦜";
+
+export const SPARKLE_ICON = "✨";
+
+export const SALAD_ICON = "🥗";
+
+export const FIVE_ICON = "5️⃣";

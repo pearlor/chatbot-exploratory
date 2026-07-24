@@ -51,7 +51,7 @@ export default function Sidebar() {
       <div className="w-[72px] shrink-0 h-screen bg-sidebar border-r border-border flex flex-col items-center px-3 py-5 gap-4">
         {/* Brand icon */}
         <div className="w-10 h-10 rounded-xl bg-terracotta text-white flex items-center justify-center text-lg">
-          🍳
+          {FRIED_EGG_ICON}
         </div>
 
         <div className="w-8 border-t border-border" />

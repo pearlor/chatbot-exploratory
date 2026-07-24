@@ -8,7 +8,7 @@ import ChefBubble from "./ChefBubble";
 import ThinkingBubble from "./ThinkingBubble";
 import { useUserPreferences } from "../../context/UserPreferencesContext";
 import { CHAT_EMPTY_GREETING, CHEF_FALLBACK_NAME } from "../../content";
-import { FOOD_ICON } from "../../assets/icons";
+import { CHEF_ICON, FOOD_ICON } from "../../assets/icons";
 
 export default function ChatHistory({
   messages,
@@ -42,7 +42,8 @@ export default function ChatHistory({
   }
 
   const role = getRoleFromPersona(preferences.persona);
-  const iconForLoading = personas.find((p) => p.id === role)?.emoji || "🧑‍🍳";
+  const iconForLoading =
+    personas.find((p) => p.id === role)?.emoji || CHEF_ICON;
   const nameForLoading =
     personas.find((p) => p.id === role)?.name || CHEF_FALLBACK_NAME;
 
