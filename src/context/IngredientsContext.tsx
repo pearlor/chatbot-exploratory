@@ -27,7 +27,8 @@ export function formatFridgeContents(ingredients: IngredientsState): string {
 }
 
 // Seed contents. Real persistence comes later.
-const initialIngredients: IngredientsState = {
+const initialIngredients: IngredientsState = {};
+/*{
   eggs: { name: "Eggs", quantity: "6" },
   guanciale: { name: "Guanciale", quantity: "100g" },
   "pecorino romano": { name: "Pecorino Romano", quantity: "50g" },
@@ -38,7 +39,7 @@ const initialIngredients: IngredientsState = {
   "olive oil": { name: "Olive Oil" },
   "cherry tomatoes": { name: "Cherry Tomatoes", quantity: "handful" },
   onion: { name: "Onion", quantity: "2" },
-};
+};*/
 
 function ingredientsReducer(
   state: IngredientsState,
@@ -100,7 +101,9 @@ export function IngredientsProvider({ children }: { children: ReactNode }) {
 export function useIngredients() {
   const context = useContext(IngredientsContext);
   if (!context) {
-    throw new Error("useIngredients must be used within an IngredientsProvider");
+    throw new Error(
+      "useIngredients must be used within an IngredientsProvider",
+    );
   }
   return context;
 }

@@ -16,6 +16,8 @@ import { getRoleFromPersona } from "../chat/types";
 import { extractRecipeTitle } from "../components/chat/parseRecipe";
 import {
   CHAT_ERROR_PREFIX,
+  EMPTY_FRIDGE_MESSAGE,
+  EMPTY_FRIDGE_TITLE,
   GENERIC_ERROR_MESSAGE,
   NEW_CONVERSATION_TITLE,
 } from "../content";
@@ -110,24 +112,34 @@ export default function ChatHome() {
         const fridgeContents = isFridgePrompt
           ? formatFridgeContents(ingredients)
           : undefined;
-        const chatOutput = await generateResponse(
-          prompt,
-          previousInteractionId,
-          preferences.persona,
-          fridgeContents,
-        );
+
+        const isFridgePromptWithoutItems =
+          isFridgePrompt &&
+          (fridgeContents === undefined || fridgeContents === "");
+
+        const chatOutput = isFridgePromptWithoutItems
+          ? { text: EMPTY_FRIDGE_MESSAGE, previousInteractionId: undefined }
+          : await generateResponse(
+              prompt,
+              previousInteractionId,
+              preferences.persona,
+              fridgeContents,
+            );
         const chefMessage: ChatMessage = {
           id: crypto.randomUUID(),
           role,
           content: chatOutput.text,
         };
         setMessages((prev) => [...prev, chefMessage]);
+        const title = isNewConversation
+          ? isFridgePromptWithoutItems
+            ? EMPTY_FRIDGE_TITLE
+            : (extractRecipeTitle(chatOutput.text) ?? undefined)
+          : undefined;
         dispatch({
           type: "addMessage",
           conversationId: conversationId,
-          title: isNewConversation
-            ? (extractRecipeTitle(chatOutput.text) ?? undefined)
-            : undefined,
+          title,
           isNewConversation: isNewConversation,
           message: chefMessage,
         });
