@@ -179,7 +179,7 @@ export default function Sidebar() {
           onClick={() => setIsSettingsOpen(true)}
           className="flex items-center gap-2 text-sm text-muted px-2 py-1.5 rounded-lg hover:bg-black/5 transition-colors w-full"
         >
-          {SETTINGS_ICON}
+          <span>{SETTINGS_ICON}</span>
           {SETTINGS_LABEL}
         </button>
 

@@ -68,7 +68,7 @@ export const CHAT_RETRY_LABEL = "Retry";
 export const CHAT_NO_RETRIES_TOOLTIP = "No more retries left";
 
 /* Settings modal */
-export const SETTINGS_MODAL_HEADER = SETTINGS_ICON + "Your settings";
+export const SETTINGS_MODAL_HEADER = SETTINGS_ICON + " Your settings";
 export const SETTINGS_SAVE_LABEL = "Save";
 export const SETTINGS_CANCEL_LABEL = "Cancel";
 export const CHOOSE_PERSONA_LABEL = "Choose your chef persona:";
