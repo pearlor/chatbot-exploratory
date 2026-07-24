@@ -61,12 +61,12 @@ export default function IngredientCard({
 
   return (
     <div className="flex items-center justify-between border border-border rounded-xl bg-white/60 px-4 py-3">
-      <span className="flex items-center gap-3 text-sm text-ink">
-        <span className="w-1.5 h-1.5 rounded-full bg-terracotta" />
-        {ingredient.name}
+      <span className="flex items-center gap-3 min-w-0 text-sm text-ink">
+        <span className="w-1.5 h-1.5 rounded-full bg-terracotta shrink-0" />
+        <span className="truncate">{ingredient.name}</span>
       </span>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 shrink-0">
         {isEditing ? (
           <input
             type="text"
@@ -93,7 +93,7 @@ export default function IngredientCard({
           <button
             onClick={() => setIsMenuOpen((open) => !open)}
             title={INGREDIENT_OPTIONS_TITLE}
-            className="w-7 h-7 rounded-lg text-muted flex items-center justify-center hover:bg-black/5 transition-colors"
+            className="w-10 h-10 sm:w-7 sm:h-7 rounded-lg text-muted flex items-center justify-center hover:bg-black/5 transition-colors"
           >
             <KebabIcon />
           </button>

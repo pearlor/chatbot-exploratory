@@ -53,13 +53,19 @@ export default function SuggestionChips({
   onSelect: (prompt: string) => void;
 }) {
   return (
-    <div className="flex flex-wrap gap-2 justify-center">
+    // On phones the chips are a single scrollable row — wrapping four of them
+    // would eat most of a short screen. They wrap and centre from sm up.
+    <div className="flex gap-2 overflow-x-auto pb-1 sm:flex-wrap sm:justify-center sm:overflow-visible sm:pb-0">
       {suggestions.map((suggestion) => (
-        <Tooltip content={suggestion.tooltip} side="top">
+        <Tooltip
+          key={suggestion.label}
+          content={suggestion.tooltip}
+          side="top"
+          className="shrink-0"
+        >
           <button
-            key={suggestion.label}
             onClick={() => onSelect(suggestion.prompt)}
-            className={`flex items-center ${suggestion.label === SUGGESTION_FRIDGE_LABEL ? "gap-1" : "gap-2"} rounded-full border border-border bg-white px-4 py-2 text-sm text-ink hover:bg-black/[0.03] transition-colors`}
+            className={`flex items-center whitespace-nowrap ${suggestion.label === SUGGESTION_FRIDGE_LABEL ? "gap-1" : "gap-2"} rounded-full border border-border bg-white px-4 py-2.5 sm:py-2 text-sm text-ink hover:bg-black/[0.03] transition-colors`}
           >
             <span className="text-muted">{suggestion.emoji}</span>
             {suggestion.label}

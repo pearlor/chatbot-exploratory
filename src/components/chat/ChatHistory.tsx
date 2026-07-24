@@ -29,7 +29,7 @@ export default function ChatHistory({
   if (messages.length === 0) {
     return (
       <div className="flex-1 overflow-y-auto">
-        <div className="flex flex-col items-center pt-24 gap-4">
+        <div className="flex flex-col items-center px-6 text-center pt-16 sm:pt-24 gap-4">
           <div className="w-16 h-16 rounded-full bg-terracotta-soft flex items-center justify-center text-3xl text-terracotta">
             {FOOD_ICON}
           </div>
@@ -49,7 +49,7 @@ export default function ChatHistory({
 
   return (
     <div className="flex-1 overflow-y-auto">
-      <div className="max-w-3xl mx-auto flex flex-col gap-6 px-6 py-8">
+      <div className="max-w-3xl mx-auto flex flex-col gap-6 px-4 py-6 sm:px-6 sm:py-8">
         {messages.map((message) =>
           message.role === "user" ? (
             <UserBubble

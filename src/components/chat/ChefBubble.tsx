@@ -35,7 +35,7 @@ export default function ChefBubble({
 
       <div
         className={`rounded-2xl border border-border bg-cream px-5 py-4 text-ink ${
-          isRecipe ? "@container w-full" : "max-w-[75%]"
+          isRecipe ? "@container w-full" : "max-w-[90%] sm:max-w-[75%]"
         }`}
       >
         <ChefMarkdown content={content} />

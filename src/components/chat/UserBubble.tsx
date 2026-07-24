@@ -27,7 +27,7 @@ export default function UserBubble({
         </div>
       </div>
 
-      <div className="max-w-[75%] rounded-2xl bg-terracotta px-5 py-4 text-white">
+      <div className="max-w-[90%] sm:max-w-[75%] rounded-2xl bg-terracotta px-5 py-4 text-white">
         {content}
       </div>
 
