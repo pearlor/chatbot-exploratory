@@ -36,6 +36,7 @@ export const personas: {
 ];
 
 export interface Conversation {
+  lastResponseTime: number;
   previousInteractionId: string | undefined;
   title: string;
   messages: ChatMessage[];
