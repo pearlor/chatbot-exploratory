@@ -1,3 +1,4 @@
+import { CHEF_ICON, PIRATE_ICON, TV_ICON } from "../assets/icons";
 import {
   PERSONA_PIRATE_LABEL,
   PERSONA_PIRATE_NAME,
@@ -42,19 +43,19 @@ export const personas: {
   {
     id: RoleEnum.Teacher,
     label: PERSONA_TEACHER_LABEL,
-    emoji: "🧑‍🍳",
+    emoji: CHEF_ICON,
     name: PERSONA_TEACHER_NAME,
   },
   {
     id: RoleEnum.TvHost,
     label: PERSONA_TV_HOST_LABEL,
-    emoji: "📺",
+    emoji: TV_ICON,
     name: PERSONA_TV_HOST_NAME,
   },
   {
     id: RoleEnum.Pirate,
     label: PERSONA_PIRATE_LABEL,
-    emoji: "🦜",
+    emoji: PIRATE_ICON,
     name: PERSONA_PIRATE_NAME,
   },
 ];

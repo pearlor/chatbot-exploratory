@@ -4,7 +4,7 @@ import {
   USER_BUBBLE_LABEL,
 } from "../../content";
 import Tooltip from "../Tooltip";
-import { RetryIcon } from "../../assets/icons";
+import { RetryIcon, USER_ICON } from "../../assets/icons";
 
 export default function UserBubble({
   content,
@@ -23,7 +23,7 @@ export default function UserBubble({
       <div className="flex items-center gap-2 pr-1">
         <span className="text-sm text-muted">{USER_BUBBLE_LABEL}</span>
         <div className="w-8 h-8 rounded-full bg-terracotta-soft flex items-center justify-center text-sm text-terracotta">
-          🧑
+          {USER_ICON}
         </div>
       </div>
 

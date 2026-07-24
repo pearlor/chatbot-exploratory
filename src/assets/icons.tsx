@@ -72,3 +72,21 @@ export function ChefHatIcon() {
     </svg>
   );
 }
+
+export const COLLAPSE_ICON = "⇤";
+
+export const EXPAND_ICON = "⇥";
+
+export const FRIED_EGG_ICON = "🍳";
+
+export const FOOD_ICON = "🥘";
+
+export const SETTINGS_ICON = "⚙️";
+
+export const USER_ICON = "🙂";
+
+export const CHEF_ICON = "🧑‍🍳";
+
+export const TV_ICON = "📺";
+
+export const PIRATE_ICON = "🦜";

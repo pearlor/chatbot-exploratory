@@ -15,6 +15,13 @@ import {
   RECENT_CONVERSATIONS_HEADING,
   SETTINGS_LABEL,
 } from "../content";
+import {
+  COLLAPSE_ICON,
+  EXPAND_ICON,
+  FridgeIcon,
+  FRIED_EGG_ICON,
+  SETTINGS_ICON,
+} from "../assets/icons";
 
 export default function Sidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -50,7 +57,7 @@ export default function Sidebar() {
             aria-label={FRIDGE_NAV_LABEL}
             className="w-10 h-10 rounded-xl bg-terracotta-soft text-terracotta flex items-center justify-center text-lg hover:brightness-95 transition"
           >
-            🧊
+            <FridgeIcon />
           </button>
         </Tooltip>
 
@@ -74,7 +81,7 @@ export default function Sidebar() {
             aria-label={SETTINGS_LABEL}
             className="w-9 h-9 rounded-lg text-muted flex items-center justify-center hover:bg-black/5 transition-colors"
           >
-            ⚙️
+            {SETTINGS_ICON}
           </button>
         </Tooltip>
 
@@ -85,7 +92,7 @@ export default function Sidebar() {
             aria-label={EXPAND_SIDEBAR_TITLE}
             className="w-9 h-9 rounded-lg text-muted flex items-center justify-center hover:bg-black/5 transition-colors"
           >
-            ⇥
+            {EXPAND_ICON}
           </button>
         </Tooltip>
 
@@ -99,7 +106,7 @@ export default function Sidebar() {
       {/* Brand header */}
       <div className="flex items-center gap-3">
         <div className="w-9 h-9 rounded-xl bg-terracotta text-white flex items-center justify-center text-lg">
-          🍳
+          {FRIED_EGG_ICON}
         </div>
         <h2 className="font-serif text-xl font-bold text-ink">{APP_NAME}</h2>
       </div>
@@ -111,7 +118,9 @@ export default function Sidebar() {
           className="flex items-center justify-between border border-border rounded-xl px-3 py-2.5 bg-white/60 text-sm text-ink hover:bg-white transition-colors"
         >
           <span className="flex items-center gap-2">
-            <span>🧊</span>
+            <span>
+              <FridgeIcon />
+            </span>
             {FRIDGE_NAV_LABEL}
           </span>
           <span className="text-muted">›</span>
@@ -162,7 +171,7 @@ export default function Sidebar() {
           onClick={() => setIsSettingsOpen(true)}
           className="flex items-center gap-2 text-sm text-muted px-2 py-1.5 rounded-lg hover:bg-black/5 transition-colors w-full"
         >
-          <span>⚙️</span>
+          {SETTINGS_ICON}
           {SETTINGS_LABEL}
         </button>
 
@@ -170,7 +179,7 @@ export default function Sidebar() {
           onClick={() => setIsCollapsed(true)}
           className="flex items-center gap-2 text-sm text-muted px-2 py-1.5 rounded-lg hover:bg-black/5 transition-colors w-full"
         >
-          <span>⇤</span>
+          <span>{COLLAPSE_ICON}</span>
           {COLLAPSE_SIDEBAR_LABEL}
         </button>
       </div>

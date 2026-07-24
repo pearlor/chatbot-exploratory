@@ -8,6 +8,7 @@ import ChefBubble from "./ChefBubble";
 import ThinkingBubble from "./ThinkingBubble";
 import { useUserPreferences } from "../../context/UserPreferencesContext";
 import { CHAT_EMPTY_GREETING, CHEF_FALLBACK_NAME } from "../../content";
+import { FOOD_ICON } from "../../assets/icons";
 
 export default function ChatHistory({
   messages,
@@ -30,7 +31,7 @@ export default function ChatHistory({
       <div className="flex-1 overflow-y-auto">
         <div className="flex flex-col items-center pt-24 gap-4">
           <div className="w-16 h-16 rounded-full bg-terracotta-soft flex items-center justify-center text-3xl text-terracotta">
-            🥘
+            {FOOD_ICON}
           </div>
           <p className="font-serif italic text-lg text-muted">
             {CHAT_EMPTY_GREETING}
