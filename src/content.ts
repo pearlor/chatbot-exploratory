@@ -38,9 +38,13 @@ export const REMOVE_INGREDIENT_LABEL = "Remove";
 
 /* Chat input / composer */
 export const ASK_MODE_LABEL = "Ask";
+export const ASK_MODE_TOOLTIP = "Ask mode: The chef will answer your questions";
 export const FRIDGE_MODE_LABEL = "My fridge";
+export const FRIDGE_MODE_TOOLTIP =
+  "My fridge mode: The chef will suggest recipes based on your fridge contents";
 export const CHAT_INPUT_PLACEHOLDER =
   "Ask the Chef for a recipe, technique, or pairing…";
+export const SEND_MESSAGE_LABEL = "Send message";
 export const AI_DISCLAIMER =
   "This is an AI, so it's not perfect and can make mistakes. Always double-check the information provided.";
 
@@ -73,13 +77,20 @@ export const PERSONA_PIRATE_NAME = "Cane";
 
 /* Suggestion chips */
 export const SUGGESTION_SURPRISE_LABEL = "Surprise me";
-export const SUGGESTION_SURPRISE_PROMPT = "Surprise me with a recipe that I'll like";
+export const SUGGESTION_SURPRISE_PROMPT =
+  "Surprise me with a recipe that I'll like";
+export const SUGGESTION_SURPRISE_TOOLTIP = "Surprise me with a recipe";
 export const SUGGESTION_VEGETARIAN_LABEL = "Vegetarian options";
-export const SUGGESTION_VEGETARIAN_PROMPT = "Recommend a vegetarian dish I can make";
+export const SUGGESTION_VEGETARIAN_PROMPT =
+  "Recommend a vegetarian dish I can make";
+export const SUGGESTION_VEGETARIAN_TOOLTIP = "Suggest a vegetarian recipe";
 export const SUGGESTION_FIVE_INGREDIENT_LABEL = "5-ingredient meals";
 export const SUGGESTION_FIVE_INGREDIENT_PROMPT =
   "Suggest a recipe using 5 or fewer ingredients";
+export const SUGGESTION_FIVE_INGREDIENT_TOOLTIP =
+  "Suggest a recipe using 5 or fewer ingredients";
 export const SUGGESTION_FRIDGE_LABEL = "From my fridge";
+export const SUGGESTION_FRIDGE_TOOLTIP = "Ask to use items in your fridge";
 
 /* Recipe pills */
 export const RECIPE_DIFFICULTY_LABEL = "Difficulty";
