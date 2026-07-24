@@ -27,7 +27,7 @@ export default function Sidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const { chatHistory, activeConversationId, dispatch } = useChatHistory();
-  const { setView } = useNavigation();
+  const { setView, view } = useNavigation();
 
   const settingsModal = isSettingsOpen && (
     <SettingsModal onClose={() => setIsSettingsOpen(false)} />
@@ -55,7 +55,8 @@ export default function Sidebar() {
           <button
             onClick={() => setView("fridge")}
             aria-label={FRIDGE_NAV_LABEL}
-            className="w-10 h-10 rounded-xl bg-terracotta-soft text-terracotta flex items-center justify-center text-lg hover:brightness-95 transition"
+            className={`w-10 h-10 rounded-xl bg-terracotta-soft text-terracotta flex items-center justify-center text-lg hover:brightness-95 transition
+               ${view == "fridge" && "bg-white"}`}
           >
             <FridgeIcon />
           </button>
@@ -115,7 +116,8 @@ export default function Sidebar() {
       <section className="flex flex-col gap-3">
         <button
           onClick={() => setView("fridge")}
-          className="flex items-center justify-between border border-border rounded-xl px-3 py-2.5 bg-white/60 text-sm text-ink hover:bg-white transition-colors"
+          className={`flex items-center justify-between border border-border rounded-xl px-3 py-2.5 bg-terracotta-soft text-terracotta text-sm text-ink hover:bg-white transition-colors
+  ${view == "fridge" && "bg-white"}`}
         >
           <span className="flex items-center gap-2">
             <span>
