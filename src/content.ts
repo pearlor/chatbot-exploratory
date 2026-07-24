@@ -29,6 +29,9 @@ export const INGREDIENT_QUANTITY_PLACEHOLDER = "Qty (optional)";
 export const ADD_INGREDIENT_LABEL = "Add";
 export const ASK_CHEF_WITH_FRIDGE_LABEL =
   "Ask the chef what to cook with these";
+export const EMPTY_FRIDGE_MESSAGE =
+  "Your fridge is empty. Add some ingredients to get started!";
+export const EMPTY_FRIDGE_TITLE = "Your fridge is empty";
 
 /* Ingredient card */
 export const INGREDIENT_OPTIONS_TITLE = "Options";
@@ -57,6 +60,10 @@ export const THINKING_LABEL = "Chef is thinking";
 /* Chat errors */
 export const GENERIC_ERROR_MESSAGE = "Something went wrong.";
 export const CHAT_ERROR_PREFIX = "Sorry, something went wrong: ";
+
+/** Chat retry */
+export const CHAT_RETRY_LABEL = "Retry";
+export const CHAT_NO_RETRIES_TOOLTIP = "No more retries left";
 
 /* Settings modal */
 export const SETTINGS_MODAL_HEADER = "⚙️ Your settings";
