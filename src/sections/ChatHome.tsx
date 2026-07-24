@@ -51,7 +51,7 @@ export default function ChatHome() {
   }, [activeConversationId, loadedConversationId]);
 
   const handleSubmit = useCallback(
-    async (promptOverride?: string) => {
+    async (promptOverride?: string, isFridgeSelected: boolean = false) => {
     const prompt = (promptOverride ?? userPrompt).trim();
     if (!prompt) return;
 
@@ -81,10 +81,13 @@ export default function ChatHome() {
     const role = getRoleFromPersona(preferences.persona);
 
     try {
-      // Ground the chef in the fridge contents when the prompt is about the
-      // fridge (the "From my fridge" chip / button, or any typed mention).
+      // Ground the chef in the fridge contents when "My fridge" mode is selected
+      // in the composer, or the prompt is about the fridge (the "From my fridge"
+      // chip / button, or any typed mention).
       const isFridgePrompt =
-        prompt === FRIDGE_PROMPT || prompt.toLowerCase().includes("fridge");
+        isFridgeSelected ||
+        prompt === FRIDGE_PROMPT ||
+        prompt.toLowerCase().includes("fridge");
       const fridgeContents = isFridgePrompt
         ? formatFridgeContents(ingredients)
         : undefined;

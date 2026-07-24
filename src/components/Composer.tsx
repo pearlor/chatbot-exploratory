@@ -11,7 +11,7 @@ export default function Composer({
 }: {
   userPrompt: string;
   setUserPrompt: (prompt: string) => void;
-  handleSubmit: () => void;
+  handleSubmit: (promptOverride?: string, isFridgeSelected?: boolean) => void;
   isLoading: boolean;
   showSuggestions: boolean;
   onSuggestionClick: (prompt: string) => void;
