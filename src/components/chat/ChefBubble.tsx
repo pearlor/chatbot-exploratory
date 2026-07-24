@@ -3,6 +3,7 @@ import ChefMarkdown from "./ChefMarkdown";
 import { isRecipeContent } from "./parseRecipe";
 import { personas } from "../../chat/types";
 import { CHEF_FALLBACK_NAME } from "../../content";
+import { CHEF_ICON } from "../../assets/icons";
 /**
  * A chat bubble for a chef response: avatar + label above the rendered
  * markdown. Recipe content widens the bubble into a full-width card.
@@ -25,7 +26,7 @@ export default function ChefBubble({
       {/* Avatar + label */}
       <div className="flex items-center gap-2 pl-1">
         <div className="w-8 h-8 rounded-full bg-terracotta-soft flex items-center justify-center text-sm text-terracotta">
-          {persona?.emoji || "🧑‍🍳"}
+          {persona?.emoji || CHEF_ICON}
         </div>
         <span className="text-sm text-muted">
           {persona?.name || CHEF_FALLBACK_NAME}

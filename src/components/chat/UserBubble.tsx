@@ -4,25 +4,7 @@ import {
   USER_BUBBLE_LABEL,
 } from "../../content";
 import Tooltip from "../Tooltip";
-
-function RetryIcon() {
-  return (
-    <svg
-      width="14"
-      height="14"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <path d="M21 12a9 9 0 1 1-2.64-6.36" />
-      <path d="M21 3v6h-6" />
-    </svg>
-  );
-}
+import { RetryIcon, USER_ICON } from "../../assets/icons";
 
 export default function UserBubble({
   content,
@@ -41,7 +23,7 @@ export default function UserBubble({
       <div className="flex items-center gap-2 pr-1">
         <span className="text-sm text-muted">{USER_BUBBLE_LABEL}</span>
         <div className="w-8 h-8 rounded-full bg-terracotta-soft flex items-center justify-center text-sm text-terracotta">
-          🧑
+          {USER_ICON}
         </div>
       </div>
 

@@ -8,6 +8,7 @@ import {
   FRIDGE_MODE_TOOLTIP,
   SEND_MESSAGE_LABEL,
 } from "../content";
+import { FridgeIcon, FRIED_EGG_ICON } from "../assets/icons";
 export default function ChatInput({
   userPrompt,
   setUserPrompt,
@@ -62,7 +63,7 @@ export default function ChatInput({
           onClick={() => setIsMenuOpen((open) => !open)}
           className="flex items-center gap-1 rounded-lg px-2 py-1.5 text-sm text-muted hover:bg-black/[0.03] transition-colors"
         >
-          <span>{isFridgeSelected ? "🧊" : "🍳"}</span>
+          <span>{isFridgeSelected ? FridgeIcon() : FRIED_EGG_ICON}</span>
           {isFridgeSelected ? FRIDGE_MODE_LABEL : ASK_MODE_LABEL}
           <span className="text-xs">⌄</span>
         </button>
@@ -83,9 +84,9 @@ export default function ChatInput({
               <button
                 type="button"
                 onClick={selectFridge}
-                className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-ink hover:bg-black/[0.03] transition-colors"
+                className="flex w-full items-center gap-1 rounded-lg px-2 py-2 text-sm text-ink hover:bg-black/[0.03] transition-colors"
               >
-                <span>🧊</span>
+                <span>{<FridgeIcon />}</span>
                 {FRIDGE_MODE_LABEL}
               </button>
             </Tooltip>
