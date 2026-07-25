@@ -56,7 +56,7 @@ export const SEND_MESSAGE_LABEL = "Send message";
 // can be bolded; the surrounding wording lives there with them.
 export const DEMO_MODE_LABEL = "Demo mode";
 export const DEMO_MODE_TOOLTIP_PREFIX = "Click ";
-export const DEMO_MODE_TOOLTIP_MIDDLE = " to restart conversation in ";
+export const DEMO_MODE_TOOLTIP_MIDDLE = " to restart the conversation in ";
 
 export const AI_DISCLAIMER =
   "This is an AI, so it's not perfect and can make mistakes. Always double-check the information provided.";
@@ -89,15 +89,15 @@ export const MODAL_CLOSE_TITLE = "Close";
 /* Personas */
 export const PERSONA_TEACHER_LABEL = "Teacher";
 export const PERSONA_TEACHER_NAME = "Chef Kale";
-export const PERSONA_TEACHER_DESCRIPTION = `${PERSONA_TEACHER_NAME} is culinary teacher, who will be patient and encourage you through your culinary journey.`;
+export const PERSONA_TEACHER_DESCRIPTION = `${PERSONA_TEACHER_NAME} is culinary teacher, who will be patient and encourage you throughout your culinary journey.`;
 
 export const PERSONA_TV_HOST_LABEL = "TV host";
 export const PERSONA_TV_HOST_NAME = "Rosemary";
-export const PERSONA_TV_HOST_DESCRIPTION = `With live studio audience, ${PERSONA_TV_HOST_NAME} will entertain you as one of her viewers on her cooking show!`;
+export const PERSONA_TV_HOST_DESCRIPTION = `With a live studio audience, ${PERSONA_TV_HOST_NAME} will entertain you as one of her viewers on her cooking show!`;
 
 export const PERSONA_PIRATE_LABEL = "Pirate";
 export const PERSONA_PIRATE_NAME = "Cane";
-export const PERSONA_PIRATE_DESCRIPTION = `${PERSONA_PIRATE_NAME} and his trusted companion, Lulu, will share about his past sea adventures where he collected various tasty recipes.`;
+export const PERSONA_PIRATE_DESCRIPTION = `${PERSONA_PIRATE_NAME} and his trusted companion, Lulu, will share about his past sea adventures as he chats about recipes.`;
 
 /* Suggestion chips */
 export const SUGGESTION_SURPRISE_LABEL = "Surprise me";
