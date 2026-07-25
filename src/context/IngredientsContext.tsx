@@ -26,20 +26,21 @@ export function formatFridgeContents(ingredients: IngredientsState): string {
     .join(", ");
 }
 
-// Seed contents. Real persistence comes later.
-const initialIngredients: IngredientsState = {};
-/*{
-  eggs: { name: "Eggs", quantity: "6" },
-  guanciale: { name: "Guanciale", quantity: "100g" },
-  "pecorino romano": { name: "Pecorino Romano", quantity: "50g" },
-  spaghetti: { name: "Spaghetti", quantity: "200g" },
-  butter: { name: "Butter", quantity: "50g" },
-  garlic: { name: "Garlic", quantity: "3 cloves" },
-  parmesan: { name: "Parmesan", quantity: "30g" },
-  "olive oil": { name: "Olive Oil" },
-  "cherry tomatoes": { name: "Cherry Tomatoes", quantity: "handful" },
+const DEMO_INGREDIENTS = {
+  eggs: { name: "Eggs", quantity: "12" },
+  blueberries: { name: "Blueberries", quantity: "5oz" },
+  oranges: { name: "Oranges", quantity: "8" },
+  flour: { name: "Flour" },
+  "rice flour": { name: "Rice flour" },
+  "glutinous rice flour": { name: "Glutinous rice flour" },
+  sugar: { name: "Sugar" },
+  "white pepper": { name: "White pepper" },
+  milk: { name: "Milk" },
+  apples: { name: "Apples", quantity: "5" },
   onion: { name: "Onion", quantity: "2" },
-};*/
+};
+
+const initialIngredients: IngredientsState = DEMO_INGREDIENTS;
 
 function ingredientsReducer(
   state: IngredientsState,
