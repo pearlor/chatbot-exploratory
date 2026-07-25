@@ -7,6 +7,8 @@ import type { ChatMessage } from "../chat/types";
 import { useUserPreferences } from "../context/UserPreferencesContext";
 import { useChatHistory } from "../context/ChatHistoryContext";
 import { useNavigation } from "../context/NavigationContext";
+import { getDemoPrompt } from "../demo/DemoUserPrompts";
+import { generateDemoResponse } from "../demo/DemoResponses";
 import {
   useIngredients,
   formatFridgeContents,
@@ -28,6 +30,7 @@ export default function ChatHome() {
   const { chatHistory, activeConversationId, dispatch } = useChatHistory();
   const { pendingPrompt, clearPendingPrompt } = useNavigation();
   const { ingredients } = useIngredients();
+  const isDemoMode = preferences.isDemoMode;
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [userPrompt, setUserPrompt] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -71,9 +74,16 @@ export default function ChatHome() {
     }
   }, [activeConversationId, loadedConversationId]);
 
+  // In demo mode the composer isn't a draft the user owns — it's pinned to the
+  // next line of the script, derived from the conversation so far. Deriving it
+  // on every render (rather than syncing it into userPrompt) keeps it correct
+  // through submits, retries and conversation switches, all of which clear
+  // userPrompt out from under us.
+  const composerPrompt = isDemoMode ? getDemoPrompt(messages) : userPrompt;
+
   const handleSubmit = useCallback(
     async (promptOverride?: string, isFridgeSelected: boolean = false) => {
-      const prompt = (promptOverride ?? userPrompt).trim();
+      const prompt = (promptOverride ?? composerPrompt).trim();
       if (!prompt) return;
 
       const isNewConversation = !activeConversationId;
@@ -117,14 +127,22 @@ export default function ChatHome() {
           isFridgePrompt &&
           (fridgeContents === undefined || fridgeContents === "");
 
+        // An empty fridge is answered the same way in demo mode — the canned
+        // recipes assume there is something to cook with.
         const chatOutput = isFridgePromptWithoutItems
           ? { text: EMPTY_FRIDGE_MESSAGE, previousInteractionId: undefined }
-          : await generateResponse(
-              prompt,
-              previousInteractionId,
-              preferences.persona,
-              fridgeContents,
-            );
+          : isDemoMode
+            ? await generateDemoResponse(
+                prompt,
+                preferences.persona,
+                previousInteractionId,
+              )
+            : await generateResponse(
+                prompt,
+                previousInteractionId,
+                preferences.persona,
+                fridgeContents,
+              );
         const chefMessage: ChatMessage = {
           id: crypto.randomUUID(),
           role,
@@ -164,11 +182,12 @@ export default function ChatHome() {
       }
     },
     [
-      userPrompt,
+      composerPrompt,
       previousInteractionId,
       preferences.persona,
       activeConversationId,
       ingredients,
+      isDemoMode,
     ],
   );
 
@@ -206,12 +225,13 @@ export default function ChatHome() {
       />
 
       <Composer
-        userPrompt={userPrompt}
+        userPrompt={composerPrompt}
         setUserPrompt={setUserPrompt}
         handleSubmit={handleSubmit}
         isLoading={isLoading}
         showSuggestions={messages.length === 0}
         onSuggestionClick={handleSuggestionClick}
+        isReadOnly={isDemoMode}
       />
     </div>
   );

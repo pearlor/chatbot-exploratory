@@ -20,7 +20,7 @@ const ai = new GoogleGenAI({
   apiKey: "",
 });
 
-type ChatOutput = {
+export type ChatOutput = {
   text: string;
   previousInteractionId: string | undefined;
 };

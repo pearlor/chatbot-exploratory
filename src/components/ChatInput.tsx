@@ -14,11 +14,13 @@ export default function ChatInput({
   setUserPrompt,
   handleSubmit,
   isLoading,
+  isReadOnly = false,
 }: {
   userPrompt: string;
   setUserPrompt: (prompt: string) => void;
   handleSubmit: (promptOverride?: string, isFridgeSelected?: boolean) => void;
   isLoading: boolean;
+  isReadOnly?: boolean;
 }) {
   const isSubmitDisabled = isLoading || userPrompt.trim() === "";
 
@@ -99,8 +101,11 @@ export default function ChatInput({
         placeholder={CHAT_INPUT_PLACEHOLDER}
         // text-base below sm: iOS Safari zooms the page in when a focused input
         // renders below 16px.
-        className="flex-1 min-w-0 bg-transparent outline-none text-base sm:text-sm text-ink placeholder:text-muted"
+        className={`flex-1 min-w-0 bg-transparent outline-none text-base sm:text-sm text-ink placeholder:text-muted ${isReadOnly ? "cursor-default caret-transparent" : ""}`}
         value={userPrompt}
+        // readOnly rather than disabled: a disabled input can't take focus and
+        // doesn't fire onKeyDown, which would break Enter-to-send.
+        readOnly={isReadOnly}
         onChange={(e) => setUserPrompt(e.target.value)}
         onKeyDown={(e) => {
           if (e.key === "Enter" && !isSubmitDisabled) {

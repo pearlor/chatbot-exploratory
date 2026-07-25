@@ -2,8 +2,14 @@ import { createContext, useContext, useReducer } from "react";
 import type { Dispatch, ReactNode } from "react";
 import type { Persona } from "../chat/types";
 
+// Demo mode replaces the live API with the scripted prompts and canned replies
+// in src/demo, so the app can be walked through end to end. Flip to false for
+// the real chef.
+export const IS_DEMO_MODE = true;
+
 export type UserPreferences = {
   persona: Persona;
+  isDemoMode: boolean;
 };
 
 export type UserPreferencesAction = {
@@ -13,6 +19,7 @@ export type UserPreferencesAction = {
 
 const defaultPreferences: UserPreferences = {
   persona: "pirate",
+  isDemoMode: IS_DEMO_MODE,
 };
 
 function userPreferencesReducer(

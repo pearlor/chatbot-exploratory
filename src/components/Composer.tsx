@@ -9,6 +9,7 @@ export default function Composer({
   isLoading,
   showSuggestions,
   onSuggestionClick,
+  isReadOnly,
 }: {
   userPrompt: string;
   setUserPrompt: (prompt: string) => void;
@@ -16,6 +17,7 @@ export default function Composer({
   isLoading: boolean;
   showSuggestions: boolean;
   onSuggestionClick: (prompt: string) => void;
+  isReadOnly?: boolean;
 }) {
   return (
     <div className="px-3 pb-3 sm:px-6 sm:pb-6">
@@ -26,6 +28,7 @@ export default function Composer({
           setUserPrompt={setUserPrompt}
           handleSubmit={handleSubmit}
           isLoading={isLoading}
+          isReadOnly={isReadOnly}
         />
         <div className="text-xs text-muted text-center">
           <p>{AI_DISCLAIMER}</p>
