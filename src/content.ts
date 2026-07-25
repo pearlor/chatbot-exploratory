@@ -52,6 +52,12 @@ export const FRIDGE_MODE_TOOLTIP =
 export const CHAT_INPUT_PLACEHOLDER =
   "Ask the Chef for a recipe, technique, or pairing…";
 export const SEND_MESSAGE_LABEL = "Send message";
+// The demo-mode tooltip is assembled in ChatInput so that the two labels below
+// can be bolded; the surrounding wording lives there with them.
+export const DEMO_MODE_LABEL = "Demo mode";
+export const DEMO_MODE_TOOLTIP_PREFIX = "Click ";
+export const DEMO_MODE_TOOLTIP_MIDDLE = " to restart conversation in ";
+
 export const AI_DISCLAIMER =
   "This is an AI, so it's not perfect and can make mistakes. Always double-check the information provided.";
 
