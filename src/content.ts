@@ -89,10 +89,15 @@ export const MODAL_CLOSE_TITLE = "Close";
 /* Personas */
 export const PERSONA_TEACHER_LABEL = "Teacher";
 export const PERSONA_TEACHER_NAME = "Chef Kale";
+export const PERSONA_TEACHER_DESCRIPTION = `${PERSONA_TEACHER_NAME} is culinary teacher, who will be patient and encourage you through your culinary journey.`;
+
 export const PERSONA_TV_HOST_LABEL = "TV host";
 export const PERSONA_TV_HOST_NAME = "Rosemary";
+export const PERSONA_TV_HOST_DESCRIPTION = `With live studio audience, ${PERSONA_TV_HOST_NAME} will entertain you as one of her viewers on her cooking show!`;
+
 export const PERSONA_PIRATE_LABEL = "Pirate";
 export const PERSONA_PIRATE_NAME = "Cane";
+export const PERSONA_PIRATE_DESCRIPTION = `${PERSONA_PIRATE_NAME} and his trusted companion, Lulu, will share about his past sea adventures where he collected various tasty recipes.`;
 
 /* Suggestion chips */
 export const SUGGESTION_SURPRISE_LABEL = "Surprise me";

@@ -62,6 +62,9 @@ export default function SettingsModal({ onClose }: { onClose: () => void }) {
             </button>
           );
         })}
+        <p className="font-light text-sm  text-center ">
+          {personas.find((p) => selectedPersona == p.id)?.description}
+        </p>
       </div>
     </Modal>
   );
