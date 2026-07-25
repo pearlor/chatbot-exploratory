@@ -18,7 +18,7 @@ export type UserPreferencesAction = {
 };
 
 const defaultPreferences: UserPreferences = {
-  persona: "pirate",
+  persona: "teacher",
   isDemoMode: IS_DEMO_MODE,
 };
 

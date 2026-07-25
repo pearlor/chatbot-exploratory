@@ -25,6 +25,7 @@ import {
   SETTINGS_ICON,
 } from "../assets/icons";
 import { useIsSmallScreen } from "../hooks/useIsSmallScreen";
+import { useUserPreferences } from "../context/UserPreferencesContext";
 
 export default function Sidebar({
   isOpen,
@@ -33,8 +34,14 @@ export default function Sidebar({
   isOpen: boolean;
   onClose: () => void;
 }) {
+  const { preferences } = useUserPreferences();
+  const isDemoMode = preferences.isDemoMode;
+
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  // On start, demo mode has settings open
+  const [isSettingsOpen, setIsSettingsOpen] = useState(
+    isDemoMode ? true : false,
+  );
   const { chatHistory, activeConversationId, dispatch } = useChatHistory();
   const { setView, view } = useNavigation();
   const isSmallScreen = useIsSmallScreen();
