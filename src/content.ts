@@ -79,7 +79,9 @@ export const CHAT_NO_RETRIES_TOOLTIP = "No more retries left";
 export const SETTINGS_MODAL_HEADER = SETTINGS_ICON + " Your settings";
 export const SETTINGS_SAVE_LABEL = "Save";
 export const SETTINGS_CANCEL_LABEL = "Cancel";
-export const CHOOSE_PERSONA_LABEL = "Choose your chef persona:";
+export const CHOOSE_PERSONA_LABEL = "Chef Persona";
+export const CHOOSE_PERSONA_LABEL_DESCRIPTION =
+  "Choose your chef, who will guide you and answer any questions you have about recipes and culinary topics.";
 
 /* Modal */
 export const MODAL_CLOSE_TITLE = "Close";
