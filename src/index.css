@@ -1,6 +1,8 @@
 @import "tailwindcss";
 
 @theme {
+  --default-font-family: var(--font-sans);
+
   --color-cream: #f7f5f0;
   --color-sidebar: #efece6;
   --color-terracotta: #b5623c;

@@ -39,9 +39,7 @@ export default function Fridge() {
             <FridgeIcon />
           </div>
           <div>
-            <h1 className="font-serif text-2xl font-bold text-ink">
-              {FRIDGE_HEADING}
-            </h1>
+            <h1 className="text-2xl font-bold text-ink">{FRIDGE_HEADING}</h1>
             <p className="text-sm text-muted">{FRIDGE_SUBHEADING}</p>
           </div>
         </div>

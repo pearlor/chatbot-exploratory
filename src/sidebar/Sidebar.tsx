@@ -145,7 +145,7 @@ export default function Sidebar({
         <div className="w-9 h-9 rounded-xl bg-terracotta text-white flex items-center justify-center text-lg">
           {FRIED_EGG_ICON}
         </div>
-        <h2 className="font-serif text-xl font-bold text-ink">{APP_NAME}</h2>
+        <h2 className="text-xl font-bold text-ink">{APP_NAME}</h2>
         <button
           onClick={onClose}
           aria-label={CLOSE_MENU_LABEL}
