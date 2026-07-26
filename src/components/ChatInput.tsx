@@ -61,7 +61,7 @@ export default function ChatInput({
         <button
           type="button"
           onClick={() => setIsMenuOpen((open) => !open)}
-          className="flex items-center gap-1 rounded-lg px-2 py-1.5 text-sm text-muted hover:bg-black/[0.03] transition-colors"
+          className="flex items-center gap-1 rounded-lg px-2 py-2.5 sm:py-1.5 text-sm text-muted hover:bg-black/[0.03] transition-colors"
         >
           <span>{isFridgeSelected ? FridgeIcon() : FRIED_EGG_ICON}</span>
           {isFridgeSelected ? FRIDGE_MODE_LABEL : ASK_MODE_LABEL}
@@ -97,7 +97,9 @@ export default function ChatInput({
       <input
         type="text"
         placeholder={CHAT_INPUT_PLACEHOLDER}
-        className="flex-1 min-w-0 bg-transparent outline-none text-sm text-ink placeholder:text-muted"
+        // text-base below sm: iOS Safari zooms the page in when a focused input
+        // renders below 16px.
+        className="flex-1 min-w-0 bg-transparent outline-none text-base sm:text-sm text-ink placeholder:text-muted"
         value={userPrompt}
         onChange={(e) => setUserPrompt(e.target.value)}
         onKeyDown={(e) => {
@@ -110,7 +112,7 @@ export default function ChatInput({
       {/* Send button */}
       <Tooltip content={SEND_MESSAGE_LABEL} side="top" className="shrink-0">
         <button
-          className="w-9 h-9 rounded-full bg-terracotta text-white flex items-center justify-center shrink-0 transition hover:brightness-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:brightness-100"
+          className="w-11 h-11 sm:w-9 sm:h-9 rounded-full bg-terracotta text-white flex items-center justify-center shrink-0 transition hover:brightness-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:brightness-100"
           onClick={() => handleSubmit(undefined, isFridgeSelected)}
           aria-label={SEND_MESSAGE_LABEL}
           disabled={isSubmitDisabled}

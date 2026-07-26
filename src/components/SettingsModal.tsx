@@ -30,7 +30,7 @@ export default function SettingsModal({ onClose }: { onClose: () => void }) {
       onClose={onClose}
     >
       <p className="text-ink mb-5">{CHOOSE_PERSONA_LABEL}</p>
-      <div className="flex justify-center gap-6">
+      <div className="flex flex-wrap justify-center gap-4 sm:gap-6">
         {personas.map((persona) => {
           const isSelected = selectedPersona === persona.id;
           return (
@@ -40,7 +40,7 @@ export default function SettingsModal({ onClose }: { onClose: () => void }) {
               className="flex flex-col items-center gap-2"
             >
               <span
-                className={`w-24 h-24 rounded-full bg-terracotta-soft flex items-center justify-center text-4xl transition-colors ${
+                className={`w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-terracotta-soft flex items-center justify-center text-4xl transition-colors ${
                   isSelected
                     ? "border-2 border-terracotta"
                     : "border border-border hover:border-terracotta/50"

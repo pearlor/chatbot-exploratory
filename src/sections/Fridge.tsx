@@ -31,7 +31,7 @@ export default function Fridge() {
   };
 
   return (
-    <div className="h-full overflow-y-auto px-8 py-8">
+    <div className="h-full overflow-y-auto px-4 py-6 sm:px-8 sm:py-8">
       <div className="mx-auto max-w-3xl flex flex-col gap-6">
         {/* Header */}
         <div className="flex items-center gap-4">
@@ -46,35 +46,39 @@ export default function Fridge() {
           </div>
         </div>
 
-        {/* Add ingredient row */}
-        <div className="flex gap-3">
+        {/* Add ingredient row: stacks on phones, where three controls side by
+            side leave the name field unusably narrow. text-base below sm keeps
+            iOS Safari from zooming in on focus. */}
+        <div className="flex flex-col sm:flex-row gap-3">
           <input
             type="text"
             value={name}
             onChange={(event) => setName(event.target.value)}
             onKeyDown={(event) => event.key === "Enter" && handleAdd()}
             placeholder={INGREDIENT_NAME_PLACEHOLDER}
-            className="flex-1 border border-border rounded-xl bg-white/60 px-4 py-3 text-sm text-ink placeholder:text-muted focus:outline-none focus:border-terracotta transition-colors"
+            className="flex-1 min-w-0 border border-border rounded-xl bg-white/60 px-4 py-3 text-base sm:text-sm text-ink placeholder:text-muted focus:outline-none focus:border-terracotta transition-colors"
           />
-          <input
-            type="text"
-            value={quantity}
-            onChange={(event) => setQuantity(event.target.value)}
-            onKeyDown={(event) => event.key === "Enter" && handleAdd()}
-            placeholder={INGREDIENT_QUANTITY_PLACEHOLDER}
-            className="w-40 border border-border rounded-xl bg-white/60 px-4 py-3 text-sm text-ink placeholder:text-muted focus:outline-none focus:border-terracotta transition-colors"
-          />
-          <button
-            onClick={handleAdd}
-            className="flex items-center gap-2 bg-terracotta text-white rounded-xl px-5 py-3 text-sm font-medium hover:brightness-95 transition"
-          >
-            <span>＋</span>
-            {ADD_INGREDIENT_LABEL}
-          </button>
+          <div className="flex gap-3">
+            <input
+              type="text"
+              value={quantity}
+              onChange={(event) => setQuantity(event.target.value)}
+              onKeyDown={(event) => event.key === "Enter" && handleAdd()}
+              placeholder={INGREDIENT_QUANTITY_PLACEHOLDER}
+              className="flex-1 sm:flex-none sm:w-40 min-w-0 border border-border rounded-xl bg-white/60 px-4 py-3 text-base sm:text-sm text-ink placeholder:text-muted focus:outline-none focus:border-terracotta transition-colors"
+            />
+            <button
+              onClick={handleAdd}
+              className="flex items-center gap-2 shrink-0 bg-terracotta text-white rounded-xl px-5 py-3 text-sm font-medium hover:brightness-95 transition"
+            >
+              <span>＋</span>
+              {ADD_INGREDIENT_LABEL}
+            </button>
+          </div>
         </div>
 
         {/* Ingredient grid */}
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {Object.values(ingredients).map((ingredient) => (
             <IngredientCard key={ingredient.name} ingredient={ingredient} />
           ))}

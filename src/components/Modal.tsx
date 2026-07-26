@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { createPortal } from "react-dom";
 import Button from "./Button";
 import { MODAL_CLOSE_TITLE } from "../content";
 
@@ -20,13 +21,17 @@ export default function Modal({
   secondaryAction?: ModalAction;
   onClose: () => void;
 }) {
-  return (
+  // Rendered into <body> rather than in place: a `transform` on any ancestor
+  // (the sidebar drawer has one) would make it the containing block for this
+  // `fixed` overlay, trapping the modal inside that element instead of
+  // centring it on the viewport.
+  return createPortal(
     <div
-      className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center"
+      className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4"
       onClick={onClose}
     >
       <div
-        className="bg-cream rounded-3xl p-6 w-full max-w-lg shadow-xl flex flex-col gap-5"
+        className="bg-cream rounded-3xl p-6 w-full max-w-lg max-h-full overflow-y-auto shadow-xl flex flex-col gap-5"
         onClick={(event) => event.stopPropagation()}
       >
         {/* Header */}
@@ -64,6 +69,7 @@ export default function Modal({
           </div>
         )}
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }

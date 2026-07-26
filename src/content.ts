@@ -18,6 +18,8 @@ export const FRIDGE_NAV_LABEL = "Your Fridge";
 export const SETTINGS_LABEL = "Your settings";
 export const EXPAND_SIDEBAR_TITLE = "Expand sidebar";
 export const COLLAPSE_SIDEBAR_LABEL = "Collapse";
+export const OPEN_MENU_LABEL = "Open menu";
+export const CLOSE_MENU_LABEL = "Close menu";
 export const RECENT_CONVERSATIONS_HEADING = "Recent Creations";
 export const NO_CONVERSATIONS_MESSAGE =
   "No recent conversations. Start a new one to see it here!";

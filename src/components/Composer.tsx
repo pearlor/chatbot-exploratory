@@ -18,7 +18,7 @@ export default function Composer({
   onSuggestionClick: (prompt: string) => void;
 }) {
   return (
-    <div className="px-6 pb-6">
+    <div className="px-3 pb-3 sm:px-6 sm:pb-6">
       <div className="max-w-3xl mx-auto flex flex-col gap-3">
         {showSuggestions && <SuggestionChips onSelect={onSuggestionClick} />}
         <ChatInput
