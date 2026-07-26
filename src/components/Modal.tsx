@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { createPortal } from "react-dom";
 import Button from "./Button";
 import { MODAL_CLOSE_TITLE } from "../content";
+import { TEST_IDS } from "../testIds";
 
 type ModalAction = {
   label: string;
@@ -27,6 +28,7 @@ export default function Modal({
   // centring it on the viewport.
   return createPortal(
     <div
+      data-testid={TEST_IDS.modalOverlay}
       className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4"
       onClick={onClose}
     >

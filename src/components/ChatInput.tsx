@@ -13,6 +13,7 @@ import {
   SEND_MESSAGE_LABEL,
 } from "../content";
 import { FridgeIcon, FRIED_EGG_ICON } from "../assets/icons";
+import { TEST_IDS } from "../testIds";
 export default function ChatInput({
   userPrompt,
   setUserPrompt,
@@ -101,6 +102,7 @@ export default function ChatInput({
       <div ref={selectorRef} className="relative shrink-0">
         <button
           type="button"
+          data-testid={TEST_IDS.chatModeSelector}
           onClick={() => setIsMenuOpen((open) => !open)}
           className="flex items-center gap-1 rounded-lg px-2 py-2.5 sm:py-1.5 text-sm text-muted hover:bg-black/[0.03] transition-colors"
         >
