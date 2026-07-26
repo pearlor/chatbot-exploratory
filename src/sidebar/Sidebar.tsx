@@ -25,6 +25,7 @@ import {
   SETTINGS_ICON,
 } from "../assets/icons";
 import { useIsSmallScreen } from "../hooks/useIsSmallScreen";
+import { TEST_IDS } from "../testIds";
 import { useUserPreferences } from "../context/UserPreferencesContext";
 
 export default function Sidebar({
@@ -74,7 +75,10 @@ export default function Sidebar({
   // the full version, so the collapsed state is ignored on small screens.
   if (isCollapsed && !isSmallScreen) {
     return (
-      <div className="w-[72px] shrink-0 h-dvh bg-sidebar border-r border-border flex flex-col items-center px-3 py-5 gap-4">
+      <div
+        data-testid={TEST_IDS.sidebar}
+        className="w-[72px] shrink-0 h-dvh bg-sidebar border-r border-border flex flex-col items-center px-3 py-5 gap-4"
+      >
         {/* Brand icon */}
         <div className="w-10 h-10 rounded-xl bg-terracotta text-white flex items-center justify-center text-lg">
           {FRIED_EGG_ICON}
@@ -135,6 +139,7 @@ export default function Sidebar({
     // Below `md` this is a drawer: taken out of flow, slid off-canvas until
     // opened. From `md` up it is the static column it has always been.
     <div
+      data-testid={TEST_IDS.sidebar}
       inert={isSmallScreen && !isOpen}
       className={`w-[260px] shrink-0 h-dvh bg-sidebar border-r border-border flex flex-col px-4 py-5 gap-5
         fixed inset-y-0 left-0 z-40 transition-transform duration-200 md:static md:translate-x-0

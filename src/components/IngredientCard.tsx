@@ -8,6 +8,7 @@ import {
 } from "../content";
 
 import { KebabIcon } from "../assets/icons";
+import { TEST_IDS } from "../testIds";
 
 export type Ingredient = {
   name: string;
@@ -60,7 +61,11 @@ export default function IngredientCard({
   };
 
   return (
-    <div className="flex items-center justify-between border border-border rounded-xl bg-white/60 px-4 py-3">
+    <div
+      data-testid={TEST_IDS.ingredientCard}
+      data-ingredient={ingredient.name}
+      className="flex items-center justify-between border border-border rounded-xl bg-white/60 px-4 py-3"
+    >
       <span className="flex items-center gap-3 min-w-0 text-sm text-ink">
         <span className="w-1.5 h-1.5 rounded-full bg-terracotta shrink-0" />
         <span className="truncate">{ingredient.name}</span>
