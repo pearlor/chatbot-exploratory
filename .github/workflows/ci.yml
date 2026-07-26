@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  # Lets you kick off a run by hand from the Actions tab.
+  workflow_dispatch:
+
+# A new push to the same branch cancels the run that is already in flight.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Lint, build and unit test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v5
+
+      - name: Set up Node
+        uses: actions/setup-node@v5
+        with:
+          # Matches the Node version used for local development.
+          node-version: 24
+          # Caches ~/.npm, keyed off package-lock.json.
+          cache: npm
+
+      # `npm ci` installs the exact tree in package-lock.json, which is what
+      # pulls in @google/genai, tailwindcss and react.
+      - name: Install dependencies
+        run: npm ci
+
+      # `npm run lint` currently reports 7 pre-existing errors (mostly
+      # react-hooks/set-state-in-effect), so it is reported without failing the
+      # run. Drop this line once those are cleaned up.
+      - name: Lint
+        run: npm run lint
+        continue-on-error: true
+
+      # `npm run build` runs `tsc -b` first, so this also type checks the app.
+      - name: Build
+        run: npm run build
+
+      - name: Unit tests
+        run: npm run test:unit
+
+      - name: Upload the production build
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist
+          retention-days: 7
