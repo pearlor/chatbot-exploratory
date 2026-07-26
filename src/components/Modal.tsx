@@ -36,7 +36,7 @@ export default function Modal({
       >
         {/* Header */}
         <div className="flex items-center justify-between">
-          <h2 className="font-serif text-xl font-bold text-ink">{header}</h2>
+          <h2 className="text-xl font-bold text-ink">{header}</h2>
           <button
             onClick={onClose}
             title={MODAL_CLOSE_TITLE}

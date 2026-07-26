@@ -1,9 +1,12 @@
 import { CHEF_ICON, PIRATE_ICON, TV_ICON } from "../assets/icons";
 import {
+  PERSONA_PIRATE_DESCRIPTION,
   PERSONA_PIRATE_LABEL,
   PERSONA_PIRATE_NAME,
+  PERSONA_TEACHER_DESCRIPTION,
   PERSONA_TEACHER_LABEL,
   PERSONA_TEACHER_NAME,
+  PERSONA_TV_HOST_DESCRIPTION,
   PERSONA_TV_HOST_LABEL,
   PERSONA_TV_HOST_NAME,
 } from "../content";
@@ -39,24 +42,28 @@ export const personas: {
   label: string;
   emoji: string;
   name: string;
+  description: string;
 }[] = [
   {
     id: RoleEnum.Teacher,
     label: PERSONA_TEACHER_LABEL,
     emoji: CHEF_ICON,
     name: PERSONA_TEACHER_NAME,
+    description: PERSONA_TEACHER_DESCRIPTION,
   },
   {
     id: RoleEnum.TvHost,
     label: PERSONA_TV_HOST_LABEL,
     emoji: TV_ICON,
     name: PERSONA_TV_HOST_NAME,
+    description: PERSONA_TV_HOST_DESCRIPTION,
   },
   {
     id: RoleEnum.Pirate,
     label: PERSONA_PIRATE_LABEL,
     emoji: PIRATE_ICON,
     name: PERSONA_PIRATE_NAME,
+    description: PERSONA_PIRATE_DESCRIPTION,
   },
 ];
 

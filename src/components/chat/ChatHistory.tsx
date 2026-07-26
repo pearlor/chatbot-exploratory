@@ -33,9 +33,7 @@ export default function ChatHistory({
           <div className="w-16 h-16 rounded-full bg-terracotta-soft flex items-center justify-center text-3xl text-terracotta">
             {FOOD_ICON}
           </div>
-          <p className="font-serif italic text-lg text-muted">
-            {CHAT_EMPTY_GREETING}
-          </p>
+          <p className="italic text-lg text-muted">{CHAT_EMPTY_GREETING}</p>
         </div>
       </div>
     );

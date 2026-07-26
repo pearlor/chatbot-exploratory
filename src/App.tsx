@@ -59,9 +59,7 @@ function AppShell() {
           >
             <MenuIcon />
           </button>
-          <span className="font-serif text-lg font-bold text-ink">
-            {APP_NAME}
-          </span>
+          <span className="text-lg font-bold text-ink">{APP_NAME}</span>
         </header>
 
         <div className="flex-1 min-h-0">

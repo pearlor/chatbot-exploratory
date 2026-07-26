@@ -5,6 +5,7 @@ import { useUserPreferences } from "../context/UserPreferencesContext";
 import { personas } from "../chat/types";
 import {
   CHOOSE_PERSONA_LABEL,
+  CHOOSE_PERSONA_LABEL_DESCRIPTION,
   SETTINGS_CANCEL_LABEL,
   SETTINGS_MODAL_HEADER,
   SETTINGS_SAVE_LABEL,
@@ -29,8 +30,11 @@ export default function SettingsModal({ onClose }: { onClose: () => void }) {
       secondaryAction={{ label: SETTINGS_CANCEL_LABEL, onClick: onClose }}
       onClose={onClose}
     >
-      <p className="text-ink mb-5">{CHOOSE_PERSONA_LABEL}</p>
-      <div className="flex flex-wrap justify-center gap-4 sm:gap-6">
+      <p className="text-ink font-semibold">{CHOOSE_PERSONA_LABEL}</p>
+      <p className="text-ink mb-5 text-sm italic">
+        {CHOOSE_PERSONA_LABEL_DESCRIPTION}
+      </p>
+      <div className="flex flex-wrap justify-center gap-4">
         {personas.map((persona) => {
           const isSelected = selectedPersona === persona.id;
           return (
@@ -58,6 +62,9 @@ export default function SettingsModal({ onClose }: { onClose: () => void }) {
             </button>
           );
         })}
+        <p className="font-light text-sm  text-center">
+          {personas.find((p) => selectedPersona == p.id)?.description}
+        </p>
       </div>
     </Modal>
   );

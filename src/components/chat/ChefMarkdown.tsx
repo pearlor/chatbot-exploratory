@@ -104,7 +104,7 @@ const columnHeadingOverride: Components = {
 const stepsOverrides: Components = {
   ...columnHeadingOverride,
   ol: ({ children }) => (
-    <ol className="my-2 list-decimal space-y-3 pl-6 marker:font-serif marker:text-lg marker:italic marker:text-terracotta">
+    <ol className="my-2 list-decimal space-y-3 pl-6 marker:text-lg marker:italic marker:text-terracotta">
       {children}
     </ol>
   ),

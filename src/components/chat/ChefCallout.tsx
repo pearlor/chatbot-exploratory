@@ -15,7 +15,7 @@ export default function ChefCallout({
 }) {
   return (
     <div className="mt-4 -mx-5 -mb-4 rounded-b-2xl bg-forest px-5 py-4 text-cream">
-      <div className="mb-1 flex items-center gap-2 font-serif font-semibold">
+      <div className="mb-1 flex items-center gap-2 font-semibold">
         {SPARKLE_ICON} {title}
       </div>
       <div className="italic opacity-90">{children}</div>
