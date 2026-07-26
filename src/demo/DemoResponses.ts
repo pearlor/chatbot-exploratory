@@ -6,7 +6,7 @@ import {
   SUGGESTION_SURPRISE_PROMPT,
   SUGGESTION_VEGETARIAN_PROMPT,
 } from "../content";
-import { MAIN_USER_FOLLOWUP } from "./DemoUserPrompts";
+import { DEMO_FRIDGE_PROMPT, MAIN_USER_FOLLOWUP } from "./DemoUserPrompts";
 
 // Written out one by one rather than built from the persona id: Vite's ?raw
 // imports need literal paths, and the folder and file names don't follow a
@@ -99,6 +99,7 @@ function getScriptForPrompt(prompt: string): DemoScript {
     case SUGGESTION_FIVE_INGREDIENT_PROMPT:
       return "fiveIngredient";
     case FRIDGE_PROMPT:
+    case DEMO_FRIDGE_PROMPT:
       return "fridge";
     default:
       return "main";

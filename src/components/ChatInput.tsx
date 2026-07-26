@@ -4,9 +4,10 @@ import {
   ASK_MODE_LABEL,
   ASK_MODE_TOOLTIP,
   CHAT_INPUT_PLACEHOLDER,
-  DEMO_MODE_LABEL,
-  DEMO_MODE_TOOLTIP_MIDDLE,
-  DEMO_MODE_TOOLTIP_PREFIX,
+  DEMO_MODE_DISABLED_SUBMIT_LABEL,
+  DEMO_MODE_DISABLED_SUBMIT_TOOLTIP_MIDDLE,
+  DEMO_MODE_DISABLED_SUBMIT_TOOLTIP_PREFIX,
+  DEMO_MODE_FOR_READONLY_INPUT,
   FRIDGE_MODE_LABEL,
   FRIDGE_MODE_TOOLTIP,
   NEW_CONVERSATION_TITLE,
@@ -20,19 +21,22 @@ export default function ChatInput({
   handleSubmit,
   isLoading,
   isReadOnly = false,
+  isFridgeSelected,
+  setIsFridgeSelected,
 }: {
   userPrompt: string;
   setUserPrompt: (prompt: string) => void;
-  handleSubmit: (promptOverride?: string, isFridgeSelected?: boolean) => void;
+  handleSubmit: (promptOverride?: string) => void;
   isLoading: boolean;
   isReadOnly?: boolean;
+  isFridgeSelected: boolean;
+  setIsFridgeSelected: (isFridgeSelected: boolean) => void;
 }) {
   const isSubmitDisabled = isLoading || userPrompt.trim() === "";
 
   // The "Ask" selector: "My fridge" mode grounds the chef in the user's fridge
-  // contents. isMenuOpen controls the dropdown; isFridgeSelected is the mode and
-  // persists until switched back to "Ask".
-  const [isFridgeSelected, setIsFridgeSelected] = useState(false);
+  // contents. It's owned by ChatHome (which pins the demo-mode prompt to it) and
+  // persists until switched back to "Ask"; isMenuOpen controls the dropdown.
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const selectorRef = useRef<HTMLDivElement>(null);
 
@@ -63,12 +67,12 @@ export default function ChatInput({
 
   // Wider than the tooltip's usual one-liners, so it opts out of the bubble's
   // whitespace-nowrap and wraps to a fixed width instead of running off screen.
-  const demoModeTooltip = (
+  const demoModeSubmitDisabledTooltip = (
     <span className="w-56 whitespace-normal">
-      {DEMO_MODE_TOOLTIP_PREFIX}
+      {DEMO_MODE_DISABLED_SUBMIT_TOOLTIP_PREFIX}
       <strong>'{NEW_CONVERSATION_TITLE}'</strong>
-      {DEMO_MODE_TOOLTIP_MIDDLE}
-      <strong>{DEMO_MODE_LABEL}</strong>.
+      {DEMO_MODE_DISABLED_SUBMIT_TOOLTIP_MIDDLE}
+      <strong>{DEMO_MODE_DISABLED_SUBMIT_LABEL}</strong>.
     </span>
   );
 
@@ -90,7 +94,7 @@ export default function ChatInput({
       onChange={(e) => setUserPrompt(e.target.value)}
       onKeyDown={(e) => {
         if (e.key === "Enter" && !isSubmitDisabled) {
-          handleSubmit(undefined, isFridgeSelected);
+          handleSubmit();
         }
       }}
     />
@@ -139,9 +143,13 @@ export default function ChatInput({
 
       {/* The read-only input can't say why it won't take typing, so in demo
           mode it gets a tooltip pointing at the way out. */}
-      {isReadOnly && isSubmitDisabled ? (
+      {isReadOnly ? (
         <Tooltip
-          content={demoModeTooltip}
+          content={
+            isSubmitDisabled
+              ? demoModeSubmitDisabledTooltip
+              : DEMO_MODE_FOR_READONLY_INPUT
+          }
           side="top"
           className="flex-1 min-w-0"
         >
@@ -154,14 +162,16 @@ export default function ChatInput({
       {/* Send button */}
       <Tooltip
         content={
-          isReadOnly && isSubmitDisabled ? demoModeTooltip : SEND_MESSAGE_LABEL
+          isReadOnly && isSubmitDisabled
+            ? demoModeSubmitDisabledTooltip
+            : SEND_MESSAGE_LABEL
         }
         side="top"
         className="shrink-0"
       >
         <button
           className="w-11 h-11 sm:w-9 sm:h-9 rounded-full bg-terracotta text-white flex items-center justify-center shrink-0 transition hover:brightness-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:brightness-100"
-          onClick={() => handleSubmit(undefined, isFridgeSelected)}
+          onClick={() => handleSubmit()}
           aria-label={SEND_MESSAGE_LABEL}
           disabled={isSubmitDisabled}
         >

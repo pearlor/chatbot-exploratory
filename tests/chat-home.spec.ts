@@ -16,6 +16,7 @@ import {
 } from "../src/content";
 import { FRIDGE_PROMPT } from "../src/chat/prompts";
 import {
+  DEMO_FRIDGE_PROMPT,
   MAIN_USER_FOLLOWUP,
   MAIN_USER_PROMPT,
 } from "../src/demo/DemoUserPrompts";
@@ -169,6 +170,28 @@ test("the Ask / My fridge selector switches modes and closes on outside click", 
   await page.getByText(AI_DISCLAIMER).click();
 
   await expect(askItem).toBeHidden();
+});
+
+test("selecting My fridge pins the composer to the fridge prompt", async ({
+  page,
+}) => {
+  await modeSelector(page).click();
+  await page
+    .getByRole("button", { name: FRIDGE_MODE_LABEL, exact: true })
+    .click();
+
+  await expect(chatInput(page)).toHaveValue(DEMO_FRIDGE_PROMPT);
+
+  await sendScriptedPrompt(page);
+
+  await expect(page.getByText(DEMO_FRIDGE_PROMPT)).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: FRIDGE_RECIPE_TITLE, level: 2 }),
+  ).toBeVisible();
+
+  // One canned fridge reply, so the composer empties once it has been asked.
+  await expect(chatInput(page)).toHaveValue("");
+  await expect(sendButton(page)).toBeDisabled();
 });
 
 test("a conversation survives navigating to the fridge and back", async ({

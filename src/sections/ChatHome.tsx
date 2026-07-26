@@ -44,6 +44,9 @@ export default function ChatHome() {
     null,
   );
   const [numRetries, setNumRetries] = useState(MAX_RETRIES);
+  // The composer's "Ask" / "My fridge" selector. It lives here rather than in
+  // ChatInput because demo mode pins the composer text to the selected mode.
+  const [isFridgeSelected, setIsFridgeSelected] = useState(false);
 
   const resetChatState = useCallback(() => {
     setUserPrompt("");
@@ -79,10 +82,12 @@ export default function ChatHome() {
   // on every render (rather than syncing it into userPrompt) keeps it correct
   // through submits, retries and conversation switches, all of which clear
   // userPrompt out from under us.
-  const composerPrompt = isDemoMode ? getDemoPrompt(messages) : userPrompt;
+  const composerPrompt = isDemoMode
+    ? getDemoPrompt(messages, isFridgeSelected)
+    : userPrompt;
 
   const handleSubmit = useCallback(
-    async (promptOverride?: string, isFridgeSelected: boolean = false) => {
+    async (promptOverride?: string) => {
       const prompt = (promptOverride ?? composerPrompt).trim();
       if (!prompt) return;
 
@@ -188,6 +193,7 @@ export default function ChatHome() {
       activeConversationId,
       ingredients,
       isDemoMode,
+      isFridgeSelected,
     ],
   );
 
@@ -232,6 +238,8 @@ export default function ChatHome() {
         showSuggestions={messages.length === 0}
         onSuggestionClick={handleSuggestionClick}
         isReadOnly={isDemoMode}
+        isFridgeSelected={isFridgeSelected}
+        setIsFridgeSelected={setIsFridgeSelected}
       />
     </div>
   );

@@ -10,14 +10,18 @@ export default function Composer({
   showSuggestions,
   onSuggestionClick,
   isReadOnly,
+  isFridgeSelected,
+  setIsFridgeSelected,
 }: {
   userPrompt: string;
   setUserPrompt: (prompt: string) => void;
-  handleSubmit: (promptOverride?: string, isFridgeSelected?: boolean) => void;
+  handleSubmit: (promptOverride?: string) => void;
   isLoading: boolean;
   showSuggestions: boolean;
   onSuggestionClick: (prompt: string) => void;
   isReadOnly?: boolean;
+  isFridgeSelected: boolean;
+  setIsFridgeSelected: (isFridgeSelected: boolean) => void;
 }) {
   return (
     <div className="px-3 pb-3 sm:px-6 sm:pb-6">
@@ -29,6 +33,8 @@ export default function Composer({
           handleSubmit={handleSubmit}
           isLoading={isLoading}
           isReadOnly={isReadOnly}
+          isFridgeSelected={isFridgeSelected}
+          setIsFridgeSelected={setIsFridgeSelected}
         />
         <div className="text-xs text-muted text-center">
           <p>{AI_DISCLAIMER}</p>
