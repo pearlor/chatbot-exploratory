@@ -1,5 +1,5 @@
-# Sample workflow for building and deploying a Jekyll site to GitHub Pages
-name: Deploy Jekyll with GitHub Pages dependencies preinstalled
+# Builds the Vite app and deploys the compiled output to GitHub Pages
+name: Deploy Vite site to GitHub Pages
 
 on:
   # Runs on pushes targeting the default branch
@@ -40,16 +40,13 @@ jobs:
       - name: Install Node Dependencies
         run: npm ci # This reads package.json and installs @tailwindcss/vite ⚡
 
-      - name: Compile Tailwind CSS via Vite
-        run: npm run build # Make sure this runs your vite build script
-        
-      - name: Build with Jekyll
-        uses: actions/jekyll-build-pages@v1
-        with:
-          source: ./
-          destination: ./_site
+      - name: Build with Vite (compiles Tailwind CSS)
+        run: npm run build
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
 
 
   # Deployment job
