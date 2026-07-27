@@ -34,6 +34,7 @@ const mockChatHistory: Record<string, Conversation> = {
   "conv-egg-tarts": {
     lastResponseTime: Date.now() - 1000 * 60 * 60, // 1 hour ago
     previousInteractionId: "mock-interaction-egg-tarts",
+    lastMessageId: "2",
     title: "Homemade Egg Tarts",
     messages: [
       {
@@ -72,6 +73,7 @@ function chatHistoryReducer(
         ? {
             ...existingConversation,
             lastResponseTime: Date.now(),
+            lastMessageId: message.id,
             // For a new conversation, a later message may bring the real title
             // (e.g. extracted from the recipe response).
             title: isNewConversation
@@ -82,6 +84,7 @@ function chatHistoryReducer(
         : {
             lastResponseTime: Date.now(),
             previousInteractionId: undefined, // No previous interaction for a new conversation
+            lastMessageId: message.id,
             title: title || NEW_CONVERSATION_TITLE,
             messages: [message],
           };

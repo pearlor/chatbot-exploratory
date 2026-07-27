@@ -48,6 +48,18 @@ export default function ChatHome() {
   // ChatInput because demo mode pins the composer text to the selected mode.
   const [isFridgeSelected, setIsFridgeSelected] = useState(false);
 
+  // The chat view scrolls the latest message to the top, both when a past
+  // conversation is opened and when a reply arrives. Only a chef reply pulls
+  // the view — the user's own message leaves the scroll position where it was.
+  const activeConversation = activeConversationId
+    ? chatHistory[activeConversationId]
+    : undefined;
+  const lastMessage = activeConversation?.messages.at(-1);
+  const scrollToMessageId =
+    lastMessage && lastMessage.role !== RoleEnum.User
+      ? activeConversation?.lastMessageId
+      : undefined;
+
   const resetChatState = useCallback(() => {
     setUserPrompt("");
     setMessageIdWithError(null);
@@ -228,6 +240,7 @@ export default function ChatHome() {
         messageIdWithError={messageIdWithError}
         retry={handleSubmit}
         numRetries={numRetries}
+        scrollToMessageId={scrollToMessageId}
       />
 
       <Composer

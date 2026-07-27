@@ -23,6 +23,7 @@ import {
 import {
   chatInput,
   conversations,
+  distanceFromPaneTop,
   gotoApp,
   modeSelector,
   sendButton,
@@ -35,6 +36,10 @@ const MAIN_RECIPE_TITLE = "The Ultimate Golden Grilled Cheese";
 const FOLLOW_UP_TITLE = "Gouda vs. Cheddar: The Ultimate Cheese Showdown";
 const SURPRISE_RECIPE_TITLE = "Chef Kale's Crispy Gochujang Honey Brussels Sprouts";
 const FRIDGE_RECIPE_TITLE = "Citrus-Infused Blueberry Dutch Baby";
+
+// The seeded conversation in ChatHistoryContext, whose chef reply is the
+// example_response.md fixture. Its title and `## ` heading are the same text.
+const MOCK_CONVERSATION_TITLE = "Homemade Egg Tarts";
 
 test.beforeEach(async ({ page }) => {
   await gotoApp(page);
@@ -192,6 +197,31 @@ test("selecting My fridge pins the composer to the fridge prompt", async ({
   // One canned fridge reply, so the composer empties once it has been asked.
   await expect(chatInput(page)).toHaveValue("");
   await expect(sendButton(page)).toBeDisabled();
+});
+
+// The scroll lands the message top a fixed gap below the pane top; the margin
+// absorbs sub-pixel layout and the tail of the smooth-scroll animation.
+const MAX_DISTANCE_FROM_PANE_TOP = 32;
+
+test("a chef reply scrolls to the top of its bubble", async ({ page }) => {
+  await sendScriptedPrompt(page);
+
+  await expect
+    .poll(() => distanceFromPaneTop(page))
+    .toBeLessThan(MAX_DISTANCE_FROM_PANE_TOP);
+});
+
+test("opening a past conversation scrolls to its last message", async ({
+  page,
+}) => {
+  await conversations(page).filter({ hasText: MOCK_CONVERSATION_TITLE }).click();
+
+  await expect(
+    page.getByRole("heading", { name: MOCK_CONVERSATION_TITLE, level: 2 }),
+  ).toBeVisible();
+  await expect
+    .poll(() => distanceFromPaneTop(page))
+    .toBeLessThan(MAX_DISTANCE_FROM_PANE_TOP);
 });
 
 test("a conversation survives navigating to the fridge and back", async ({
