@@ -9,4 +9,5 @@ export const TEST_IDS = {
   modalOverlay: "modal-overlay",
   sidebar: "sidebar",
   chatModeSelector: "chat-mode-selector",
+  chatScrollContainer: "chat-scroll-container",
 } as const;

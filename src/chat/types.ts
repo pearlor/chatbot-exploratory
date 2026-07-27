@@ -70,6 +70,8 @@ export const personas: {
 export interface Conversation {
   lastResponseTime: number;
   previousInteractionId: string | undefined;
+  /** Id of the most recently added message — the scroll anchor for the chat view. */
+  lastMessageId: string;
   title: string;
   messages: ChatMessage[];
 }

@@ -72,6 +72,26 @@ export const sendButton = (page: Page): Locator =>
 export const modeSelector = (page: Page): Locator =>
   page.getByTestId(TEST_IDS.chatModeSelector);
 
+/** The scrolling chat pane, and the per-message wrappers inside it that the
+ *  scroll-to-latest-message behaviour anchors on. */
+export const chatScrollContainer = (page: Page): Locator =>
+  page.getByTestId(TEST_IDS.chatScrollContainer);
+
+export const chatMessages = (page: Page): Locator =>
+  page.locator("[data-message-id]");
+
+/**
+ * How far the top of the last message sits below the top of the chat pane.
+ * Polled rather than read once: the scroll can animate, and markdown lays out
+ * over a frame or two after the message appears.
+ */
+export async function distanceFromPaneTop(page: Page): Promise<number> {
+  const pane = await chatScrollContainer(page).boundingBox();
+  const lastMessage = await chatMessages(page).last().boundingBox();
+  if (!pane || !lastMessage) throw new Error("chat pane or message not laid out");
+  return lastMessage.y - pane.y;
+}
+
 export const ingredientCards = (page: Page): Locator =>
   page.getByTestId(TEST_IDS.ingredientCard);
 
