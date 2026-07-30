@@ -64,6 +64,19 @@ describe("parseRecipeSegments", () => {
     ]);
   });
 
+  it("normalizes descriptive ingredient lines with a leading quantity", () => {
+    const markdown = `### [Ingredients] Pantry
+
+* 2 large eggs
+* 3 tablespoons of dark brown sugar
+* 1/2 cup unsalted butter`;
+    expect(extractRecipeIngredients(markdown)).toEqual([
+      { name: "eggs", quantity: "2" },
+      { name: "dark brown sugar", quantity: "3 tablespoons" },
+      { name: "unsalted butter", quantity: "1/2 cup" },
+    ]);
+  });
+
   it("strips bracket tags but keeps personalized titles", () => {
     const segments = parseRecipeSegments(fullRecipe);
     const columns = segments.find((s) => s.kind === "columns");

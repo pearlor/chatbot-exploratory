@@ -73,7 +73,7 @@ export function extractRecipeIngredients(markdown: string): RecipeIngredient[] {
         .trim();
 
       const quantityMatch = cleaned.match(
-        /^((?:\d+(?:\.\d+)?(?:\/\d+)?)(?:\s*(?:cup|cups|tablespoon|tablespoons|teaspoon|teaspoons|tbsp|tsp|oz|ounce|ounces|lb|lbs|pound|pounds|g|gram|grams|kg|kilogram|kilograms|clove|cloves|pinch|dash|can|cans|package|packages|slice|slices|stick|sticks|bunch|bunches|piece|pieces))?)(?:\s+of)?\s*(.*)$/i,
+        /^((?:\d+(?:\.\d+)?(?:\/\d+)?)(?:\s*(?:cups?|tablespoons?|teaspoons?|tbsp|tsp|ounces?|lbs?|pounds?|grams?|kilograms?|cloves?|pinches?|dashes?|cans?|packages?|slices?|sticks?|bunches?|pieces?))?)(?:\s+of)?\s*(.*)$/i,
       );
 
       if (!quantityMatch) {
@@ -115,6 +115,8 @@ function normalizeIngredientName(name: string): string {
     "dried",
     "soft",
     "hard",
+    "extra",
+    "tiny",
   ];
 
   while (words.length > 0 && descriptorWords.includes(words[0].toLowerCase())) {
