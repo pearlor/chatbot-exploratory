@@ -20,6 +20,11 @@ export type Segment =
   | { kind: "columns"; ingredients: string; steps: string }
   | { kind: "callout"; title: string; body: string };
 
+export type RecipeIngredient = {
+  name: string;
+  quantity?: string;
+};
+
 // Matches a metadata line in the forms the model actually produces:
 // `- **Time:** 90 minutes`, `**Time**: 90 minutes`, `Time: 90 minutes`,
 // with any bullet marker (or none) and any field order. A colon is required
@@ -44,6 +49,79 @@ export function isRecipeContent(markdown: string): boolean {
     markdown.split("\n").some((line) => META_LINE.test(line)) ||
     TAGGED_HEADING.test(markdown)
   );
+}
+
+export function extractRecipeIngredients(markdown: string): RecipeIngredient[] {
+  const sections = splitSections(markdown);
+  const ingredientsSection = sections.find(
+    (section) => section.tag === "ingredients",
+  );
+
+  if (!ingredientsSection) return [];
+
+  return ingredientsSection.body
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line) => {
+      const bulletMatch = line.match(/^[-*]\s+(.*)$/);
+      const content = bulletMatch ? bulletMatch[1] : line;
+      const cleaned = content
+        .replace(/\*\*/g, "")
+        .replace(/\*/g, "")
+        .replace(/_/g, "")
+        .trim();
+
+      const quantityMatch = cleaned.match(
+        /^((?:\d+(?:\.\d+)?(?:\/\d+)?)(?:\s*(?:cup|cups|tablespoon|tablespoons|teaspoon|teaspoons|tbsp|tsp|oz|ounce|ounces|lb|lbs|pound|pounds|g|gram|grams|kg|kilogram|kilograms|clove|cloves|pinch|dash|can|cans|package|packages|slice|slices|stick|sticks|bunch|bunches|piece|pieces))?)(?:\s+of)?\s*(.*)$/i,
+      );
+
+      if (!quantityMatch) {
+        return { name: cleaned };
+      }
+
+      const quantity = quantityMatch[1].trim();
+      const name = normalizeIngredientName(quantityMatch[2].trim());
+      return {
+        name: name || cleaned,
+        quantity: quantity || undefined,
+      };
+    })
+    .filter((ingredient) => ingredient.name.length > 0);
+}
+
+function normalizeIngredientName(name: string): string {
+  const cleaned = name
+    .replace(/^[,;:.-]+/, "")
+    .replace(/^[,;:.-]+/, "")
+    .trim();
+
+  const words = cleaned.split(/\s+/).filter(Boolean);
+  const descriptorWords = [
+    "large",
+    "small",
+    "medium",
+    "firm",
+    "ripe",
+    "fresh",
+    "ground",
+    "whole",
+    "diced",
+    "minced",
+    "sliced",
+    "chopped",
+    "peeled",
+    "cooked",
+    "dried",
+    "soft",
+    "hard",
+  ];
+
+  while (words.length > 0 && descriptorWords.includes(words[0].toLowerCase())) {
+    words.shift();
+  }
+
+  return words.join(" ").trim();
 }
 
 type MetaSplit = { meta: RecipeMeta | null; before: string; after: string };
@@ -208,7 +286,11 @@ export function parseRecipeSegments(markdown: string): Segment[] {
     } else if (pairFound && section === steps) {
       continue;
     } else if (section.tag === "ending comment") {
-      segments.push({ kind: "callout", title: section.title, body: section.body });
+      segments.push({
+        kind: "callout",
+        title: section.title,
+        body: section.body,
+      });
     } else {
       // Untagged sections — and a solo [Ingredients]/[Steps] without its
       // partner — render flat, with any bracket tag already stripped.

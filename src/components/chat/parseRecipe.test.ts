@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  extractRecipeIngredients,
   extractRecipeTitle,
   isRecipeContent,
   parseRecipeSegments,
@@ -53,6 +54,14 @@ describe("parseRecipeSegments", () => {
     expect(intro.kind === "markdown" && intro.text).toContain(
       "## Homemade Egg Tarts",
     );
+  });
+
+  it("extracts ingredients and quantities from a tagged ingredients section", () => {
+    const ingredients = extractRecipeIngredients(fullRecipe);
+    expect(ingredients).toEqual([
+      { name: "unsalted butter", quantity: "1/2 cup" },
+      { name: "eggs", quantity: "2" },
+    ]);
   });
 
   it("strips bracket tags but keeps personalized titles", () => {
@@ -312,9 +321,7 @@ Enjoy!`;
     const segments = parseRecipeSegments(solo);
     expect(segments.map((s) => s.kind)).toEqual(["pills", "markdown"]);
     const tail = segments[1];
-    expect(tail.kind === "markdown" && tail.text).toContain(
-      "### Only Section",
-    );
+    expect(tail.kind === "markdown" && tail.text).toContain("### Only Section");
     expect(tail.kind === "markdown" && tail.text).not.toContain(
       "[Ingredients]",
     );
