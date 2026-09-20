@@ -20,6 +20,9 @@ export default function ChefBubble({
 }) {
   const [isUpdatingFridge, setIsUpdatingFridge] = useState(false);
   const [quantities, setQuantities] = useState<Record<string, string>>({});
+  const [removedIngredientNames, setRemovedIngredientNames] = useState<
+    string[]
+  >([]);
   const { ingredients, dispatch } = useIngredients();
   // Recipe cards go full width so ingredients/steps can sit side by side;
   // @container enables the column switch to track the bubble's own width.
@@ -50,6 +53,9 @@ export default function ChefBubble({
 
   const handleRemove = (ingredientName: string) => {
     dispatch({ type: "removeIngredient", name: ingredientName });
+    setRemovedIngredientNames((current) =>
+      current.includes(ingredientName) ? current : [...current, ingredientName],
+    );
   };
 
   const updateQuantity = (ingredientName: string, quantity: string) => {
@@ -59,6 +65,24 @@ export default function ChefBubble({
       name: ingredientName,
       quantity: quantity.trim() || undefined,
     });
+  };
+
+  const handleSaveAll = () => {
+    Object.entries(quantities).forEach(([ingredientName, quantity]) => {
+      updateQuantity(ingredientName, quantity);
+    });
+    setIsUpdatingFridge(false);
+  };
+
+  const handleCancel = () => {
+    setQuantities((current) => {
+      const next = { ...current };
+      Object.keys(next).forEach((ingredientName) => {
+        delete next[ingredientName];
+      });
+      return next;
+    });
+    setIsUpdatingFridge(false);
   };
 
   return (
@@ -93,51 +117,70 @@ export default function ChefBubble({
       {isUpdatingFridge && (
         <Modal
           header="Update Fridge"
-          onClose={() => setIsUpdatingFridge(false)}
+          primaryAction={{ label: "Save", onClick: handleSaveAll }}
+          secondaryAction={{ label: "Cancel", onClick: handleCancel }}
+          onClose={handleCancel}
         >
           <div className="flex flex-col gap-3">
             {normalizedIngredients.map((ingredient) => {
               const inputValue =
                 quantities[ingredient.name] ?? ingredient.initialQuantity;
+              const isRemoved = removedIngredientNames.includes(
+                ingredient.name,
+              );
 
               return (
                 <div
                   key={ingredient.name}
-                  className="flex items-center justify-between gap-3 rounded-xl border border-border bg-white/70 px-3 py-3"
+                  className={`flex items-center justify-between gap-3 rounded-xl border border-border px-3 py-3 ${
+                    isRemoved ? "bg-white/40 opacity-60" : "bg-white/70"
+                  }`}
                 >
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-medium text-ink">
+                    <p
+                      className={`text-sm font-medium ${
+                        isRemoved ? "text-muted line-through" : "text-ink"
+                      }`}
+                    >
                       {ingredient.name}
                     </p>
-                    <input
-                      type="text"
-                      value={inputValue}
-                      onChange={(event) =>
-                        setQuantities((current) => ({
-                          ...current,
-                          [ingredient.name]: event.target.value,
-                        }))
-                      }
-                      onBlur={(event) =>
-                        updateQuantity(ingredient.name, event.target.value)
-                      }
-                      onKeyDown={(event) => {
-                        if (event.key === "Enter") {
-                          updateQuantity(
-                            ingredient.name,
-                            event.currentTarget.value,
-                          );
-                        }
-                      }}
-                      className="mt-2 w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-ink focus:outline-none focus:border-terracotta"
-                      placeholder="Qty"
-                    />
+                    <div className="mt-2 flex items-center gap-2">
+                      <input
+                        type="text"
+                        value={inputValue}
+                        onChange={(event) => {
+                          const nextValue = event.target.value;
+                          setQuantities((current) => ({
+                            ...current,
+                            [ingredient.name]: nextValue,
+                          }));
+                        }}
+                        onKeyDown={(event) => {
+                          if (event.key === "Enter") {
+                            updateQuantity(
+                              ingredient.name,
+                              event.currentTarget.value,
+                            );
+                          }
+                        }}
+                        disabled={isRemoved}
+                        className={`w-full rounded-lg border border-border bg-white px-3 py-2 text-sm focus:outline-none focus:border-terracotta ${
+                          isRemoved ? "text-muted line-through" : "text-ink"
+                        }`}
+                        placeholder="Qty"
+                      />
+                    </div>
                   </div>
                   <button
                     onClick={() => handleRemove(ingredient.name)}
-                    className="rounded-lg border border-border px-3 py-2 text-sm text-terracotta"
+                    disabled={isRemoved}
+                    className={`rounded-lg border border-border px-3 py-2 text-sm ${
+                      isRemoved
+                        ? "cursor-not-allowed text-muted"
+                        : "text-terracotta"
+                    }`}
                   >
-                    Remove
+                    {isRemoved ? "Removed" : "Remove"}
                   </button>
                 </div>
               );
