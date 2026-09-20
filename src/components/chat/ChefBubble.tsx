@@ -7,6 +7,7 @@ import { CHEF_FALLBACK_NAME } from "../../content";
 import { CHEF_ICON } from "../../assets/icons";
 import Modal from "../Modal";
 import { useIngredients } from "../../context/IngredientsContext";
+import type { Ingredient } from "../IngredientCard";
 /**
  * A chat bubble for a chef response: avatar + label above the rendered
  * markdown. Recipe content widens the bubble into a full-width card.
@@ -20,9 +21,12 @@ export default function ChefBubble({
 }) {
   const [isUpdatingFridge, setIsUpdatingFridge] = useState(false);
   const [quantities, setQuantities] = useState<Record<string, string>>({});
-  const [removedIngredientNames, setRemovedIngredientNames] = useState<
-    string[]
-  >([]);
+  // Ingredients removed while the modal is open, keyed by recipe name. The
+  // value is the fridge entry that was removed so Undo can restore its
+  // original name and quantity, or null when the fridge had no such entry.
+  const [removedIngredients, setRemovedIngredients] = useState<
+    Record<string, Ingredient | null>
+  >({});
   const { ingredients, dispatch } = useIngredients();
   // Recipe cards go full width so ingredients/steps can sit side by side;
   // @container enables the column switch to track the bubble's own width.
@@ -52,10 +56,26 @@ export default function ChefBubble({
   const persona = personas.find((p) => p.id === role);
 
   const handleRemove = (ingredientName: string) => {
-    dispatch({ type: "removeIngredient", name: ingredientName });
-    setRemovedIngredientNames((current) =>
-      current.includes(ingredientName) ? current : [...current, ingredientName],
+    const fridgeEntry = Object.values(ingredients).find(
+      (item) => item.name.toLowerCase() === ingredientName.toLowerCase(),
     );
+    dispatch({ type: "removeIngredient", name: ingredientName });
+    setRemovedIngredients((current) => ({
+      ...current,
+      [ingredientName]: fridgeEntry ?? null,
+    }));
+  };
+
+  const handleUndoRemove = (ingredientName: string) => {
+    const removedEntry = removedIngredients[ingredientName];
+    if (removedEntry) {
+      dispatch({ type: "addIngredient", ingredient: removedEntry });
+    }
+    setRemovedIngredients((current) => {
+      const next = { ...current };
+      delete next[ingredientName];
+      return next;
+    });
   };
 
   const updateQuantity = (ingredientName: string, quantity: string) => {
@@ -125,9 +145,7 @@ export default function ChefBubble({
             {normalizedIngredients.map((ingredient) => {
               const inputValue =
                 quantities[ingredient.name] ?? ingredient.initialQuantity;
-              const isRemoved = removedIngredientNames.includes(
-                ingredient.name,
-              );
+              const isRemoved = ingredient.name in removedIngredients;
 
               return (
                 <div
@@ -171,17 +189,27 @@ export default function ChefBubble({
                       />
                     </div>
                   </div>
-                  <button
-                    onClick={() => handleRemove(ingredient.name)}
-                    disabled={isRemoved}
-                    className={`rounded-lg border border-border px-3 py-2 text-sm ${
-                      isRemoved
-                        ? "cursor-not-allowed text-muted"
-                        : "text-terracotta"
-                    }`}
-                  >
-                    {isRemoved ? "Removed" : "Remove"}
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => handleRemove(ingredient.name)}
+                      disabled={isRemoved}
+                      className={`rounded-lg border border-border px-3 py-2 text-sm ${
+                        isRemoved
+                          ? "cursor-not-allowed text-muted"
+                          : "text-terracotta"
+                      }`}
+                    >
+                      {isRemoved ? "Removed" : "Remove"}
+                    </button>
+                    {isRemoved && (
+                      <button
+                        onClick={() => handleUndoRemove(ingredient.name)}
+                        className="rounded-lg border border-terracotta px-3 py-2 text-sm text-terracotta transition hover:bg-terracotta/10"
+                      >
+                        Undo
+                      </button>
+                    )}
+                  </div>
                 </div>
               );
             })}
