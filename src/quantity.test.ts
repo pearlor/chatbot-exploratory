@@ -24,10 +24,21 @@ describe("unitOptionsFor", () => {
     expect(options[2]).toEqual({ abbr: "g", label: "g — Grams" });
   });
 
-  it("lists volume units", () => {
-    expect(unitOptionsFor("volume").map((option) => option.abbr)).toContain(
+  it("lists only the volume units a recipe writes", () => {
+    const options = unitOptionsFor("volume");
+
+    expect(options.map((option) => option.abbr)).toEqual([
+      "ml",
+      "l",
+      "tsp",
+      "Tbs",
+      "fl-oz",
       "cup",
-    );
+      "pnt",
+      "qt",
+      "gal",
+    ]);
+    expect(options[5]).toEqual({ abbr: "cup", label: "cup — Cups" });
   });
 });
 
@@ -41,6 +52,12 @@ describe("measureForUnit", () => {
     // 'ft' is a length unit, which the fridge doesn't offer.
     expect(measureForUnit("ft")).toBeUndefined();
     expect(measureForUnit("")).toBeUndefined();
+  });
+
+  it("returns undefined for a volume unit the dropdown leaves out", () => {
+    // 'm3' is a volume unit, but not one the dropdown offers, so there is no
+    // entry for the measure dropdown to select.
+    expect(measureForUnit("m3")).toBeUndefined();
   });
 });
 

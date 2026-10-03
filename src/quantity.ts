@@ -45,6 +45,28 @@ export type UnitOption = {
 };
 
 /**
+ * convert-units knows far more volume units than a kitchen needs (cubic
+ * metres, teaspoons' imperial twins, barrels, …). Only the ones a recipe
+ * actually writes are offered; mass has no such list because all of its units
+ * are plausible for food.
+ */
+const VOLUME_UNITS: readonly string[] = [
+  "ml",
+  "l",
+  "tsp",
+  "Tbs",
+  "fl-oz",
+  "cup",
+  "pnt",
+  "qt",
+  "gal",
+];
+
+function isOffered(measure: MeasureName, abbr: string): boolean {
+  return measure === "volume" ? VOLUME_UNITS.includes(abbr) : true;
+}
+
+/**
  * The unit choices for a measure, in convert-units' own order (metric first,
  * then imperial). `list()` rather than `possibilities()`: it returns the same
  * abbreviations, but also the human-readable names the dropdown labels need.
@@ -52,6 +74,7 @@ export type UnitOption = {
 export function unitOptionsFor(measure: MeasureName): UnitOption[] {
   return convert()
     .list(measure)
+    .filter((unit) => isOffered(measure, unit.abbr))
     .map((unit) => ({
       abbr: unit.abbr,
       label: `${unit.abbr} — ${unit.plural}`,
@@ -65,6 +88,7 @@ const measuresByUnit: Record<string, MeasureName> = Object.fromEntries(
   MEASURES.flatMap((measure) =>
     convert()
       .list(measure)
+      .filter((unit) => isOffered(measure, unit.abbr))
       .map((unit) => [unit.abbr, measure]),
   ),
 );
