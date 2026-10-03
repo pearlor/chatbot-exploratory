@@ -3,6 +3,9 @@ import { TEST_IDS } from "../src/testIds";
 import {
   CHAT_INPUT_PLACEHOLDER,
   FRIDGE_HEADING,
+  INGREDIENT_QUANTITY_SHORT_PLACEHOLDER,
+  MEASURE_SELECT_LABEL,
+  UNIT_SELECT_LABEL,
   FRIDGE_NAV_LABEL,
   SEND_MESSAGE_LABEL,
   SETTINGS_CANCEL_LABEL,
@@ -97,6 +100,40 @@ export const ingredientCards = (page: Page): Locator =>
 
 export const ingredientCard = (page: Page, name: string): Locator =>
   ingredientCards(page).filter({ hasText: name });
+
+/**
+ * The three quantity controls. Scope these to a card or a modal row when the
+ * page has more than one set.
+ *
+ * Placeholder matching is substring-based, so the short "Qty" also finds the
+ * add row's "Qty (optional)" field. The unit select, by contrast, needs
+ * `exact`: the measure select's label, "Unit of measure", contains it.
+ */
+export const quantityAmount = (scope: Page | Locator): Locator =>
+  scope.getByPlaceholder(INGREDIENT_QUANTITY_SHORT_PLACEHOLDER);
+
+export const measureSelect = (scope: Page | Locator): Locator =>
+  scope.getByLabel(MEASURE_SELECT_LABEL, { exact: true });
+
+export const unitSelect = (scope: Page | Locator): Locator =>
+  scope.getByLabel(UNIT_SELECT_LABEL, { exact: true });
+
+/**
+ * Fill in a quantity. The measure and unit are optional, matching the UI: an
+ * amount on its own is a valid quantity for something countable.
+ */
+export async function fillQuantity(
+  scope: Page | Locator,
+  quantity: { amount: string; measure?: "mass" | "volume"; unit?: string },
+) {
+  await quantityAmount(scope).fill(quantity.amount);
+  if (quantity.measure) {
+    await measureSelect(scope).selectOption(quantity.measure);
+  }
+  if (quantity.unit) {
+    await unitSelect(scope).selectOption(quantity.unit);
+  }
+}
 
 /**
  * Send whatever prompt the demo script has pinned to the composer, then wait

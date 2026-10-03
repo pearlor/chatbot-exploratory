@@ -8,6 +8,9 @@ import { CHEF_ICON } from "../../assets/icons";
 import Modal from "../Modal";
 import { useIngredients } from "../../context/IngredientsContext";
 import type { Ingredient } from "../IngredientCard";
+import QuantityFields from "../QuantityFields";
+import type { IngredientQuantity } from "../../quantity";
+import { parseQuantity } from "../../quantity";
 /**
  * A chat bubble for a chef response: avatar + label above the rendered
  * markdown. Recipe content widens the bubble into a full-width card.
@@ -20,7 +23,9 @@ export default function ChefBubble({
   role: RoleEnum;
 }) {
   const [isUpdatingFridge, setIsUpdatingFridge] = useState(false);
-  const [quantities, setQuantities] = useState<Record<string, string>>({});
+  const [quantities, setQuantities] = useState<
+    Record<string, IngredientQuantity | undefined>
+  >({});
   // Ingredients removed while the modal is open, keyed by recipe name. The
   // value is the fridge entry that was removed so Undo can restore its
   // original name and quantity, or null when the fridge had no such entry.
@@ -37,14 +42,13 @@ export default function ChefBubble({
       const fridgeMatch = Object.values(ingredients).find(
         (item) => item.name.toLowerCase() === ingredient.name.toLowerCase(),
       );
-      const recipeQuantity = ingredient.quantity ?? "";
-      const fridgeQuantity = fridgeMatch?.quantity ?? "";
+      // The recipe's own amount wins when it names a unit, since that's the
+      // more specific of the two; otherwise fall back to what the fridge
+      // already holds.
+      const recipeQuantity = parseQuantity(ingredient.quantity);
+      const fridgeQuantity = fridgeMatch?.quantity;
       const initialQuantity =
-        recipeQuantity && fridgeQuantity
-          ? recipeQuantity.length > fridgeQuantity.length
-            ? recipeQuantity
-            : fridgeQuantity
-          : recipeQuantity || fridgeQuantity;
+        recipeQuantity?.unit ? recipeQuantity : fridgeQuantity ?? recipeQuantity;
 
       return {
         ...ingredient,
@@ -78,12 +82,15 @@ export default function ChefBubble({
     });
   };
 
-  const updateQuantity = (ingredientName: string, quantity: string) => {
+  const updateQuantity = (
+    ingredientName: string,
+    quantity: IngredientQuantity | undefined,
+  ) => {
     setQuantities((current) => ({ ...current, [ingredientName]: quantity }));
     dispatch({
       type: "updateIngredient",
       name: ingredientName,
-      quantity: quantity.trim() || undefined,
+      quantity,
     });
   };
 
@@ -143,8 +150,10 @@ export default function ChefBubble({
         >
           <div className="flex flex-col gap-3">
             {normalizedIngredients.map((ingredient) => {
-              const inputValue =
-                quantities[ingredient.name] ?? ingredient.initialQuantity;
+              const quantity =
+                ingredient.name in quantities
+                  ? quantities[ingredient.name]
+                  : ingredient.initialQuantity;
               const isRemoved = ingredient.name in removedIngredients;
 
               return (
@@ -162,30 +171,20 @@ export default function ChefBubble({
                     >
                       {ingredient.name}
                     </p>
-                    <div className="mt-2 flex items-center gap-2">
-                      <input
-                        type="text"
-                        value={inputValue}
-                        onChange={(event) => {
-                          const nextValue = event.target.value;
+                    <div className="mt-2 flex flex-wrap items-center gap-2">
+                      <QuantityFields
+                        size="compact"
+                        disabled={isRemoved}
+                        value={quantity}
+                        onChange={(next) =>
                           setQuantities((current) => ({
                             ...current,
-                            [ingredient.name]: nextValue,
-                          }));
-                        }}
-                        onKeyDown={(event) => {
-                          if (event.key === "Enter") {
-                            updateQuantity(
-                              ingredient.name,
-                              event.currentTarget.value,
-                            );
-                          }
-                        }}
-                        disabled={isRemoved}
-                        className={`w-full rounded-lg border border-border bg-white px-3 py-2 text-sm focus:outline-none focus:border-terracotta ${
-                          isRemoved ? "text-muted line-through" : "text-ink"
-                        }`}
-                        placeholder="Qty"
+                            [ingredient.name]: next,
+                          }))
+                        }
+                        onEnter={() =>
+                          updateQuantity(ingredient.name, quantity)
+                        }
                       />
                     </div>
                   </div>

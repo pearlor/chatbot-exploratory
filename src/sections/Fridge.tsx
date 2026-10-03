@@ -1,5 +1,7 @@
 import { useState } from "react";
 import IngredientCard from "../components/IngredientCard";
+import QuantityFields from "../components/QuantityFields";
+import type { IngredientQuantity } from "../quantity";
 import { useIngredients } from "../context/IngredientsContext";
 import { useNavigation } from "../context/NavigationContext";
 import { FRIDGE_PROMPT } from "../chat/prompts";
@@ -9,7 +11,6 @@ import {
   FRIDGE_HEADING,
   FRIDGE_SUBHEADING,
   INGREDIENT_NAME_PLACEHOLDER,
-  INGREDIENT_QUANTITY_PLACEHOLDER,
 } from "../content";
 
 import { ChefHatIcon, FridgeIcon } from "../assets/icons";
@@ -18,16 +19,22 @@ export default function Fridge() {
   const { ingredients, dispatch } = useIngredients();
   const { requestChat } = useNavigation();
   const [name, setName] = useState("");
-  const [quantity, setQuantity] = useState("");
+  const [quantity, setQuantity] = useState<IngredientQuantity | undefined>(
+    undefined,
+  );
+  // QuantityFields keeps its own in-progress state, so clearing the row after
+  // an add means remounting it with a new key.
+  const [quantityFieldsKey, setQuantityFieldsKey] = useState(0);
 
   const handleAdd = () => {
     if (!name.trim()) return;
     dispatch({
       type: "addIngredient",
-      ingredient: { name, quantity: quantity.trim() || undefined },
+      ingredient: { name, quantity },
     });
     setName("");
-    setQuantity("");
+    setQuantity(undefined);
+    setQuantityFieldsKey((key) => key + 1);
   };
 
   return (
@@ -44,9 +51,9 @@ export default function Fridge() {
           </div>
         </div>
 
-        {/* Add ingredient row: stacks on phones, where three controls side by
-            side leave the name field unusably narrow. text-base below sm keeps
-            iOS Safari from zooming in on focus. */}
+        {/* Add ingredient row: stacks on phones, where the quantity controls
+            side by side leave the name field unusably narrow. text-base below
+            sm keeps iOS Safari from zooming in on focus. */}
         <div className="flex flex-col sm:flex-row gap-3">
           <input
             type="text"
@@ -56,14 +63,14 @@ export default function Fridge() {
             placeholder={INGREDIENT_NAME_PLACEHOLDER}
             className="flex-1 min-w-0 border border-border rounded-xl bg-white/60 px-4 py-3 text-base sm:text-sm text-ink placeholder:text-muted focus:outline-none focus:border-terracotta transition-colors"
           />
-          <div className="flex gap-3">
-            <input
-              type="text"
+          {/* Amount, measure and unit wrap together: four controls on one line
+              are too cramped even on a wide screen. */}
+          <div className="flex flex-wrap gap-3">
+            <QuantityFields
+              key={quantityFieldsKey}
               value={quantity}
-              onChange={(event) => setQuantity(event.target.value)}
-              onKeyDown={(event) => event.key === "Enter" && handleAdd()}
-              placeholder={INGREDIENT_QUANTITY_PLACEHOLDER}
-              className="flex-1 sm:flex-none sm:w-40 min-w-0 border border-border rounded-xl bg-white/60 px-4 py-3 text-base sm:text-sm text-ink placeholder:text-muted focus:outline-none focus:border-terracotta transition-colors"
+              onChange={setQuantity}
+              onEnter={handleAdd}
             />
             <button
               onClick={handleAdd}

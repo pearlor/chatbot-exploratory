@@ -1,6 +1,8 @@
 import { createContext, useContext, useReducer } from "react";
 import type { Dispatch, ReactNode } from "react";
 import type { Ingredient } from "../components/IngredientCard";
+import type { IngredientQuantity } from "../quantity";
+import { formatQuantity } from "../quantity";
 
 // Ingredients are keyed by their lowercase name so the same ingredient can't be
 // added twice under different casing. The value keeps the name as typed so the
@@ -10,7 +12,7 @@ export type IngredientsState = Record<string, Ingredient>;
 export type IngredientsAction =
   | { type: "addIngredient"; ingredient: Ingredient }
   | { type: "removeIngredient"; name: string }
-  | { type: "updateIngredient"; name: string; quantity?: string };
+  | { type: "updateIngredient"; name: string; quantity?: IngredientQuantity };
 
 const toKey = (name: string) => name.trim().toLowerCase();
 
@@ -18,26 +20,25 @@ const toKey = (name: string) => name.trim().toLowerCase();
 // "Eggs (6), Guanciale (100g), Olive Oil, …". Quantity is omitted when unknown.
 export function formatFridgeContents(ingredients: IngredientsState): string {
   return Object.values(ingredients)
-    .map((ingredient) =>
-      ingredient.quantity
-        ? `${ingredient.name} (${ingredient.quantity})`
-        : ingredient.name,
-    )
+    .map((ingredient) => {
+      const quantity = formatQuantity(ingredient.quantity);
+      return quantity ? `${ingredient.name} (${quantity})` : ingredient.name;
+    })
     .join(", ");
 }
 
 const DEMO_INGREDIENTS = {
-  eggs: { name: "Eggs", quantity: "12" },
-  blueberries: { name: "Blueberries", quantity: "5oz" },
-  oranges: { name: "Oranges", quantity: "8" },
+  eggs: { name: "Eggs", quantity: { quantity: 12, unit: "" } },
+  blueberries: { name: "Blueberries", quantity: { quantity: 5, unit: "oz" } },
+  oranges: { name: "Oranges", quantity: { quantity: 8, unit: "" } },
   flour: { name: "Flour" },
   "rice flour": { name: "Rice flour" },
   "glutinous rice flour": { name: "Glutinous rice flour" },
   sugar: { name: "Sugar" },
   "white pepper": { name: "White pepper" },
   milk: { name: "Milk" },
-  apples: { name: "Apples", quantity: "5" },
-  onion: { name: "Onion", quantity: "2" },
+  apples: { name: "Apples", quantity: { quantity: 5, unit: "" } },
+  onion: { name: "Onion", quantity: { quantity: 2, unit: "" } },
 };
 
 const initialIngredients: IngredientsState = DEMO_INGREDIENTS;

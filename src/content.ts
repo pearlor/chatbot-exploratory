@@ -31,6 +31,17 @@ export const FRIDGE_SUBHEADING =
 export const INGREDIENT_NAME_PLACEHOLDER = "Ingredient name…";
 export const INGREDIENT_QUANTITY_PLACEHOLDER = "Qty (optional)";
 export const ADD_INGREDIENT_LABEL = "Add";
+
+/* Quantity fields (amount + measure + unit) */
+export const MEASURE_SELECT_LABEL = "Unit of measure";
+export const UNIT_SELECT_LABEL = "Unit";
+// The blank measure option: picking it means the amount stands alone, the way a
+// count of eggs or onions does.
+export const NO_MEASURE_OPTION_LABEL = "Count (no unit)";
+export const MEASURE_LABELS: Record<string, string> = {
+  mass: "Mass",
+  volume: "Volume",
+};
 export const ASK_CHEF_WITH_FRIDGE_LABEL =
   "Ask the chef what to cook with these";
 export const EMPTY_FRIDGE_MESSAGE =
