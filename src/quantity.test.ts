@@ -7,21 +7,17 @@ import {
 } from "./quantity";
 
 describe("unitOptionsFor", () => {
-  it("lists every mass unit convert-units knows, with readable labels", () => {
+  it("lists only the mass units a recipe writes, with readable labels", () => {
     const options = unitOptionsFor("mass");
 
     expect(options.map((option) => option.abbr)).toEqual([
-      "mcg",
       "mg",
       "g",
       "kg",
-      "mt",
       "oz",
       "lb",
-      "st",
-      "t",
     ]);
-    expect(options[2]).toEqual({ abbr: "g", label: "g — Grams" });
+    expect(options[1]).toEqual({ abbr: "g", label: "g — Grams" });
   });
 
   it("lists only the volume units a recipe writes", () => {
@@ -54,10 +50,11 @@ describe("measureForUnit", () => {
     expect(measureForUnit("")).toBeUndefined();
   });
 
-  it("returns undefined for a volume unit the dropdown leaves out", () => {
-    // 'm3' is a volume unit, but not one the dropdown offers, so there is no
-    // entry for the measure dropdown to select.
+  it("returns undefined for a unit the dropdown leaves out", () => {
+    // Both are units of a measure the fridge uses, but not ones it offers, so
+    // there would be no entry for the unit dropdown to select.
     expect(measureForUnit("m3")).toBeUndefined();
+    expect(measureForUnit("mcg")).toBeUndefined();
   });
 });
 

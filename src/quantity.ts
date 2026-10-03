@@ -45,25 +45,17 @@ export type UnitOption = {
 };
 
 /**
- * convert-units knows far more volume units than a kitchen needs (cubic
- * metres, teaspoons' imperial twins, barrels, …). Only the ones a recipe
- * actually writes are offered; mass has no such list because all of its units
- * are plausible for food.
+ * convert-units knows far more units than a kitchen needs — cubic metres and
+ * barrels for volume, micrograms and metric tonnes for mass. Each measure
+ * offers only the units a recipe actually writes.
  */
-const VOLUME_UNITS: readonly string[] = [
-  "ml",
-  "l",
-  "tsp",
-  "Tbs",
-  "fl-oz",
-  "cup",
-  "pnt",
-  "qt",
-  "gal",
-];
+const OFFERED_UNITS: Record<MeasureName, readonly string[]> = {
+  mass: ["mg", "g", "kg", "oz", "lb"],
+  volume: ["ml", "l", "tsp", "Tbs", "fl-oz", "cup", "pnt", "qt", "gal"],
+};
 
 function isOffered(measure: MeasureName, abbr: string): boolean {
-  return measure === "volume" ? VOLUME_UNITS.includes(abbr) : true;
+  return OFFERED_UNITS[measure].includes(abbr);
 }
 
 /**
