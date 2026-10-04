@@ -3,7 +3,16 @@ import type { RoleEnum } from "../../chat/types";
 import ChefMarkdown from "./ChefMarkdown";
 import { extractRecipeIngredients, isRecipeContent } from "./parseRecipe";
 import { personas } from "../../chat/types";
-import { CHEF_FALLBACK_NAME } from "../../content";
+import {
+  CHEF_FALLBACK_NAME,
+  UPDATE_FRIDGE_BUTTON_LABEL,
+  UPDATE_FRIDGE_CANCEL_LABEL,
+  UPDATE_FRIDGE_MODAL_HEADER,
+  UPDATE_FRIDGE_REMOVE_LABEL,
+  UPDATE_FRIDGE_REMOVED_LABEL,
+  UPDATE_FRIDGE_SAVE_LABEL,
+  UPDATE_FRIDGE_UNDO_REMOVE_LABEL,
+} from "../../content";
 import { CHEF_ICON } from "../../assets/icons";
 import Modal from "../Modal";
 import { useIngredients } from "../../context/IngredientsContext";
@@ -137,15 +146,21 @@ export default function ChefBubble({
           onClick={() => setIsUpdatingFridge(true)}
           className="rounded-xl border border-terracotta bg-terracotta-soft px-4 py-2 text-sm font-medium text-terracotta transition hover:bg-terracotta/10"
         >
-          Update Fridge
+          {UPDATE_FRIDGE_BUTTON_LABEL}
         </button>
       )}
 
       {isUpdatingFridge && (
         <Modal
-          header="Update Fridge"
-          primaryAction={{ label: "Save", onClick: handleSaveAll }}
-          secondaryAction={{ label: "Cancel", onClick: handleCancel }}
+          header={UPDATE_FRIDGE_MODAL_HEADER}
+          primaryAction={{
+            label: UPDATE_FRIDGE_SAVE_LABEL,
+            onClick: handleSaveAll,
+          }}
+          secondaryAction={{
+            label: UPDATE_FRIDGE_CANCEL_LABEL,
+            onClick: handleCancel,
+          }}
           onClose={handleCancel}
         >
           <div className="flex flex-col gap-3">
@@ -198,14 +213,16 @@ export default function ChefBubble({
                           : "text-terracotta"
                       }`}
                     >
-                      {isRemoved ? "Removed" : "Remove"}
+                      {isRemoved
+                        ? UPDATE_FRIDGE_REMOVED_LABEL
+                        : UPDATE_FRIDGE_REMOVE_LABEL}
                     </button>
                     {isRemoved && (
                       <button
                         onClick={() => handleUndoRemove(ingredient.name)}
                         className="rounded-lg border border-terracotta px-3 py-2 text-sm text-terracotta transition hover:bg-terracotta/10"
                       >
-                        Undo
+                        {UPDATE_FRIDGE_UNDO_REMOVE_LABEL}
                       </button>
                     )}
                   </div>

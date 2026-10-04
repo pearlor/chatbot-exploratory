@@ -81,6 +81,15 @@ export const CHAT_EMPTY_GREETING =
 export const USER_BUBBLE_LABEL = "You";
 export const THINKING_LABEL = "Chef is thinking";
 
+/* Update fridge (from a recipe) */
+export const UPDATE_FRIDGE_BUTTON_LABEL = "Update Fridge";
+export const UPDATE_FRIDGE_MODAL_HEADER = "Update Fridge";
+export const UPDATE_FRIDGE_SAVE_LABEL = "Save";
+export const UPDATE_FRIDGE_CANCEL_LABEL = "Cancel";
+export const UPDATE_FRIDGE_REMOVE_LABEL = "Remove";
+export const UPDATE_FRIDGE_REMOVED_LABEL = "Removed";
+export const UPDATE_FRIDGE_UNDO_REMOVE_LABEL = "Undo";
+
 /* Chat errors */
 export const GENERIC_ERROR_MESSAGE = "Something went wrong.";
 export const CHAT_ERROR_PREFIX = "Sorry, something went wrong: ";
