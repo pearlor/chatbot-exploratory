@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import Modal from "./Modal";
 import QuantityFields from "./QuantityFields";
 import type { Ingredient } from "./IngredientCard";
@@ -28,37 +28,38 @@ export default function UpdateFridgeModal({
   onClose: () => void;
 }) {
   const { ingredients, dispatch } = useIngredients();
-  // Draft amounts, keyed by recipe ingredient name; only committed on Save.
+  // Draft amount per recipe ingredient, seeded from the recipe and the fridge
+  // and only committed on Save. Seeded once, when the modal opens, so edits
+  // here aren't overwritten by the fridge changing underneath.
   const [quantities, setQuantities] = useState<
     Record<string, IngredientQuantity | undefined>
-  >({});
+  >(() =>
+    Object.fromEntries(
+      recipeIngredients.map((ingredient) => {
+        const fridgeMatch = Object.values(ingredients).find(
+          (item) => item.name.toLowerCase() === ingredient.name.toLowerCase(),
+        );
+        // The recipe's own amount wins when it names a unit, since that's the
+        // more specific of the two; otherwise fall back to what the fridge
+        // already holds.
+        const recipeQuantity = parseQuantity(ingredient.quantity);
+        const fridgeQuantity = fridgeMatch?.quantity;
+
+        return [
+          ingredient.name,
+          recipeQuantity?.unit
+            ? recipeQuantity
+            : (fridgeQuantity ?? recipeQuantity),
+        ];
+      }),
+    ),
+  );
   // Ingredients removed while the modal is open, keyed by recipe name. The
   // value is the fridge entry that was removed so Undo can restore its
   // original name and quantity, or null when the fridge had no such entry.
   const [removedIngredients, setRemovedIngredients] = useState<
     Record<string, Ingredient | null>
   >({});
-
-  const normalizedIngredients = useMemo(() => {
-    return recipeIngredients.map((ingredient) => {
-      const fridgeMatch = Object.values(ingredients).find(
-        (item) => item.name.toLowerCase() === ingredient.name.toLowerCase(),
-      );
-      // The recipe's own amount wins when it names a unit, since that's the
-      // more specific of the two; otherwise fall back to what the fridge
-      // already holds.
-      const recipeQuantity = parseQuantity(ingredient.quantity);
-      const fridgeQuantity = fridgeMatch?.quantity;
-      const initialQuantity = recipeQuantity?.unit
-        ? recipeQuantity
-        : (fridgeQuantity ?? recipeQuantity);
-
-      return {
-        ...ingredient,
-        initialQuantity,
-      };
-    });
-  }, [ingredients, recipeIngredients]);
 
   const handleRemove = (ingredientName: string) => {
     const fridgeEntry = Object.values(ingredients).find(
@@ -97,15 +98,18 @@ export default function UpdateFridgeModal({
 
   const handleSaveAll = () => {
     Object.entries(quantities).forEach(([ingredientName, quantity]) => {
+      // A removed ingredient stays removed: saving its amount would
+      // otherwise add it back, since updating an ingredient the fridge
+      // doesn't hold now adds it.
+      if (ingredientName in removedIngredients) return;
       updateQuantity(ingredientName, quantity);
     });
     onClose();
   };
 
-  const handleCancel = () => {
-    setQuantities({});
-    onClose();
-  };
+  // Closing discards the drafts along with the modal's state; amounts already
+  // committed with Enter, and removals, stay as they are.
+  const handleCancel = onClose;
 
   return (
     <Modal
@@ -121,11 +125,8 @@ export default function UpdateFridgeModal({
       onClose={handleCancel}
     >
       <div className="flex flex-col gap-3">
-        {normalizedIngredients.map((ingredient) => {
-          const quantity =
-            ingredient.name in quantities
-              ? quantities[ingredient.name]
-              : ingredient.initialQuantity;
+        {recipeIngredients.map((ingredient) => {
+          const quantity = quantities[ingredient.name];
           const isRemoved = ingredient.name in removedIngredients;
 
           return (

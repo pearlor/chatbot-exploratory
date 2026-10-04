@@ -70,12 +70,17 @@ function ingredientsReducer(
     }
     case "updateIngredient": {
       const key = toKey(action.name);
-      if (!state[key]) return state; // Nothing to update.
+      if (key === "") return state; // Ignore blank names.
 
-      return {
-        ...state,
-        [key]: { ...state[key], quantity: action.quantity },
-      };
+      const existing = state[key];
+      // An ingredient the fridge doesn't hold yet is added rather than
+      // ignored, so a recipe can contribute ingredients the user never
+      // entered themselves.
+      const updated: Ingredient = existing
+        ? { ...existing, quantity: action.quantity }
+        : { name: action.name.trim(), quantity: action.quantity };
+
+      return { ...state, [key]: updated };
     }
     default:
       return state;
