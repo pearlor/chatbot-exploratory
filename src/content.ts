@@ -83,6 +83,9 @@ export const THINKING_LABEL = "Chef is thinking";
 
 /* Update fridge (from a recipe) */
 export const UPDATE_FRIDGE_BUTTON_LABEL = "Update Fridge";
+// Shown on the disabled button, once this recipe's ingredients were saved.
+export const UPDATE_FRIDGE_DONE_TOOLTIP =
+  "You've already updated your fridge with this recipe";
 export const UPDATE_FRIDGE_MODAL_HEADER = "Update Fridge";
 export const UPDATE_FRIDGE_SAVE_LABEL = "Save";
 export const UPDATE_FRIDGE_CANCEL_LABEL = "Cancel";

@@ -22,9 +22,13 @@ import {
  */
 export default function UpdateFridgeModal({
   recipeIngredients,
+  onSaved,
   onClose,
 }: {
   recipeIngredients: RecipeIngredient[];
+  /** Called when the user saves, so the caller can record the fridge as
+   *  updated. Cancelling closes without it. */
+  onSaved: () => void;
   onClose: () => void;
 }) {
   const { ingredients, dispatch } = useIngredients();
@@ -104,6 +108,7 @@ export default function UpdateFridgeModal({
       if (ingredientName in removedIngredients) return;
       updateQuantity(ingredientName, quantity);
     });
+    onSaved();
     onClose();
   };
 

@@ -2,7 +2,11 @@ import { useState, useCallback, useEffect, useRef } from "react";
 import Composer from "../components/Composer";
 import ChatHistory from "../components/chat/ChatHistory";
 import { generateResponse } from "../chat/ChatUtils";
-import { RoleEnum } from "../chat/types";
+import {
+  ChatFollowUpOption,
+  RoleEnum,
+  swapFollowUpOption,
+} from "../chat/types";
 import type { ChatMessage } from "../chat/types";
 import { useUserPreferences } from "../context/UserPreferencesContext";
 import { useChatHistory } from "../context/ChatHistoryContext";
@@ -15,7 +19,10 @@ import {
 } from "../context/IngredientsContext";
 import { FRIDGE_PROMPT } from "../chat/prompts";
 import { getRoleFromPersona } from "../chat/types";
-import { extractRecipeTitle } from "../components/chat/parseRecipe";
+import {
+  extractRecipeIngredients,
+  extractRecipeTitle,
+} from "../components/chat/parseRecipe";
 import {
   CHAT_ERROR_PREFIX,
   EMPTY_FRIDGE_MESSAGE,
@@ -160,10 +167,18 @@ export default function ChatHome() {
                 preferences.persona,
                 fridgeContents,
               );
+        // A response that names ingredients offers the fridge update, so the
+        // button's availability is decided here rather than re-derived on
+        // every render of the bubble.
+        const hasIngredients =
+          extractRecipeIngredients(chatOutput.text).length > 0;
         const chefMessage: ChatMessage = {
           id: crypto.randomUUID(),
           role,
           content: chatOutput.text,
+          followUpOptions: hasIngredients
+            ? [ChatFollowUpOption.UpdateFridgeEnabled]
+            : undefined,
         };
         setMessages((prev) => [...prev, chefMessage]);
         const title = isNewConversation
@@ -220,6 +235,35 @@ export default function ChatHome() {
     [handleSubmit],
   );
 
+  // A completed follow-up action is recorded on the message it belongs to, in
+  // both the live view and the stored conversation, so reopening the
+  // conversation doesn't offer an action the user already took.
+  const setFollowUpOption = useCallback(
+    (
+      messageId: string,
+      remove: ChatFollowUpOption,
+      add: ChatFollowUpOption,
+    ) => {
+      setMessages((prev) =>
+        prev.map((message) =>
+          message.id === messageId
+            ? swapFollowUpOption(message, remove, add)
+            : message,
+        ),
+      );
+      if (activeConversationId) {
+        dispatch({
+          type: "setFollowUpOption",
+          conversationId: activeConversationId,
+          messageId,
+          remove,
+          add,
+        });
+      }
+    },
+    [activeConversationId, dispatch],
+  );
+
   // A prompt queued from another view (the Fridge "Ask the chef" button) is
   // submitted once, when the chat mounts. The ref guards against React
   // StrictMode invoking this effect twice in development.
@@ -241,6 +285,7 @@ export default function ChatHome() {
         retry={handleSubmit}
         numRetries={numRetries}
         scrollToMessageId={scrollToMessageId}
+        setFollowUpOption={setFollowUpOption}
       />
 
       <Composer
