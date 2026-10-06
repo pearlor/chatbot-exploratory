@@ -37,7 +37,9 @@ export const MEASURE_SELECT_LABEL = "Unit of measure";
 export const UNIT_SELECT_LABEL = "Unit";
 // The blank measure option: picking it means the amount stands alone, the way a
 // count of eggs or onions does.
-export const NO_MEASURE_OPTION_LABEL = "Count (no unit)";
+export const NO_MEASURE_OPTION_LABEL = "Count";
+// Shown in an info tooltip beside the measure select while "Count" is picked.
+export const NO_MEASURE_INFO_TOOLTIP = "No unit, just how many (e.g. 3 eggs)";
 export const MEASURE_LABELS: Record<string, string> = {
   mass: "Mass",
   volume: "Volume",

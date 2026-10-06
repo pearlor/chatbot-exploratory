@@ -7,9 +7,12 @@ import {
   INGREDIENT_QUANTITY_SHORT_PLACEHOLDER,
   MEASURE_LABELS,
   MEASURE_SELECT_LABEL,
+  NO_MEASURE_INFO_TOOLTIP,
   NO_MEASURE_OPTION_LABEL,
   UNIT_SELECT_LABEL,
 } from "../content";
+import { InfoIcon } from "../assets/icons";
+import Tooltip from "./Tooltip";
 
 export type QuantityFieldsProps = {
   /** The quantity being edited, or undefined for an empty one. */
@@ -130,6 +133,20 @@ export default function QuantityFields({
           </option>
         ))}
       </select>
+
+      {/* A native <option> can't hold an icon or a tooltip, so the "Count"
+          explanation sits beside the select while that option is picked. */}
+      {measure === "" && (
+        <Tooltip content={NO_MEASURE_INFO_TOOLTIP} className="self-center">
+          <span
+            tabIndex={0}
+            aria-label={NO_MEASURE_INFO_TOOLTIP}
+            className="text-muted hover:text-ink focus:text-ink focus:outline-none transition-colors"
+          >
+            <InfoIcon />
+          </span>
+        </Tooltip>
+      )}
 
       {measure !== "" && (
         <select
