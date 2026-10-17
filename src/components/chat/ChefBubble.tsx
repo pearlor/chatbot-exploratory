@@ -1,10 +1,16 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { ChatMessage } from "../../chat/types";
 import ChefMarkdown from "./ChefMarkdown";
-import { extractRecipeIngredients, isRecipeContent } from "./parseRecipe";
+import {
+  extractRecipeIngredients,
+  extractRecipeTitle,
+  isRecipeContent,
+} from "./parseRecipe";
+import RecipePrintView from "./RecipePrintView";
 import { ChatFollowUpOption, personas } from "../../chat/types";
 import {
   CHEF_FALLBACK_NAME,
+  EXPORT_PDF_BUTTON_LABEL,
   UPDATE_FRIDGE_BUTTON_LABEL,
   UPDATE_FRIDGE_DONE_TOOLTIP,
 } from "../../content";
@@ -28,6 +34,7 @@ export default function ChefBubble({
 }) {
   const { content, role, followUpOptions } = message;
   const [isUpdatingFridge, setIsUpdatingFridge] = useState(false);
+  const [isPrinting, setIsPrinting] = useState(false);
   // Recipe cards go full width so ingredients/steps can sit side by side;
   // @container enables the column switch to track the bubble's own width.
   const isRecipe = isRecipeContent(content);
@@ -41,6 +48,28 @@ export default function ChefBubble({
     followUpOptions?.includes(ChatFollowUpOption.UpdateFridgeEnabled) ?? false;
 
   const persona = personas.find((p) => p.id === role);
+
+  // Runs once RecipePrintView is on the page. The browser suggests the page
+  // title as the PDF's file name, so it is swapped for the dish name while
+  // the print dialog is open.
+  useEffect(() => {
+    if (!isPrinting) return;
+
+    const previousTitle = document.title;
+    document.title = extractRecipeTitle(content) ?? previousTitle;
+
+    const finishPrinting = () => {
+      document.title = previousTitle;
+      setIsPrinting(false);
+    };
+    window.addEventListener("afterprint", finishPrinting);
+    window.print();
+
+    return () => {
+      window.removeEventListener("afterprint", finishPrinting);
+      document.title = previousTitle;
+    };
+  }, [isPrinting, content]);
 
   return (
     <div className="flex flex-col items-start gap-2">
@@ -62,26 +91,39 @@ export default function ChefBubble({
         <ChefMarkdown content={content} />
       </div>
 
-      {/* Once used, the button stays in place but disabled, with a tooltip
-          explaining why, so the recipe's history is still visible. */}
-      {canUpdateFridge && (
-        <button
-          onClick={() => setIsUpdatingFridge(true)}
-          className="rounded-xl border border-terracotta bg-terracotta-soft px-4 py-2 text-sm font-medium text-terracotta transition hover:bg-terracotta/10"
-        >
-          {UPDATE_FRIDGE_BUTTON_LABEL}
-        </button>
-      )}
-      {hasUpdatedFridge && (
-        <Tooltip content={UPDATE_FRIDGE_DONE_TOOLTIP}>
+      <div className="flex flex-wrap gap-2">
+        {/* Once used, the button stays in place but disabled, with a tooltip
+            explaining why, so the recipe's history is still visible. */}
+        {canUpdateFridge && (
           <button
-            disabled
-            className="cursor-not-allowed rounded-xl border border-border px-4 py-2 text-sm font-medium text-muted"
+            onClick={() => setIsUpdatingFridge(true)}
+            className="rounded-xl border border-terracotta bg-terracotta-soft px-4 py-2 text-sm font-medium text-terracotta transition hover:bg-terracotta/10"
           >
             {UPDATE_FRIDGE_BUTTON_LABEL}
           </button>
-        </Tooltip>
-      )}
+        )}
+        {hasUpdatedFridge && (
+          <Tooltip content={UPDATE_FRIDGE_DONE_TOOLTIP}>
+            <button
+              disabled
+              className="cursor-not-allowed rounded-xl border border-border px-4 py-2 text-sm font-medium text-muted"
+            >
+              {UPDATE_FRIDGE_BUTTON_LABEL}
+            </button>
+          </Tooltip>
+        )}
+
+        {isRecipe && (
+          <button
+            onClick={() => setIsPrinting(true)}
+            className="rounded-xl border border-border bg-cream px-4 py-2 text-sm font-medium text-ink transition hover:bg-sidebar"
+          >
+            {EXPORT_PDF_BUTTON_LABEL}
+          </button>
+        )}
+      </div>
+
+      {isPrinting && <RecipePrintView content={content} />}
 
       {isUpdatingFridge && (
         <UpdateFridgeModal
