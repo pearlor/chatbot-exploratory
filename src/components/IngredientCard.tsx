@@ -1,9 +1,12 @@
 import { useEffect, useRef, useState } from "react";
+import type { FocusEvent } from "react";
 import { useIngredients } from "../context/IngredientsContext";
+import QuantityFields from "./QuantityFields";
+import type { IngredientQuantity } from "../quantity";
+import { formatQuantity } from "../quantity";
 import {
   EDIT_QUANTITY_LABEL,
   INGREDIENT_OPTIONS_TITLE,
-  INGREDIENT_QUANTITY_SHORT_PLACEHOLDER,
   REMOVE_INGREDIENT_LABEL,
 } from "../content";
 
@@ -12,7 +15,8 @@ import { TEST_IDS } from "../testIds";
 
 export type Ingredient = {
   name: string;
-  quantity?: string;
+  /** Absent when the amount is unknown. Read it through `formatQuantity`. */
+  quantity?: IngredientQuantity;
 };
 
 export default function IngredientCard({
@@ -23,7 +27,9 @@ export default function IngredientCard({
   const { dispatch } = useIngredients();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [quantityDraft, setQuantityDraft] = useState("");
+  const [quantityDraft, setQuantityDraft] = useState<
+    IngredientQuantity | undefined
+  >(undefined);
   const menuRef = useRef<HTMLDivElement>(null);
 
   // Close the menu when clicking anywhere outside of it.
@@ -41,7 +47,7 @@ export default function IngredientCard({
   }, [isMenuOpen]);
 
   const startEditing = () => {
-    setQuantityDraft(ingredient.quantity ?? "");
+    setQuantityDraft(ingredient.quantity);
     setIsEditing(true);
     setIsMenuOpen(false);
   };
@@ -50,9 +56,16 @@ export default function IngredientCard({
     dispatch({
       type: "updateIngredient",
       name: ingredient.name,
-      quantity: quantityDraft.trim() || undefined,
+      quantity: quantityDraft,
     });
     setIsEditing(false);
+  };
+
+  // Clicking away saves, but focus moving between the three quantity controls
+  // also fires blur — so only save once focus has left the group entirely.
+  const handleEditorBlur = (event: FocusEvent<HTMLDivElement>) => {
+    if (event.currentTarget.contains(event.relatedTarget)) return;
+    saveQuantity();
   };
 
   const remove = () => {
@@ -64,63 +77,64 @@ export default function IngredientCard({
     <div
       data-testid={TEST_IDS.ingredientCard}
       data-ingredient={ingredient.name}
-      className="flex items-center justify-between border border-border rounded-xl bg-white/60 px-4 py-3"
+      className="flex flex-col gap-3 border border-border rounded-xl bg-white/60 px-4 py-3"
     >
-      <span className="flex items-center gap-3 min-w-0 text-sm text-ink">
-        <span className="w-1.5 h-1.5 rounded-full bg-terracotta shrink-0" />
-        <span className="truncate">{ingredient.name}</span>
-      </span>
+      <div className="flex items-center justify-between">
+        <span className="flex items-center gap-3 min-w-0 text-sm text-ink">
+          <span className="w-1.5 h-1.5 rounded-full bg-terracotta shrink-0" />
+          <span className="truncate">{ingredient.name}</span>
+        </span>
 
-      <div className="flex items-center gap-2 shrink-0">
-        {isEditing ? (
-          <input
-            type="text"
-            autoFocus
-            value={quantityDraft}
-            onChange={(event) => setQuantityDraft(event.target.value)}
-            onBlur={saveQuantity}
-            onKeyDown={(event) => {
-              if (event.key === "Enter") saveQuantity();
-              if (event.key === "Escape") setIsEditing(false);
-            }}
-            placeholder={INGREDIENT_QUANTITY_SHORT_PLACEHOLDER}
-            className="w-24 border border-terracotta rounded-full bg-white px-2.5 py-1 text-xs text-ink focus:outline-none"
-          />
-        ) : (
-          ingredient.quantity && (
+        <div className="flex items-center gap-2 shrink-0">
+          {!isEditing && formatQuantity(ingredient.quantity) !== "" && (
             <span className="text-xs font-medium text-terracotta bg-terracotta-soft rounded-full px-2.5 py-1">
-              {ingredient.quantity}
+              {formatQuantity(ingredient.quantity)}
             </span>
-          )
-        )}
-
-        <div className="relative" ref={menuRef}>
-          <button
-            onClick={() => setIsMenuOpen((open) => !open)}
-            title={INGREDIENT_OPTIONS_TITLE}
-            className="w-10 h-10 sm:w-7 sm:h-7 rounded-lg text-muted flex items-center justify-center hover:bg-black/5 transition-colors"
-          >
-            <KebabIcon />
-          </button>
-
-          {isMenuOpen && (
-            <div className="absolute right-0 top-full mt-1 z-10 w-32 rounded-lg border border-border bg-white shadow-lg py-1">
-              <button
-                onClick={startEditing}
-                className="w-full text-left px-3 py-1.5 text-sm text-ink hover:bg-black/5 transition-colors"
-              >
-                {EDIT_QUANTITY_LABEL}
-              </button>
-              <button
-                onClick={remove}
-                className="w-full text-left px-3 py-1.5 text-sm text-terracotta hover:bg-black/5 transition-colors"
-              >
-                {REMOVE_INGREDIENT_LABEL}
-              </button>
-            </div>
           )}
+
+          <div className="relative" ref={menuRef}>
+            <button
+              onClick={() => setIsMenuOpen((open) => !open)}
+              title={INGREDIENT_OPTIONS_TITLE}
+              className="w-10 h-10 sm:w-7 sm:h-7 rounded-lg text-muted flex items-center justify-center hover:bg-black/5 transition-colors"
+            >
+              <KebabIcon />
+            </button>
+
+            {isMenuOpen && (
+              <div className="absolute right-0 top-full mt-1 z-10 w-32 rounded-lg border border-border bg-white shadow-lg py-1">
+                <button
+                  onClick={startEditing}
+                  className="w-full text-left px-3 py-1.5 text-sm text-ink hover:bg-black/5 transition-colors"
+                >
+                  {EDIT_QUANTITY_LABEL}
+                </button>
+                <button
+                  onClick={remove}
+                  className="w-full text-left px-3 py-1.5 text-sm text-terracotta hover:bg-black/5 transition-colors"
+                >
+                  {REMOVE_INGREDIENT_LABEL}
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
+
+      {/* The three quantity controls don't fit beside the name, so editing
+          moves them onto their own row below it. */}
+      {isEditing && (
+        <div className="flex flex-wrap gap-2" onBlur={handleEditorBlur}>
+          <QuantityFields
+            size="compact"
+            autoFocus
+            value={quantityDraft}
+            onChange={setQuantityDraft}
+            onEnter={saveQuantity}
+            onEscape={() => setIsEditing(false)}
+          />
+        </div>
+      )}
     </div>
   );
 }

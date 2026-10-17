@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import {
   getRoleFromPersona,
+  type ChatFollowUpOption,
   type ChatMessage,
   personas,
 } from "../../chat/types";
@@ -20,6 +21,7 @@ export default function ChatHistory({
   messageIdWithError,
   numRetries,
   scrollToMessageId,
+  setFollowUpOption,
 }: {
   messages: ChatMessage[];
   isLoading: boolean;
@@ -27,6 +29,11 @@ export default function ChatHistory({
   messageIdWithError?: string | null;
   numRetries: number;
   scrollToMessageId?: string;
+  setFollowUpOption: (
+    messageId: string,
+    remove: ChatFollowUpOption,
+    add: ChatFollowUpOption,
+  ) => void;
 }) {
   const { preferences } = useUserPreferences();
   // A single scroll container across the empty and populated states keeps this
@@ -71,7 +78,10 @@ export default function ChatHistory({
                   numRetries={numRetries}
                 />
               ) : (
-                <ChefBubble content={message.content} role={message.role} />
+                <ChefBubble
+                  message={message}
+                  setFollowUpOption={setFollowUpOption}
+                />
               )}
             </div>
           ))}

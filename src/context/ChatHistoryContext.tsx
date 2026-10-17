@@ -1,6 +1,10 @@
 import { createContext, useContext, useReducer } from "react";
 import type { Dispatch, ReactNode } from "react";
-import { RoleEnum } from "../chat/types";
+import {
+  ChatFollowUpOption,
+  RoleEnum,
+  swapFollowUpOption,
+} from "../chat/types";
 import type { ChatMessage, Conversation } from "../chat/types";
 import mockChefResponse from "../chat/mock/example_response.md?raw";
 import { NEW_CONVERSATION_TITLE } from "../content";
@@ -24,6 +28,13 @@ export type ChatHistoryAction =
       title: string | undefined; // Optional title for new conversations
       isNewConversation: boolean; // Flag to indicate if this is a new conversation
       message: ChatMessage;
+    }
+  | {
+      type: "setFollowUpOption";
+      conversationId: string;
+      messageId: string;
+      remove: ChatFollowUpOption;
+      add: ChatFollowUpOption;
     };
 
 const ENABLE_MOCK_HISTORY = true; // Set to false to start with an empty history
@@ -46,6 +57,7 @@ const mockChatHistory: Record<string, Conversation> = {
         id: "2",
         role: RoleEnum.Teacher,
         content: mockChefResponse,
+        followUpOptions: [ChatFollowUpOption.UpdateFridgeEnabled],
       },
     ],
   },
@@ -100,6 +112,26 @@ function chatHistoryReducer(
         activeConversationId: isNewConversation
           ? conversationId
           : state.activeConversationId,
+      };
+    }
+    case "setFollowUpOption": {
+      const { conversationId, messageId, remove, add } = action;
+      const conversation = state.chatHistory[conversationId];
+      if (!conversation) return state; // Nothing to update.
+
+      return {
+        ...state,
+        chatHistory: {
+          ...state.chatHistory,
+          [conversationId]: {
+            ...conversation,
+            messages: conversation.messages.map((message) =>
+              message.id === messageId
+                ? swapFollowUpOption(message, remove, add)
+                : message,
+            ),
+          },
+        },
       };
     }
     default:

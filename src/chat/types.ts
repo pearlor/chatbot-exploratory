@@ -13,10 +13,33 @@ import {
 
 export type Persona = "teacher" | "tv-host" | "pirate";
 
+// Actions a chef response can offer the user once it has been read, tracked on
+// the message itself so they survive switching conversations. Each action has
+// an enabled and a disabled member: the enabled one is set when the response is
+// created, and swapped for the disabled one once the user has carried it out.
+export enum ChatFollowUpOption {
+  UpdateFridgeEnabled = "UpdateFridgeEnabled",
+  UpdateFridgeDisabled = "UpdateFridgeDisabled",
+}
+
 export interface ChatMessage {
   id: string;
   role: RoleEnum;
   content: string;
+  followUpOptions?: ChatFollowUpOption[];
+}
+
+/** Replaces one of a message's follow-up options with another, e.g. swapping
+ *  UpdateFridgeEnabled for UpdateFridgeDisabled once the fridge was updated. */
+export function swapFollowUpOption(
+  message: ChatMessage,
+  remove: ChatFollowUpOption,
+  add: ChatFollowUpOption,
+): ChatMessage {
+  const remaining = (message.followUpOptions ?? []).filter(
+    (option) => option !== remove && option !== add,
+  );
+  return { ...message, followUpOptions: [...remaining, add] };
 }
 
 export enum RoleEnum {

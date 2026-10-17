@@ -31,6 +31,19 @@ export const FRIDGE_SUBHEADING =
 export const INGREDIENT_NAME_PLACEHOLDER = "Ingredient name…";
 export const INGREDIENT_QUANTITY_PLACEHOLDER = "Qty (optional)";
 export const ADD_INGREDIENT_LABEL = "Add";
+
+/* Quantity fields (amount + measure + unit) */
+export const MEASURE_SELECT_LABEL = "Unit of measure";
+export const UNIT_SELECT_LABEL = "Unit";
+// The blank measure option: picking it means the amount stands alone, the way a
+// count of eggs or onions does.
+export const NO_MEASURE_OPTION_LABEL = "Count";
+// Shown in an info tooltip beside the measure select while "Count" is picked.
+export const NO_MEASURE_INFO_TOOLTIP = "No unit, just how many (e.g. 3 eggs)";
+export const MEASURE_LABELS: Record<string, string> = {
+  mass: "Mass",
+  volume: "Volume",
+};
 export const ASK_CHEF_WITH_FRIDGE_LABEL =
   "Ask the chef what to cook with these";
 export const EMPTY_FRIDGE_MESSAGE =
@@ -69,6 +82,18 @@ export const CHAT_EMPTY_GREETING =
   "The kitchen is open. What shall we prepare today?";
 export const USER_BUBBLE_LABEL = "You";
 export const THINKING_LABEL = "Chef is thinking";
+
+/* Update fridge (from a recipe) */
+export const UPDATE_FRIDGE_BUTTON_LABEL = "Update Fridge";
+// Shown on the disabled button, once this recipe's ingredients were saved.
+export const UPDATE_FRIDGE_DONE_TOOLTIP =
+  "You've already updated your fridge with this recipe";
+export const UPDATE_FRIDGE_MODAL_HEADER = "Update Fridge";
+export const UPDATE_FRIDGE_SAVE_LABEL = "Save";
+export const UPDATE_FRIDGE_CANCEL_LABEL = "Cancel";
+export const UPDATE_FRIDGE_REMOVE_LABEL = "Remove";
+export const UPDATE_FRIDGE_REMOVED_LABEL = "Removed";
+export const UPDATE_FRIDGE_UNDO_REMOVE_LABEL = "Undo";
 
 /* Chat errors */
 export const GENERIC_ERROR_MESSAGE = "Something went wrong.";
