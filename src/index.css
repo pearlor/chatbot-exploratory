@@ -41,6 +41,8 @@
   @page {
     margin: 16mm;
   }
+}
+
 @utility select-chevron {
   appearance: none;
   /* Chevron in --color-muted (#8a8175) */
