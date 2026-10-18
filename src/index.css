@@ -21,6 +21,28 @@
   }
 }
 
+/* Saving a recipe as a PDF prints only RecipePrintView, which is portaled
+   next to #root while printing. */
+@media print {
+  #root {
+    display: none;
+  }
+
+  /* Keep the pill and callout backgrounds even when the print dialog has
+     "Background graphics" turned off. */
+  [data-print-view] * {
+    print-color-adjust: exact;
+  }
+
+  [data-print-view] li {
+    break-inside: avoid;
+  }
+
+  @page {
+    margin: 16mm;
+  }
+}
+
 @utility select-chevron {
   appearance: none;
   /* Chevron in --color-muted (#8a8175) */

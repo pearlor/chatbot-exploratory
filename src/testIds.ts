@@ -10,4 +10,5 @@ export const TEST_IDS = {
   sidebar: "sidebar",
   chatModeSelector: "chat-mode-selector",
   chatScrollContainer: "chat-scroll-container",
+  recipePrintView: "recipe-print-view",
 } as const;

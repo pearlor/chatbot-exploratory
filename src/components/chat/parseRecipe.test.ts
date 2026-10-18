@@ -4,6 +4,7 @@ import {
   extractRecipeTitle,
   isRecipeContent,
   parseRecipeSegments,
+  stripRecipeGreeting,
 } from "./parseRecipe";
 
 const fullRecipe = `Hello there, fellow chef!
@@ -368,5 +369,31 @@ describe("extractRecipeTitle", () => {
   it("is null for plain chat and empty titles", () => {
     expect(extractRecipeTitle("Just a chat about basil.")).toBeNull();
     expect(extractRecipeTitle("##   \nsome text")).toBeNull();
+  });
+});
+
+describe("stripRecipeGreeting", () => {
+  it("drops everything above the ## title", () => {
+    const stripped = stripRecipeGreeting(fullRecipe);
+    expect(stripped.startsWith("## Homemade Egg Tarts")).toBe(true);
+    expect(stripped).not.toContain("Hello there");
+  });
+
+  it("keeps metadata lines that sit above the title", () => {
+    const stripped = stripRecipeGreeting(
+      "Hi!\n- **Time:** 20 min\n\n## Toast\n\n### [Steps] Go\n\n1. x",
+    );
+    expect(stripped).toBe(
+      "- **Time:** 20 min\n## Toast\n\n### [Steps] Go\n\n1. x",
+    );
+    expect(parseRecipeSegments(stripped)[1]).toEqual({
+      kind: "pills",
+      meta: { time: "20 min" },
+    });
+  });
+
+  it("leaves content without a title unchanged", () => {
+    const content = "Hi!\n\n### [Steps] Go\n\n1. x";
+    expect(stripRecipeGreeting(content)).toBe(content);
   });
 });

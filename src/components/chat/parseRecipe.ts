@@ -238,6 +238,23 @@ export function extractRecipeTitle(markdown: string): string | null {
 }
 
 /**
+ * Drops the chatty greeting above the `## <title>` line so a printed recipe
+ * starts at the dish name. Metadata lines the model put above the title are
+ * kept, since parseRecipeSegments moves them under the title anyway. Content
+ * without a title comes back unchanged.
+ */
+export function stripRecipeGreeting(markdown: string): string {
+  const title = markdown.match(TITLE_LINE);
+  if (title?.index === undefined) return markdown;
+
+  const metaAboveTitle = markdown
+    .slice(0, title.index)
+    .split("\n")
+    .filter((line) => META_LINE.test(line));
+  return [...metaAboveTitle, markdown.slice(title.index)].join("\n");
+}
+
+/**
  * Parses chef AI markdown into ordered render segments: metadata pills under
  * the dish title, an ingredients/steps column pair, an ending-comment
  * callout, and plain markdown for everything else. Content with no metadata
