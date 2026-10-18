@@ -96,7 +96,9 @@ export const UPDATE_FRIDGE_REMOVED_LABEL = "Removed";
 export const UPDATE_FRIDGE_UNDO_REMOVE_LABEL = "Undo";
 
 /* Export recipe */
-export const EXPORT_PDF_BUTTON_LABEL = "Save as PDF";
+export const EXPORT_MENU_LABEL = "Export";
+export const EXPORT_PDF_LABEL = "Save as PDF";
+export const EXPORT_PNG_LABEL = "Save as PNG";
 
 /* Chat errors */
 export const GENERIC_ERROR_MESSAGE = "Something went wrong.";

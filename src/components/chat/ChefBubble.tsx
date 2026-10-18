@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { ChatMessage } from "../../chat/types";
 import ChefMarkdown from "./ChefMarkdown";
 import {
@@ -7,14 +7,18 @@ import {
   isRecipeContent,
 } from "./parseRecipe";
 import RecipePrintView from "./RecipePrintView";
+import RecipeImageRenderer from "./RecipeImageRenderer";
 import { ChatFollowUpOption, personas } from "../../chat/types";
 import {
   CHEF_FALLBACK_NAME,
-  EXPORT_PDF_BUTTON_LABEL,
+  EXPORT_MENU_LABEL,
+  EXPORT_PDF_LABEL,
+  EXPORT_PNG_LABEL,
   UPDATE_FRIDGE_BUTTON_LABEL,
   UPDATE_FRIDGE_DONE_TOOLTIP,
 } from "../../content";
 import { CHEF_ICON } from "../../assets/icons";
+import DropdownMenu from "../DropdownMenu";
 import Tooltip from "../Tooltip";
 import UpdateFridgeModal from "../UpdateFridgeModal";
 /**
@@ -35,6 +39,9 @@ export default function ChefBubble({
   const { content, role, followUpOptions } = message;
   const [isUpdatingFridge, setIsUpdatingFridge] = useState(false);
   const [isPrinting, setIsPrinting] = useState(false);
+  const [isSavingImage, setIsSavingImage] = useState(false);
+  // Stable, so RecipeImageRenderer's effect doesn't re-run on every render.
+  const finishSavingImage = useCallback(() => setIsSavingImage(false), []);
   // Recipe cards go full width so ingredients/steps can sit side by side;
   // @container enables the column switch to track the bubble's own width.
   const isRecipe = isRecipeContent(content);
@@ -114,16 +121,25 @@ export default function ChefBubble({
         )}
 
         {isRecipe && (
-          <button
-            onClick={() => setIsPrinting(true)}
-            className="rounded-xl border border-border bg-cream px-4 py-2 text-sm font-medium text-ink transition hover:bg-sidebar"
-          >
-            {EXPORT_PDF_BUTTON_LABEL}
-          </button>
+          <DropdownMenu
+            label={EXPORT_MENU_LABEL}
+            items={[
+              { label: EXPORT_PDF_LABEL, onSelect: () => setIsPrinting(true) },
+              {
+                label: EXPORT_PNG_LABEL,
+                onSelect: () => setIsSavingImage(true),
+                // One image at a time, so a double click can't save twice.
+                disabled: isSavingImage,
+              },
+            ]}
+          />
         )}
       </div>
 
       {isPrinting && <RecipePrintView content={content} />}
+      {isSavingImage && (
+        <RecipeImageRenderer content={content} onDone={finishSavingImage} />
+      )}
 
       {isUpdatingFridge && (
         <UpdateFridgeModal
