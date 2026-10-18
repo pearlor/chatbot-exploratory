@@ -17,7 +17,7 @@ describe("unitOptionsFor", () => {
       "oz",
       "lb",
     ]);
-    expect(options[1]).toEqual({ abbr: "g", label: "g — Grams" });
+    expect(options[1]).toEqual({ abbr: "g", label: "g" });
   });
 
   it("lists only the volume units a recipe writes", () => {
@@ -34,7 +34,7 @@ describe("unitOptionsFor", () => {
       "qt",
       "gal",
     ]);
-    expect(options[5]).toEqual({ abbr: "cup", label: "cup — Cups" });
+    expect(options[5]).toEqual({ abbr: "cup", label: "cup" });
   });
 });
 

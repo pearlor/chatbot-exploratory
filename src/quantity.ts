@@ -69,7 +69,7 @@ export function unitOptionsFor(measure: MeasureName): UnitOption[] {
     .filter((unit) => isOffered(measure, unit.abbr))
     .map((unit) => ({
       abbr: unit.abbr,
-      label: `${unit.abbr} — ${unit.plural}`,
+      label: `${unit.abbr}`,
     }));
 }
 

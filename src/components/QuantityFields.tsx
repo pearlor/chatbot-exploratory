@@ -90,6 +90,11 @@ export default function QuantityFields({
     : // text-base below sm keeps iOS Safari from zooming in on focus, the same
       // reason the ingredient name field has it.
       "border border-border rounded-xl bg-white/60 px-4 py-3 text-base sm:text-sm text-ink placeholder:text-muted focus:outline-none focus:border-terracotta transition-colors disabled:text-muted";
+  // Native select arrows ignore padding, so we draw our own chevron and
+  // reserve right padding for it.
+  const selectClasses = isCompact
+    ? "select-chevron bg-position-[right_0.375rem_center] bg-size-[0.75rem] pr-6"
+    : "select-chevron bg-position-[right_0.75rem_center] bg-size-[1rem] pr-10";
 
   const handleKeyDown = (event: KeyboardEvent) => {
     if (event.key === "Enter") onEnter?.();
@@ -124,7 +129,7 @@ export default function QuantityFields({
           handleMeasureChange(event.target.value as MeasureName | "")
         }
         onKeyDown={handleKeyDown}
-        className={`${fieldClasses} ${isCompact ? "" : "flex-1 sm:flex-none"} min-w-0`}
+        className={`${fieldClasses} ${selectClasses} ${isCompact ? "" : "flex-1 sm:flex-none"} min-w-0`}
       >
         <option value="">{NO_MEASURE_OPTION_LABEL}</option>
         {MEASURES.map((measureName) => (
@@ -154,7 +159,7 @@ export default function QuantityFields({
           value={unit}
           onChange={(event) => handleUnitChange(event.target.value)}
           onKeyDown={handleKeyDown}
-          className={`${fieldClasses} ${isCompact ? "" : "flex-1 sm:flex-none"} min-w-0 disabled:opacity-50`}
+          className={`${fieldClasses} ${selectClasses} ${isCompact ? "" : "flex-1 sm:flex-none"} min-w-0 disabled:opacity-50`}
         >
           {unitOptionsFor(measure).map((option) => (
             <option key={option.abbr} value={option.abbr}>

@@ -41,4 +41,9 @@
   @page {
     margin: 16mm;
   }
+@utility select-chevron {
+  appearance: none;
+  /* Chevron in --color-muted (#8a8175) */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%238a8175' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
 }
